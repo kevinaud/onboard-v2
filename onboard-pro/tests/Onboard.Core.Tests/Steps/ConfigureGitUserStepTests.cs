@@ -1,10 +1,16 @@
+// <copyright file="ConfigureGitUserStepTests.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace Onboard.Core.Tests.Steps;
+
 using Moq;
+
 using NUnit.Framework;
+
 using Onboard.Core.Abstractions;
 using Onboard.Core.Models;
 using Onboard.Core.Steps.Shared;
-
-namespace Onboard.Core.Tests.Steps;
 
 [TestFixture]
 public class ConfigureGitUserStepTests
@@ -18,15 +24,15 @@ public class ConfigureGitUserStepTests
 
         // Simulate git config user.name not set (exit code 1)
         mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.name"))
-            .ReturnsAsync(new ProcessResult(1, "", ""));
-        
+            .ReturnsAsync(new ProcessResult(1, string.Empty, string.Empty));
+
         mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.email"))
-            .ReturnsAsync(new ProcessResult(0, "test@example.com", ""));
+            .ReturnsAsync(new ProcessResult(0, "test@example.com", string.Empty));
 
         var step = new ConfigureGitUserStep(mockProcessRunner.Object, mockUI.Object);
 
         // Act
-        var result = await step.ShouldExecuteAsync();
+        bool result = await step.ShouldExecuteAsync();
 
         // Assert
         Assert.That(result, Is.True);
@@ -40,16 +46,16 @@ public class ConfigureGitUserStepTests
         var mockUI = new Mock<IUserInteraction>();
 
         mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.name"))
-            .ReturnsAsync(new ProcessResult(0, "Test User", ""));
-        
+            .ReturnsAsync(new ProcessResult(0, "Test User", string.Empty));
+
         // Simulate git config user.email not set (exit code 1)
         mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.email"))
-            .ReturnsAsync(new ProcessResult(1, "", ""));
+            .ReturnsAsync(new ProcessResult(1, string.Empty, string.Empty));
 
         var step = new ConfigureGitUserStep(mockProcessRunner.Object, mockUI.Object);
 
         // Act
-        var result = await step.ShouldExecuteAsync();
+        bool result = await step.ShouldExecuteAsync();
 
         // Assert
         Assert.That(result, Is.True);
@@ -63,15 +69,15 @@ public class ConfigureGitUserStepTests
         var mockUI = new Mock<IUserInteraction>();
 
         mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.name"))
-            .ReturnsAsync(new ProcessResult(0, "Test User", ""));
-        
+            .ReturnsAsync(new ProcessResult(0, "Test User", string.Empty));
+
         mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.email"))
-            .ReturnsAsync(new ProcessResult(0, "test@example.com", ""));
+            .ReturnsAsync(new ProcessResult(0, "test@example.com", string.Empty));
 
         var step = new ConfigureGitUserStep(mockProcessRunner.Object, mockUI.Object);
 
         // Act
-        var result = await step.ShouldExecuteAsync();
+        bool result = await step.ShouldExecuteAsync();
 
         // Assert
         Assert.That(result, Is.False);
@@ -86,15 +92,15 @@ public class ConfigureGitUserStepTests
 
         // Empty output even though exit code is 0
         mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.name"))
-            .ReturnsAsync(new ProcessResult(0, "  ", ""));
-        
+            .ReturnsAsync(new ProcessResult(0, "  ", string.Empty));
+
         mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.email"))
-            .ReturnsAsync(new ProcessResult(0, "test@example.com", ""));
+            .ReturnsAsync(new ProcessResult(0, "test@example.com", string.Empty));
 
         var step = new ConfigureGitUserStep(mockProcessRunner.Object, mockUI.Object);
 
         // Act
-        var result = await step.ShouldExecuteAsync();
+        bool result = await step.ShouldExecuteAsync();
 
         // Assert
         Assert.That(result, Is.True);
@@ -115,9 +121,9 @@ public class ConfigureGitUserStepTests
 
         // Simulate successful git config commands
         mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.name \"Test User\""))
-            .ReturnsAsync(new ProcessResult(0, "", ""));
+            .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
         mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.email \"test@example.com\""))
-            .ReturnsAsync(new ProcessResult(0, "", ""));
+            .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
 
         var step = new ConfigureGitUserStep(mockProcessRunner.Object, mockUI.Object);
 
@@ -137,15 +143,15 @@ public class ConfigureGitUserStepTests
         var mockProcessRunner = new Mock<IProcessRunner>();
         var mockUI = new Mock<IUserInteraction>();
 
-        var promptCount = 0;
+        int promptCount = 0;
         mockUI.Setup(ui => ui.Prompt("Please enter your full name for Git commits: "))
-            .Returns(() => promptCount++ == 0 ? "" : "Test User");
-        
+            .Returns(() => promptCount++ == 0 ? string.Empty : "Test User");
+
         mockUI.Setup(ui => ui.Prompt("Please enter your email for Git commits: "))
             .Returns("test@example.com");
 
         mockProcessRunner.Setup(p => p.RunAsync("git", It.IsAny<string>()))
-            .ReturnsAsync(new ProcessResult(0, "", ""));
+            .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
 
         var step = new ConfigureGitUserStep(mockProcessRunner.Object, mockUI.Object);
 
@@ -171,12 +177,12 @@ public class ConfigureGitUserStepTests
 
         // Simulate git config failure
         mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.name \"Test User\""))
-            .ReturnsAsync(new ProcessResult(1, "", "fatal: unable to write config"));
+            .ReturnsAsync(new ProcessResult(1, string.Empty, "fatal: unable to write config"));
 
         var step = new ConfigureGitUserStep(mockProcessRunner.Object, mockUI.Object);
 
         // Act & Assert
-        var ex = Assert.ThrowsAsync<InvalidOperationException>(async () => await step.ExecuteAsync());
+        var ex = Assert.ThrowsAsync<InvalidOperationException>(async () => await step.ExecuteAsync().ConfigureAwait(false));
         Assert.That(ex.Message, Does.Contain("Failed to set git user.name"));
     }
 

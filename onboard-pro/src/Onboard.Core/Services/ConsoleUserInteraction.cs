@@ -1,6 +1,10 @@
-using Onboard.Core.Abstractions;
+// <copyright file="ConsoleUserInteraction.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace Onboard.Core.Services;
+
+using Onboard.Core.Abstractions;
 
 /// <summary>
 /// Concrete implementation of IUserInteraction using System.Console.

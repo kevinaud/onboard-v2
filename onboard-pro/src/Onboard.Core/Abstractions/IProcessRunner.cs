@@ -1,6 +1,10 @@
-using Onboard.Core.Models;
+// <copyright file="IProcessRunner.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace Onboard.Core.Abstractions;
+
+using Onboard.Core.Models;
 
 /// <summary>
 /// An abstraction for running external processes.

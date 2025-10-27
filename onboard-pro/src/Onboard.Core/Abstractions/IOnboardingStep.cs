@@ -1,3 +1,7 @@
+// <copyright file="IOnboardingStep.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 namespace Onboard.Core.Abstractions;
 
 /// <summary>
@@ -6,7 +10,7 @@ namespace Onboard.Core.Abstractions;
 public interface IOnboardingStep
 {
     /// <summary>
-    /// User-friendly description for progress reporting.
+    /// Gets user-friendly description for progress reporting.
     /// </summary>
     string Description { get; }
 
@@ -19,5 +23,6 @@ public interface IOnboardingStep
     /// <summary>
     /// The action. This only runs if ShouldExecuteAsync() returns true.
     /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     Task ExecuteAsync();
 }

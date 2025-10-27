@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Change to the onboard-pro directory where the solution is located
+cd "$(git rev-parse --show-toplevel)/onboard-pro"
+
+# Verify formatting/styling per .editorconfig
+dotnet format --verify-no-changes
+# Build and fail on warnings (reinforced by Directory.Build.props)
+dotnet build -warnaserror

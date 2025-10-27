@@ -1,0 +1,24 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+jobs:
+  build-test-lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./onboard-pro
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+      - name: Restore
+        run: dotnet restore
+      - name: Format (verify)
+        run: dotnet format --verify-no-changes
+      - name: Build (fail on warnings)
+        run: dotnet build --configuration Release -warnaserror
+      - name: Test
+        run: dotnet test --configuration Release --no-build

@@ -1,43 +1,47 @@
-using Onboard.Core.Abstractions;
+// <copyright file="WslGuestOrchestrator.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace Onboard.Console.Orchestrators;
+
+using Onboard.Core.Abstractions;
 
 /// <summary>
 /// Orchestrator for WSL guest onboarding.
 /// </summary>
 public class WslGuestOrchestrator : IPlatformOrchestrator
 {
-    private readonly IUserInteraction _ui;
-    private readonly IEnumerable<IOnboardingStep> _steps;
+    private readonly IUserInteraction ui;
+    private readonly IEnumerable<IOnboardingStep> steps;
 
     public WslGuestOrchestrator(
         IUserInteraction ui,
         IOnboardingStep configureGitUserStep)
     {
-        _ui = ui;
-        _steps = new[] { configureGitUserStep };
+        this.ui = ui;
+        this.steps = new[] { configureGitUserStep };
     }
 
     public async Task ExecuteAsync()
     {
-        _ui.WriteHeader("Starting WSL Guest Onboarding...");
-        
-        foreach (var step in _steps)
+        this.ui.WriteHeader("Starting WSL Guest Onboarding...");
+
+        foreach (var step in this.steps)
         {
-            _ui.WriteLine($"Checking: {step.Description}");
-            
-            if (await step.ShouldExecuteAsync())
+            this.ui.WriteLine($"Checking: {step.Description}");
+
+            if (await step.ShouldExecuteAsync().ConfigureAwait(false))
             {
-                _ui.WriteLine($"Executing: {step.Description}");
-                await step.ExecuteAsync();
+                this.ui.WriteLine($"Executing: {step.Description}");
+                await step.ExecuteAsync().ConfigureAwait(false);
             }
             else
             {
-                _ui.WriteSuccess($"Already configured: {step.Description}");
+                this.ui.WriteSuccess($"Already configured: {step.Description}");
             }
         }
-        
-        _ui.WriteLine("");
-        _ui.WriteSuccess("WSL Guest onboarding complete!");
+
+        this.ui.WriteLine(string.Empty);
+        this.ui.WriteSuccess("WSL Guest onboarding complete!");
     }
 }

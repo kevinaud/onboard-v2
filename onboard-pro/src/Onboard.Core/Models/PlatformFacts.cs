@@ -1,3 +1,7 @@
+// <copyright file="PlatformFacts.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 namespace Onboard.Core.Models;
 
 /// <summary>
@@ -8,7 +12,7 @@ public enum OperatingSystem
     Windows,
     MacOs,
     Linux,
-    Unknown
+    Unknown,
 }
 
 /// <summary>
@@ -18,7 +22,7 @@ public enum Architecture
 {
     X64,
     Arm64,
-    Unknown
+    Unknown,
 }
 
 /// <summary>
@@ -29,5 +33,4 @@ public record PlatformFacts(
     OperatingSystem OS,
     Architecture Arch,
     bool IsWsl,
-    string HomeDirectory
-);
+    string HomeDirectory);
