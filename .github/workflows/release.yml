@@ -14,15 +14,32 @@ permissions:
   contents: write
 
 jobs:
-  build-and-publish-windows:
-    runs-on: windows-latest
+  publish:
+    name: Publish ${{ matrix.rid }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - rid: win-x64
+            os: windows-latest
+            asset_name: Onboard-win-x64.exe
+            artifact_name: onboard-win-x64
+          - rid: osx-x64
+            os: macos-13
+            asset_name: Onboard-osx-x64
+            artifact_name: onboard-osx-x64
+          - rid: osx-arm64
+            os: macos-14
+            asset_name: Onboard-osx-arm64
+            artifact_name: onboard-osx-arm64
+          - rid: linux-x64
+            os: ubuntu-latest
+            asset_name: Onboard-linux-x64
+            artifact_name: onboard-linux-x64
     env:
-      ARTIFACT_NAME: Onboard-win-x64.exe
-      OUTPUT_DIR: artifacts/win-x64
-    defaults:
-      run:
-        working-directory: ./onboard-pro
-        shell: pwsh
+      PROJECT_DIR: ./onboard-pro
+      OUTPUT_DIR: artifacts/${{ matrix.rid }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,37 +51,72 @@ jobs:
 
       - name: Restore
         run: dotnet restore
+        working-directory: ${{ env.PROJECT_DIR }}
 
-      - name: Publish Windows binary
+      - name: Publish binary (Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        id: publish_windows
+        shell: pwsh
+        working-directory: ${{ env.PROJECT_DIR }}
         run: |
-          $outPath = Join-Path -Path ".." -ChildPath $env:OUTPUT_DIR
-          if (Test-Path $outPath) {
-            Remove-Item $outPath -Recurse -Force
+          $rootPath = Resolve-Path '..'
+          $outPath = Join-Path -Path $rootPath -ChildPath '${{ env.OUTPUT_DIR }}'
+          if (Test-Path -Path $outPath) {
+            Remove-Item -Path $outPath -Recurse -Force
           }
           dotnet publish src/Onboard.Console/Onboard.Console.csproj `
             -c Release `
-            -r win-x64 `
+            -r ${{ matrix.rid }} `
             --self-contained true `
             -p:PublishSingleFile=true `
             -p:IncludeNativeLibrariesForSelfExtract=true `
             -p:PublishTrimmed=false `
             -o $outPath
-          $publishedExe = Join-Path $outPath 'Onboard.Console.exe'
-          if (-not (Test-Path $publishedExe)) {
+          $publishedExe = Join-Path -Path $outPath -ChildPath 'Onboard.Console.exe'
+          if (-not (Test-Path -Path $publishedExe)) {
             throw "Expected publish output at $publishedExe"
           }
-          Copy-Item $publishedExe (Join-Path $outPath $env:ARTIFACT_NAME)
+          $assetPath = Join-Path -Path $outPath -ChildPath '${{ matrix.asset_name }}'
+          Copy-Item -Path $publishedExe -Destination $assetPath -Force
+          "asset-path=$assetPath" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Publish binary (Unix)
+        if: ${{ matrix.os != 'windows-latest' }}
+        id: publish_unix
+        shell: bash
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: |
+          set -euo pipefail
+          out_dir="../${{ env.OUTPUT_DIR }}"
+          rm -rf "$out_dir"
+          dotnet publish src/Onboard.Console/Onboard.Console.csproj \
+            -c Release \
+            -r ${{ matrix.rid }} \
+            --self-contained true \
+            -p:PublishSingleFile=true \
+            -p:IncludeNativeLibrariesForSelfExtract=true \
+            -p:PublishTrimmed=false \
+            -o "$out_dir"
+          published="$out_dir/Onboard.Console"
+          if [[ ! -f "$published" ]]; then
+            echo "Expected publish output at $published" >&2
+            exit 1
+          fi
+          asset_path="$out_dir/${{ matrix.asset_name }}"
+          mv "$published" "$asset_path"
+          chmod +x "$asset_path"
+          echo "asset-path=$asset_path" >> "$GITHUB_OUTPUT"
 
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: windows-executable
-          path: ${{ env.OUTPUT_DIR }}/${{ env.ARTIFACT_NAME }}
+          name: ${{ matrix.artifact_name }}
+          path: ${{ steps.publish_windows.outputs['asset-path'] || steps.publish_unix.outputs['asset-path'] }}
           if-no-files-found: error
 
       - name: Publish GitHub release asset
-        if: startsWith(github.ref, 'refs/tags/')
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ env.OUTPUT_DIR }}/${{ env.ARTIFACT_NAME }}
-          generate_release_notes: true
+          files: ${{ steps.publish_windows.outputs['asset-path'] || steps.publish_unix.outputs['asset-path'] }}
+          generate_release_notes: ${{ matrix.rid == 'win-x64' }}
