@@ -12,6 +12,7 @@ using Onboard.Core.Services;
 using Onboard.Core.Steps.PlatformAware;
 using Onboard.Core.Steps.Shared;
 using Onboard.Core.Steps.Windows;
+using Onboard.Core.Steps.WslGuest;
 
 using OS = Onboard.Core.Models.OperatingSystem;
 
@@ -55,6 +56,11 @@ public static class Program
                 services.AddTransient<EnableWslFeaturesStep>();
                 services.AddTransient<InstallGitForWindowsStep>();
                 services.AddTransient<InstallDockerDesktopStep>();
+
+                // WSL Guest
+                services.AddTransient<AptUpdateStep>();
+                services.AddTransient<InstallWslPrerequisitesStep>();
+                services.AddTransient<ConfigureWslGitCredentialHelperStep>();
             })
             .Build();
 
