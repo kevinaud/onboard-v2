@@ -14,6 +14,26 @@ if (-not [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Syst
   throw 'setup.ps1 currently supports Windows hosts only.'
 }
 
+function Set-ExecutionPolicyBypass {
+  try {
+    $currentPolicy = Get-ExecutionPolicy -Scope Process
+  } catch {
+    return
+  }
+
+  if ($currentPolicy -in @('Bypass', 'Unrestricted')) {
+    return
+  }
+
+  try {
+    Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force | Out-Null
+  } catch {
+    Write-Warning 'Unable to relax the execution policy automatically. Re-run with "powershell -ExecutionPolicy Bypass -File .\setup.ps1" if you encounter policy errors.'
+  }
+}
+
+Set-ExecutionPolicyBypass
+
 $assetName = 'Onboard-win-x64.exe'
 $script:DownloadPath = $null
 
@@ -28,7 +48,7 @@ function Resolve-RepositorySlug {
     $candidate = $env:GITHUB_REPOSITORY
   }
   if ([string]::IsNullOrWhiteSpace($candidate)) {
-    $candidate = 'github/onboard-pro'
+    $candidate = 'kevinaud/onboard-v2'
     Write-Warning "Defaulting repository slug to '$candidate'. Override with -Repository if needed."
   }
 
