@@ -9,8 +9,10 @@ using Onboard.Console.Orchestrators;
 using Onboard.Core.Abstractions;
 using Onboard.Core.Models;
 using Onboard.Core.Services;
+using Onboard.Core.Steps.MacOs;
 using Onboard.Core.Steps.PlatformAware;
 using Onboard.Core.Steps.Shared;
+using Onboard.Core.Steps.Ubuntu;
 using Onboard.Core.Steps.Windows;
 using Onboard.Core.Steps.WslGuest;
 
@@ -57,8 +59,15 @@ public static class Program
                 services.AddTransient<InstallGitForWindowsStep>();
                 services.AddTransient<InstallDockerDesktopStep>();
 
-                // WSL Guest
+                // macOS
+                services.AddTransient<InstallHomebrewStep>();
+                services.AddTransient<InstallBrewPackagesStep>();
+
+                // Linux
                 services.AddTransient<AptUpdateStep>();
+                services.AddTransient<InstallAptPackagesStep>();
+
+                // WSL Guest
                 services.AddTransient<InstallWslPrerequisitesStep>();
                 services.AddTransient<ConfigureWslGitCredentialHelperStep>();
             })
