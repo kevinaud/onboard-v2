@@ -2,7 +2,9 @@ namespace Onboard.Core.Tests.Steps.Windows;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 using Moq;
@@ -18,12 +20,40 @@ public class InstallDockerDesktopStepTests
 {
     private Mock<IProcessRunner> processRunner = null!;
     private Mock<IUserInteraction> userInteraction = null!;
+    private string? originalAppData;
+    private string tempAppDataPath = null!;
 
     [SetUp]
     public void SetUp()
     {
         processRunner = new Mock<IProcessRunner>(MockBehavior.Strict);
         userInteraction = new Mock<IUserInteraction>(MockBehavior.Strict);
+        originalAppData = Environment.GetEnvironmentVariable("APPDATA");
+        tempAppDataPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(tempAppDataPath);
+        Environment.SetEnvironmentVariable("APPDATA", tempAppDataPath);
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        Environment.SetEnvironmentVariable("APPDATA", originalAppData);
+
+        if (!string.IsNullOrEmpty(tempAppDataPath) && Directory.Exists(tempAppDataPath))
+        {
+            try
+            {
+                Directory.Delete(tempAppDataPath, true);
+            }
+            catch (IOException)
+            {
+                // Best-effort cleanup for test artifacts.
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // Ignore cleanup issues on shared CI environments.
+            }
+        }
     }
 
     [Test]
@@ -88,7 +118,24 @@ public class InstallDockerDesktopStepTests
         var step = CreateStep();
         await step.ExecuteAsync().ConfigureAwait(false);
 
-        Assert.That(messages.Any(message => message.Contains("WSL integration", StringComparison.OrdinalIgnoreCase)), Is.True);
+        string settingsPath = Path.Combine(tempAppDataPath, "Docker", "settings-store.json");
+        Assert.That(File.Exists(settingsPath), Is.True, "Expected Docker settings file to be created.");
+
+        string json = await File.ReadAllTextAsync(settingsPath).ConfigureAwait(false);
+        using JsonDocument document = JsonDocument.Parse(json);
+        string?[] distros;
+
+        if (document.RootElement.TryGetProperty("IntegratedWslDistros", out JsonElement array))
+        {
+            distros = array.EnumerateArray().Select(element => element.GetString()).ToArray();
+        }
+        else
+        {
+            distros = Array.Empty<string?>();
+        }
+
+        Assert.That(distros, Does.Contain("Ubuntu-22.04"));
+        Assert.That(messages.Any(message => message.Contains("pre-configured", StringComparison.OrdinalIgnoreCase)), Is.True);
         processRunner.VerifyAll();
         userInteraction.VerifyAll();
     }
