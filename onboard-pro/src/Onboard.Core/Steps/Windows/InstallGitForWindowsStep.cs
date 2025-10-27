@@ -4,22 +4,46 @@
 
 namespace Onboard.Core.Steps.Windows;
 
+using System;
+using System.Threading.Tasks;
+
 using Onboard.Core.Abstractions;
 
 /// <summary>
-/// Placeholder step for installing Git for Windows.
+/// Ensures Git for Windows is installed via winget.
 /// </summary>
 public class InstallGitForWindowsStep : IOnboardingStep
 {
-    public string Description => "Install Git for Windows";
+    private const string WingetCommand = "install --id Git.Git -e --source winget";
 
-    public Task<bool> ShouldExecuteAsync()
+    private readonly IProcessRunner processRunner;
+    private readonly IUserInteraction userInteraction;
+
+    public InstallGitForWindowsStep(IProcessRunner processRunner, IUserInteraction userInteraction)
     {
-        return Task.FromResult(false);
+        this.processRunner = processRunner;
+        this.userInteraction = userInteraction;
     }
 
-    public Task ExecuteAsync()
+    public string Description => "Install Git for Windows";
+
+    public async Task<bool> ShouldExecuteAsync()
     {
-        return Task.CompletedTask;
+        var result = await processRunner.RunAsync("where", "git.exe").ConfigureAwait(false);
+        return !result.IsSuccess;
+    }
+
+    public async Task ExecuteAsync()
+    {
+        var result = await processRunner.RunAsync("winget", WingetCommand).ConfigureAwait(false);
+        if (!result.IsSuccess)
+        {
+            string message = string.IsNullOrWhiteSpace(result.StandardError)
+                ? "winget failed to install Git for Windows."
+                : result.StandardError.Trim();
+            throw new InvalidOperationException(message);
+        }
+
+        userInteraction.WriteSuccess("Git for Windows installed via winget.");
     }
 }
