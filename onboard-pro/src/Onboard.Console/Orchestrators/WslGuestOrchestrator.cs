@@ -7,6 +7,7 @@ namespace Onboard.Console.Orchestrators;
 using Onboard.Core.Abstractions;
 using Onboard.Core.Steps.PlatformAware;
 using Onboard.Core.Steps.Shared;
+using Onboard.Core.Steps.WslGuest;
 
 /// <summary>
 /// Orchestrator for WSL guest onboarding.
@@ -18,13 +19,19 @@ public class WslGuestOrchestrator : IPlatformOrchestrator
 
     public WslGuestOrchestrator(
         IUserInteraction ui,
+        AptUpdateStep aptUpdateStep,
+        InstallWslPrerequisitesStep installWslPrerequisitesStep,
         InstallVsCodeStep installVsCodeStep,
+        ConfigureWslGitCredentialHelperStep configureWslGitCredentialHelperStep,
         ConfigureGitUserStep configureGitUserStep)
     {
         this.ui = ui;
         this.steps = new IOnboardingStep[]
         {
+            aptUpdateStep,
+            installWslPrerequisitesStep,
             installVsCodeStep,
+            configureWslGitCredentialHelperStep,
             configureGitUserStep,
         };
     }
