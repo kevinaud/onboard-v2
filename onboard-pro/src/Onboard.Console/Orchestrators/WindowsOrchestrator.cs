@@ -7,6 +7,7 @@ namespace Onboard.Console.Orchestrators;
 using Onboard.Core.Abstractions;
 using Onboard.Core.Steps.PlatformAware;
 using Onboard.Core.Steps.Shared;
+using Onboard.Core.Steps.Windows;
 
 /// <summary>
 /// Orchestrator for Windows host onboarding.
@@ -18,13 +19,19 @@ public class WindowsOrchestrator : IPlatformOrchestrator
 
     public WindowsOrchestrator(
         IUserInteraction ui,
+        EnableWslFeaturesStep enableWslFeaturesStep,
+        InstallGitForWindowsStep installGitForWindowsStep,
         InstallVsCodeStep installVsCodeStep,
+        InstallDockerDesktopStep installDockerDesktopStep,
         ConfigureGitUserStep configureGitUserStep)
     {
         this.ui = ui;
         this.steps = new IOnboardingStep[]
         {
+            enableWslFeaturesStep,
+            installGitForWindowsStep,
             installVsCodeStep,
+            installDockerDesktopStep,
             configureGitUserStep,
         };
     }
