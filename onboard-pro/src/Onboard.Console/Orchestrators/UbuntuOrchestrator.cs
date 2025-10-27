@@ -23,7 +23,8 @@ public class UbuntuOrchestrator : IPlatformOrchestrator
         AptUpdateStep aptUpdateStep,
         InstallAptPackagesStep installAptPackagesStep,
         InstallVsCodeStep installVsCodeStep,
-        ConfigureGitUserStep configureGitUserStep)
+        ConfigureGitUserStep configureGitUserStep,
+        CloneProjectRepoStep cloneProjectRepoStep)
     {
         this.ui = ui;
         this.steps = new IOnboardingStep[]
@@ -32,6 +33,7 @@ public class UbuntuOrchestrator : IPlatformOrchestrator
             installAptPackagesStep,
             installVsCodeStep,
             configureGitUserStep,
+            cloneProjectRepoStep,
         };
     }
 

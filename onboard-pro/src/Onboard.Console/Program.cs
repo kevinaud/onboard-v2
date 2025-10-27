@@ -36,6 +36,7 @@ public static class Program
                 services.AddSingleton<IProcessRunner, ProcessRunner>();
                 services.AddSingleton<IUserInteraction, ConsoleUserInteraction>();
                 services.AddSingleton<IPlatformDetector, PlatformDetector>();
+                services.AddSingleton<IFileSystem, FileSystem>();
 
                 // Register PlatformFacts by invoking the detector once at startup
                 services.AddSingleton(provider =>
@@ -50,6 +51,7 @@ public static class Program
                 // Register all Onboarding Steps
                 // Shared
                 services.AddTransient<ConfigureGitUserStep>();
+                services.AddTransient<CloneProjectRepoStep>();
 
                 // Platform-Aware
                 services.AddTransient<InstallVsCodeStep>();

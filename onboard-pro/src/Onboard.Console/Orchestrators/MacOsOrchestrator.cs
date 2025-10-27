@@ -22,7 +22,8 @@ public class MacOsOrchestrator : IPlatformOrchestrator
         InstallHomebrewStep installHomebrewStep,
         InstallBrewPackagesStep installBrewPackagesStep,
         InstallVsCodeStep installVsCodeStep,
-        ConfigureGitUserStep configureGitUserStep)
+        ConfigureGitUserStep configureGitUserStep,
+        CloneProjectRepoStep cloneProjectRepoStep)
     {
         this.ui = ui;
         this.steps = new IOnboardingStep[]
@@ -31,6 +32,7 @@ public class MacOsOrchestrator : IPlatformOrchestrator
             installBrewPackagesStep,
             installVsCodeStep,
             configureGitUserStep,
+            cloneProjectRepoStep,
         };
     }
 
