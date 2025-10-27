@@ -20,8 +20,11 @@ public static class Program
     public static async Task Main(string[] args)
     {
         // 1. Parse for our custom mode flag
-        bool isWslGuestMode = args.Contains("--mode", StringComparer.Ordinal) &&
-string.Equals(args.ElementAtOrDefault(Array.IndexOf(args, "--mode") + 1), "wsl-guest", StringComparison.Ordinal);
+        if (!CommandLineOptionsParser.TryParseMode(args, out bool isWslGuestMode, out string? modeParseError))
+        {
+            new ConsoleUserInteraction().WriteError(modeParseError ?? "Invalid --mode argument.");
+            return;
+        }
 
         var host = Host.CreateDefaultBuilder(args)
             .ConfigureServices((context, services) =>
@@ -49,7 +52,9 @@ string.Equals(args.ElementAtOrDefault(Array.IndexOf(args, "--mode") + 1), "wsl-g
                 services.AddTransient<InstallVsCodeStep>();
 
                 // Windows-Specific
+                services.AddTransient<EnableWslFeaturesStep>();
                 services.AddTransient<InstallGitForWindowsStep>();
+                services.AddTransient<InstallDockerDesktopStep>();
             })
             .Build();
 
