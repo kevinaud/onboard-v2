@@ -1,0 +1,987 @@
+{
+  "projects": [
+    {
+      "id": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "name": "Onboard Pro - Developer Onboarding Tool",
+      "description": "A cross-platform command-line developer onboarding tool written in C# that automates the setup of consistent development environments across Windows, macOS, Ubuntu, and WSL. The tool uses dependency injection for testability, implements platform-specific orchestrators, and provides idempotent onboarding steps. Migrating from a monolithic PowerShell script to a maintainable, testable, and extensible C# architecture.",
+      "createdAt": "2025-10-27T16:11:13.102Z",
+      "updatedAt": "2025-10-27T16:11:13.102Z"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "040cad8a-cfda-4097-bfe0-8253308ec041",
+      "name": "Iteration 1: Project Scaffolding & Foundational Setup",
+      "details": "Establish the complete directory structure, solution, and projects. Configure the development environment with .NET 9, create all project references, install required NuGet packages, and set up the dev container.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "completed": false,
+      "createdAt": "2025-10-27T16:11:40.555Z",
+      "updatedAt": "2025-10-27T16:11:40.555Z",
+      "dependsOn": [],
+      "priority": 10,
+      "complexity": 5,
+      "status": "pending",
+      "tags": [
+        "iteration",
+        "iter-1",
+        "scaffolding"
+      ],
+      "estimatedHours": 4,
+      "level": 0
+    },
+    {
+      "id": "923a4987-326f-42f1-933a-360db9efd48f",
+      "name": "Iteration 2: Core Abstractions & Services",
+      "details": "Define all core interfaces and models, and implement the concrete services for external interactions. Build the testable foundation with IProcessRunner, IUserInteraction, IPlatformDetector, PlatformFacts, and ProcessResult models.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "completed": false,
+      "createdAt": "2025-10-27T16:11:40.603Z",
+      "updatedAt": "2025-10-27T16:15:08.618Z",
+      "dependsOn": [
+        "040cad8a-cfda-4097-bfe0-8253308ec041"
+      ],
+      "priority": 9,
+      "complexity": 7,
+      "status": "pending",
+      "tags": [
+        "iteration",
+        "iter-2",
+        "architecture"
+      ],
+      "estimatedHours": 6,
+      "level": 0
+    },
+    {
+      "id": "e130571c-7f0c-4208-afcb-6479f0645034",
+      "name": "Iteration 3: Dependency Injection & The Composition Root",
+      "details": "Wire all services together in Program.cs and implement the orchestrator selection logic. Create placeholder orchestrators and steps to validate DI container configuration and platform detection works correctly.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "completed": false,
+      "createdAt": "2025-10-27T16:11:40.648Z",
+      "updatedAt": "2025-10-27T16:15:08.705Z",
+      "dependsOn": [
+        "923a4987-326f-42f1-933a-360db9efd48f"
+      ],
+      "priority": 8,
+      "complexity": 6,
+      "status": "pending",
+      "tags": [
+        "iteration",
+        "iter-3",
+        "dependency-injection"
+      ],
+      "estimatedHours": 5,
+      "level": 0
+    },
+    {
+      "id": "c03799aa-e16d-4cf7-b938-9da60a9bea90",
+      "name": "Iteration 4: The First Onboarding Step (Git Identity)",
+      "details": "Implement a complete, shared, and unit-tested onboarding step. Create ConfigureGitUserStep with full test coverage, demonstrating the idempotency pattern and TDD approach.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "completed": false,
+      "createdAt": "2025-10-27T16:11:40.697Z",
+      "updatedAt": "2025-10-27T16:15:08.788Z",
+      "dependsOn": [
+        "e130571c-7f0c-4208-afcb-6479f0645034"
+      ],
+      "priority": 7,
+      "complexity": 5,
+      "status": "pending",
+      "tags": [
+        "iteration",
+        "iter-4",
+        "testing",
+        "git"
+      ],
+      "estimatedHours": 4,
+      "level": 0
+    },
+    {
+      "id": "42b7da10-e236-49ac-9889-a8ed09302b0c",
+      "name": "Iteration 5: The First Platform-Aware Step (Install VS Code)",
+      "details": "Implement the PlatformAwareStep pattern to handle OS-specific logic within a single step. Create InstallVsCodeStep with Windows (winget), macOS (brew), and Linux (apt) installation strategies.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "completed": false,
+      "createdAt": "2025-10-27T16:11:40.740Z",
+      "updatedAt": "2025-10-27T16:15:08.871Z",
+      "dependsOn": [
+        "c03799aa-e16d-4cf7-b938-9da60a9bea90"
+      ],
+      "priority": 6,
+      "complexity": 7,
+      "status": "pending",
+      "tags": [
+        "iteration",
+        "iter-5",
+        "cross-platform",
+        "vscode"
+      ],
+      "estimatedHours": 6,
+      "level": 0
+    },
+    {
+      "id": "ab3b8c27-7fbb-4596-b52d-80d3dc86fd6b",
+      "name": "Iteration 6: Windows Host Onboarding",
+      "details": "Fully implement the WindowsOrchestrator with all required steps: EnableWslFeaturesStep, InstallGitForWindowsStep, InstallVsCodeStep, InstallDockerDesktopStep, and ConfigureGitUserStep. Handle elevated permissions requirements.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "completed": false,
+      "createdAt": "2025-10-27T16:11:40.784Z",
+      "updatedAt": "2025-10-27T16:15:08.958Z",
+      "dependsOn": [
+        "42b7da10-e236-49ac-9889-a8ed09302b0c"
+      ],
+      "priority": 5,
+      "complexity": 8,
+      "status": "pending",
+      "tags": [
+        "iteration",
+        "iter-6",
+        "windows"
+      ],
+      "estimatedHours": 8,
+      "level": 0
+    },
+    {
+      "id": "1744d6ba-24d4-4a79-82cd-85cb22849b89",
+      "name": "Iteration 7: WSL Guest Onboarding",
+      "details": "Fully implement the WslGuestOrchestrator and the --mode wsl-guest logic. Create AptUpdateStep, InstallWslPrerequisitesStep, ConfigureWslGitCredentialHelperStep to configure the WSL guest environment.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "completed": false,
+      "createdAt": "2025-10-27T16:12:02.050Z",
+      "updatedAt": "2025-10-27T16:15:09.075Z",
+      "dependsOn": [
+        "42b7da10-e236-49ac-9889-a8ed09302b0c"
+      ],
+      "priority": 4,
+      "complexity": 8,
+      "status": "pending",
+      "tags": [
+        "iteration",
+        "iter-7",
+        "wsl"
+      ],
+      "estimatedHours": 7,
+      "level": 0
+    },
+    {
+      "id": "0937ef00-a8fd-4bf3-b024-183bb31ef0f4",
+      "name": "Iteration 8: macOS & Ubuntu Onboarding",
+      "details": "Implement the orchestrators for native macOS and Ubuntu. Create InstallHomebrewStep, InstallBrewPackagesStep for macOS, and InstallAptPackagesStep for Ubuntu. Configure both orchestrators with their respective steps.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "completed": false,
+      "createdAt": "2025-10-27T16:12:02.098Z",
+      "updatedAt": "2025-10-27T16:15:09.163Z",
+      "dependsOn": [
+        "42b7da10-e236-49ac-9889-a8ed09302b0c"
+      ],
+      "priority": 3,
+      "complexity": 7,
+      "status": "pending",
+      "tags": [
+        "iteration",
+        "iter-8",
+        "macos",
+        "ubuntu"
+      ],
+      "estimatedHours": 6,
+      "level": 0
+    },
+    {
+      "id": "2083a46e-3ab8-424a-876e-d7ab8f6966f9",
+      "name": "Iteration 9: Project Cloning Step",
+      "details": "Create the final major onboarding step to clone the project repository. Implement CloneProjectRepoStep with logic to clone or update the repository, handling edge cases like existing non-Git directories.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "completed": false,
+      "createdAt": "2025-10-27T16:12:02.150Z",
+      "updatedAt": "2025-10-27T16:15:09.250Z",
+      "dependsOn": [
+        "ab3b8c27-7fbb-4596-b52d-80d3dc86fd6b",
+        "1744d6ba-24d4-4a79-82cd-85cb22849b89",
+        "0937ef00-a8fd-4bf3-b024-183bb31ef0f4"
+      ],
+      "priority": 2,
+      "complexity": 6,
+      "status": "pending",
+      "tags": [
+        "iteration",
+        "iter-9",
+        "git",
+        "repository"
+      ],
+      "estimatedHours": 5,
+      "level": 0
+    },
+    {
+      "id": "b078af20-c7b9-4714-be77-73be6fcb7fe8",
+      "name": "Iteration 10: Bootstrapper Scripts & Release Workflow",
+      "details": "Create the user-facing entry points and the automated build pipeline. Implement setup.sh and setup.ps1 bootstrapper scripts. Create GitHub Actions workflow for multi-platform release builds with matrix strategy.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "completed": false,
+      "createdAt": "2025-10-27T16:12:02.206Z",
+      "updatedAt": "2025-10-27T16:15:09.346Z",
+      "dependsOn": [
+        "2083a46e-3ab8-424a-876e-d7ab8f6966f9"
+      ],
+      "priority": 1,
+      "complexity": 7,
+      "status": "pending",
+      "tags": [
+        "iteration",
+        "iter-10",
+        "deployment",
+        "ci-cd"
+      ],
+      "estimatedHours": 6,
+      "level": 0
+    },
+    {
+      "id": "438bc82b-a297-446d-8c48-16f1ac8435c9",
+      "name": "Iteration 11: Final Documentation and Polish",
+      "details": "Finalize the project with user-facing documentation and a review of all output. Create comprehensive README.md with platform-specific instructions, review all user-facing text, and ensure error handling is robust.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "completed": false,
+      "createdAt": "2025-10-27T16:12:02.269Z",
+      "updatedAt": "2025-10-27T16:15:09.440Z",
+      "dependsOn": [
+        "b078af20-c7b9-4714-be77-73be6fcb7fe8"
+      ],
+      "priority": 1,
+      "complexity": 4,
+      "status": "pending",
+      "tags": [
+        "iteration",
+        "iter-11",
+        "documentation"
+      ],
+      "estimatedHours": 4,
+      "level": 0
+    },
+    {
+      "id": "a6910ff3-cb41-4477-9fb7-034ff4c339d4",
+      "name": "Create the Root Directory and Solution",
+      "details": "Create onboard-pro directory and initialize .NET solution. Run: dotnet new sln -n Onboard",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "040cad8a-cfda-4097-bfe0-8253308ec041",
+      "completed": false,
+      "createdAt": "2025-10-27T16:12:30.892Z",
+      "updatedAt": "2025-10-27T16:12:30.892Z",
+      "dependsOn": [],
+      "priority": 10,
+      "complexity": 3,
+      "status": "pending",
+      "tags": [
+        "iter-1",
+        "dotnet",
+        "setup"
+      ],
+      "estimatedHours": 0.5,
+      "level": 1
+    },
+    {
+      "id": "91c8bcb2-8ecd-4cda-8277-09835ad9858b",
+      "name": "Initialize .NET Projects",
+      "details": "Create all three projects: Onboard.Console (console app), Onboard.Core (class library), and Onboard.Core.Tests (nunit test project) in their respective directories.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "040cad8a-cfda-4097-bfe0-8253308ec041",
+      "completed": false,
+      "createdAt": "2025-10-27T16:12:30.946Z",
+      "updatedAt": "2025-10-27T16:12:30.946Z",
+      "dependsOn": [],
+      "priority": 10,
+      "complexity": 4,
+      "status": "pending",
+      "tags": [
+        "iter-1",
+        "dotnet",
+        "projects"
+      ],
+      "estimatedHours": 1,
+      "level": 1
+    },
+    {
+      "id": "d10bd1b8-c04d-45fb-a01c-1db1fd5fc444",
+      "name": "Link Projects to Solution",
+      "details": "Add all three projects to the solution using dotnet sln add commands.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "040cad8a-cfda-4097-bfe0-8253308ec041",
+      "completed": false,
+      "createdAt": "2025-10-27T16:12:30.998Z",
+      "updatedAt": "2025-10-27T16:12:30.998Z",
+      "dependsOn": [],
+      "priority": 10,
+      "complexity": 2,
+      "status": "pending",
+      "tags": [
+        "iter-1",
+        "dotnet"
+      ],
+      "estimatedHours": 0.5,
+      "level": 1
+    },
+    {
+      "id": "d5a54f32-fbd7-48a9-a6c7-43ca0203dadd",
+      "name": "Establish Project References",
+      "details": "Set up project references: Onboard.Console references Onboard.Core, and Onboard.Core.Tests references Onboard.Core.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "040cad8a-cfda-4097-bfe0-8253308ec041",
+      "completed": false,
+      "createdAt": "2025-10-27T16:12:31.052Z",
+      "updatedAt": "2025-10-27T16:12:31.052Z",
+      "dependsOn": [],
+      "priority": 10,
+      "complexity": 2,
+      "status": "pending",
+      "tags": [
+        "iter-1",
+        "dotnet"
+      ],
+      "estimatedHours": 0.5,
+      "level": 1
+    },
+    {
+      "id": "fb0f1eee-8769-47c4-9fd0-5244ba5cc7e9",
+      "name": "Install NuGet Packages",
+      "details": "Install Microsoft.Extensions.Hosting for Onboard.Console and Moq for Onboard.Core.Tests using dotnet add package commands.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "040cad8a-cfda-4097-bfe0-8253308ec041",
+      "completed": false,
+      "createdAt": "2025-10-27T16:12:31.135Z",
+      "updatedAt": "2025-10-27T16:12:31.135Z",
+      "dependsOn": [],
+      "priority": 10,
+      "complexity": 3,
+      "status": "pending",
+      "tags": [
+        "iter-1",
+        "nuget"
+      ],
+      "estimatedHours": 0.5,
+      "level": 1
+    },
+    {
+      "id": "2c77271b-12c3-4d98-bc38-8b94324011cb",
+      "name": "Create Directory Structure",
+      "details": "Create complete directory structure: Orchestrators/, Abstractions/, Models/, Services/, Steps/ with subdirectories (Shared/, PlatformAware/, Windows/, WslGuest/, MacOs/).",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "040cad8a-cfda-4097-bfe0-8253308ec041",
+      "completed": false,
+      "createdAt": "2025-10-27T16:12:31.188Z",
+      "updatedAt": "2025-10-27T16:12:31.188Z",
+      "dependsOn": [],
+      "priority": 9,
+      "complexity": 3,
+      "status": "pending",
+      "tags": [
+        "iter-1",
+        "filesystem"
+      ],
+      "estimatedHours": 0.5,
+      "level": 1
+    },
+    {
+      "id": "943c57c6-4602-45c0-8276-09652f5174ad",
+      "name": "Configure Dev Container",
+      "details": "Create .devcontainer/devcontainer.json configured to use mcr.microsoft.com/devcontainers/dotnet:1-9.0-bookworm image with proper extensions and settings.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "040cad8a-cfda-4097-bfe0-8253308ec041",
+      "completed": false,
+      "createdAt": "2025-10-27T16:12:31.243Z",
+      "updatedAt": "2025-10-27T16:12:31.243Z",
+      "dependsOn": [],
+      "priority": 8,
+      "complexity": 4,
+      "status": "pending",
+      "tags": [
+        "iter-1",
+        "devcontainer"
+      ],
+      "estimatedHours": 1,
+      "level": 1
+    },
+    {
+      "id": "871e6869-65cd-4973-8381-904f8d9cab13",
+      "name": "Define Models",
+      "details": "Create ProcessResult and PlatformFacts records in Models/ folder with all required properties and enums (OperatingSystem, Architecture).",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "923a4987-326f-42f1-933a-360db9efd48f",
+      "completed": false,
+      "createdAt": "2025-10-27T16:12:59.081Z",
+      "updatedAt": "2025-10-27T16:12:59.081Z",
+      "dependsOn": [],
+      "priority": 9,
+      "complexity": 4,
+      "status": "pending",
+      "tags": [
+        "iter-2",
+        "models"
+      ],
+      "estimatedHours": 1,
+      "level": 1
+    },
+    {
+      "id": "782fd78d-396a-421f-94e1-42905c3208b6",
+      "name": "Define Abstractions (Interfaces)",
+      "details": "Create all core interfaces: IProcessRunner, IUserInteraction, IPlatformDetector, IOnboardingStep, IPlatformOrchestrator in Abstractions/ folder.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "923a4987-326f-42f1-933a-360db9efd48f",
+      "completed": false,
+      "createdAt": "2025-10-27T16:12:59.151Z",
+      "updatedAt": "2025-10-27T16:12:59.151Z",
+      "dependsOn": [],
+      "priority": 9,
+      "complexity": 5,
+      "status": "pending",
+      "tags": [
+        "iter-2",
+        "interfaces",
+        "architecture"
+      ],
+      "estimatedHours": 2,
+      "level": 1
+    },
+    {
+      "id": "3b9a6ce6-1ce4-42a4-8c1b-58a36785b5cf",
+      "name": "Implement Concrete Services",
+      "details": "Implement ProcessRunner using System.Diagnostics.Process, ConsoleUserInteraction with colored output, and PlatformDetector using RuntimeInformation and WSL environment variable detection.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "923a4987-326f-42f1-933a-360db9efd48f",
+      "completed": false,
+      "createdAt": "2025-10-27T16:12:59.211Z",
+      "updatedAt": "2025-10-27T16:12:59.211Z",
+      "dependsOn": [],
+      "priority": 9,
+      "complexity": 6,
+      "status": "pending",
+      "tags": [
+        "iter-2",
+        "services",
+        "implementation"
+      ],
+      "estimatedHours": 3,
+      "level": 1
+    },
+    {
+      "id": "c1ef2073-f508-4005-9dad-16e86409efc7",
+      "name": "Implement Program.cs with DI",
+      "details": "Replace Program.cs with DI configuration, register all services, create placeholder orchestrators (WindowsOrchestrator, MacOsOrchestrator, UbuntuOrchestrator, WslGuestOrchestrator), and implement platform-based orchestrator selection.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "e130571c-7f0c-4208-afcb-6479f0645034",
+      "completed": false,
+      "createdAt": "2025-10-27T16:12:59.279Z",
+      "updatedAt": "2025-10-27T16:12:59.279Z",
+      "dependsOn": [],
+      "priority": 8,
+      "complexity": 5,
+      "status": "pending",
+      "tags": [
+        "iter-3",
+        "di",
+        "composition-root"
+      ],
+      "estimatedHours": 3,
+      "level": 1
+    },
+    {
+      "id": "81e007a4-252d-4312-ab42-0a8aa31bbc3f",
+      "name": "Create Placeholder Orchestrators",
+      "details": "Create empty placeholder orchestrator classes with empty ExecuteAsync methods to validate DI registration works correctly.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "e130571c-7f0c-4208-afcb-6479f0645034",
+      "completed": false,
+      "createdAt": "2025-10-27T16:12:59.341Z",
+      "updatedAt": "2025-10-27T16:12:59.341Z",
+      "dependsOn": [],
+      "priority": 8,
+      "complexity": 4,
+      "status": "pending",
+      "tags": [
+        "iter-3",
+        "orchestrators"
+      ],
+      "estimatedHours": 1,
+      "level": 1
+    },
+    {
+      "id": "8485f75e-1b54-4a83-a457-aa7ae6db7ee7",
+      "name": "Test Platform Detection and Orchestrator Selection",
+      "details": "Test the application runs correctly on current platform, detects OS/architecture, selects appropriate orchestrator, and exits gracefully.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "e130571c-7f0c-4208-afcb-6479f0645034",
+      "completed": false,
+      "createdAt": "2025-10-27T16:12:59.404Z",
+      "updatedAt": "2025-10-27T16:12:59.404Z",
+      "dependsOn": [],
+      "priority": 7,
+      "complexity": 3,
+      "status": "pending",
+      "tags": [
+        "iter-3",
+        "testing"
+      ],
+      "estimatedHours": 1,
+      "level": 1
+    },
+    {
+      "id": "18071f1b-805b-4747-8659-a8d7c2a693c5",
+      "name": "Implement ConfigureGitUserStep",
+      "details": "Implement ConfigureGitUserStep.cs in Steps/Shared/ with ShouldExecuteAsync checking git config, and ExecuteAsync prompting user and setting git config values.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "c03799aa-e16d-4cf7-b938-9da60a9bea90",
+      "completed": false,
+      "createdAt": "2025-10-27T16:13:24.317Z",
+      "updatedAt": "2025-10-27T16:13:24.317Z",
+      "dependsOn": [],
+      "priority": 7,
+      "complexity": 5,
+      "status": "pending",
+      "tags": [
+        "iter-4",
+        "git",
+        "steps"
+      ],
+      "estimatedHours": 2,
+      "level": 1
+    },
+    {
+      "id": "cc110709-c3f7-4800-8b3e-047b0165aa5e",
+      "name": "Write Unit Tests for ConfigureGitUserStep",
+      "details": "Create ConfigureGitUserStepTests.cs with tests for happy path (missing config), skip path (config exists), and verify Moq usage for IProcessRunner and IUserInteraction.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "c03799aa-e16d-4cf7-b938-9da60a9bea90",
+      "completed": false,
+      "createdAt": "2025-10-27T16:13:24.391Z",
+      "updatedAt": "2025-10-27T16:13:24.391Z",
+      "dependsOn": [],
+      "priority": 7,
+      "complexity": 4,
+      "status": "pending",
+      "tags": [
+        "iter-4",
+        "testing",
+        "tdd"
+      ],
+      "estimatedHours": 1.5,
+      "level": 1
+    },
+    {
+      "id": "a3ae8889-ba42-428a-a2a3-ebaa097030ca",
+      "name": "Update Orchestrators with ConfigureGitUserStep",
+      "details": "Update all orchestrators to inject ConfigureGitUserStep and add it to their steps collection. Verify it runs correctly.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "c03799aa-e16d-4cf7-b938-9da60a9bea90",
+      "completed": false,
+      "createdAt": "2025-10-27T16:13:24.468Z",
+      "updatedAt": "2025-10-27T16:13:24.468Z",
+      "dependsOn": [],
+      "priority": 6,
+      "complexity": 3,
+      "status": "pending",
+      "tags": [
+        "iter-4",
+        "orchestrators"
+      ],
+      "estimatedHours": 0.5,
+      "level": 1
+    },
+    {
+      "id": "f9bf81c7-00f5-4f24-b7f6-359322d0b5b7",
+      "name": "Implement PlatformAwareStep Base Class",
+      "details": "Create abstract PlatformAwareStep class with strategy pattern, using dictionaries for platform-specific ShouldExecute and Execute delegates.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "42b7da10-e236-49ac-9889-a8ed09302b0c",
+      "completed": false,
+      "createdAt": "2025-10-27T16:13:24.550Z",
+      "updatedAt": "2025-10-27T16:13:24.550Z",
+      "dependsOn": [],
+      "priority": 6,
+      "complexity": 6,
+      "status": "pending",
+      "tags": [
+        "iter-5",
+        "architecture",
+        "patterns"
+      ],
+      "estimatedHours": 3,
+      "level": 1
+    },
+    {
+      "id": "b4ffb85b-f353-4f86-857a-21038d3d0457",
+      "name": "Implement InstallVsCodeStep",
+      "details": "Create InstallVsCodeStep inheriting PlatformAwareStep with Windows (winget), macOS (brew cask), and Linux (.deb download/install) strategies.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "42b7da10-e236-49ac-9889-a8ed09302b0c",
+      "completed": false,
+      "createdAt": "2025-10-27T16:13:24.642Z",
+      "updatedAt": "2025-10-27T16:13:24.642Z",
+      "dependsOn": [],
+      "priority": 6,
+      "complexity": 7,
+      "status": "pending",
+      "tags": [
+        "iter-5",
+        "vscode",
+        "cross-platform"
+      ],
+      "estimatedHours": 3,
+      "level": 1
+    },
+    {
+      "id": "8bf2450e-8555-45dc-ae5a-1f667ee026c8",
+      "name": "Create Windows-Specific Steps",
+      "details": "Create InstallGitForWindowsStep with winget check and install logic. InstallDockerDesktopStep with Docker Desktop detection. EnableWslFeaturesStep with dism.exe feature checks and enable commands (requires admin).",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "ab3b8c27-7fbb-4596-b52d-80d3dc86fd6b",
+      "completed": false,
+      "createdAt": "2025-10-27T16:13:53.624Z",
+      "updatedAt": "2025-10-27T16:13:53.624Z",
+      "dependsOn": [],
+      "priority": 5,
+      "complexity": 7,
+      "status": "pending",
+      "tags": [
+        "iter-6",
+        "windows",
+        "steps"
+      ],
+      "estimatedHours": 4,
+      "level": 1
+    },
+    {
+      "id": "74e7665b-ba7e-48df-8300-bb473b32fc78",
+      "name": "Update WindowsOrchestrator with All Steps",
+      "details": "Update WindowsOrchestrator to inject and order steps: EnableWslFeaturesStep, InstallGitForWindowsStep, InstallVsCodeStep, InstallDockerDesktopStep, ConfigureGitUserStep.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "ab3b8c27-7fbb-4596-b52d-80d3dc86fd6b",
+      "completed": false,
+      "createdAt": "2025-10-27T16:13:53.711Z",
+      "updatedAt": "2025-10-27T16:13:53.711Z",
+      "dependsOn": [],
+      "priority": 5,
+      "complexity": 5,
+      "status": "pending",
+      "tags": [
+        "iter-6",
+        "windows",
+        "orchestrator"
+      ],
+      "estimatedHours": 2,
+      "level": 1
+    },
+    {
+      "id": "46f9214b-2a6a-4cd1-99f2-6f7e9d7f4e59",
+      "name": "Test Windows Host Onboarding",
+      "details": "Test Windows onboarding end-to-end, verify admin permissions handling, and validate idempotency of all steps.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "ab3b8c27-7fbb-4596-b52d-80d3dc86fd6b",
+      "completed": false,
+      "createdAt": "2025-10-27T16:13:53.269Z",
+      "updatedAt": "2025-10-27T16:13:53.269Z",
+      "dependsOn": [],
+      "priority": 4,
+      "complexity": 3,
+      "status": "pending",
+      "tags": [
+        "iter-6",
+        "windows",
+        "testing"
+      ],
+      "estimatedHours": 2,
+      "level": 1
+    },
+    {
+      "id": "ad844bb9-0323-4a58-9b63-4c69af15fabf",
+      "name": "Finalize --mode Flag Parsing",
+      "details": "Finalize --mode wsl-guest flag parsing in Program.cs. Ensure correct WslGuestOrchestrator selection when running inside WSL with the flag.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "1744d6ba-24d4-4a79-82cd-85cb22849b89",
+      "completed": false,
+      "createdAt": "2025-10-27T16:13:52.738Z",
+      "updatedAt": "2025-10-27T16:13:52.738Z",
+      "dependsOn": [],
+      "priority": 4,
+      "complexity": 5,
+      "status": "pending",
+      "tags": [
+        "iter-7",
+        "wsl",
+        "cli"
+      ],
+      "estimatedHours": 1,
+      "level": 1
+    },
+    {
+      "id": "c2e23bf5-0752-46ee-ada1-fd7d760901d0",
+      "name": "Create WSL-Specific Steps",
+      "details": "Create AptUpdateStep (runs apt-get update), InstallWslPrerequisitesStep (installs git, gh, curl, chezmoi, python3, build-essential), ConfigureWslGitCredentialHelperStep (points to Windows GCM).",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "1744d6ba-24d4-4a79-82cd-85cb22849b89",
+      "completed": false,
+      "createdAt": "2025-10-27T16:13:52.825Z",
+      "updatedAt": "2025-10-27T16:13:52.825Z",
+      "dependsOn": [],
+      "priority": 4,
+      "complexity": 7,
+      "status": "pending",
+      "tags": [
+        "iter-7",
+        "wsl",
+        "steps"
+      ],
+      "estimatedHours": 4,
+      "level": 1
+    },
+    {
+      "id": "b818e52b-c521-4ac0-b9c5-2c943298566c",
+      "name": "Update WslGuestOrchestrator with All Steps",
+      "details": "Update WslGuestOrchestrator to inject and order steps: AptUpdateStep, InstallWslPrerequisitesStep, InstallVsCodeStep, ConfigureWslGitCredentialHelperStep, ConfigureGitUserStep.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "1744d6ba-24d4-4a79-82cd-85cb22849b89",
+      "completed": false,
+      "createdAt": "2025-10-27T16:13:52.927Z",
+      "updatedAt": "2025-10-27T16:13:52.927Z",
+      "dependsOn": [],
+      "priority": 4,
+      "complexity": 4,
+      "status": "pending",
+      "tags": [
+        "iter-7",
+        "wsl",
+        "orchestrator"
+      ],
+      "estimatedHours": 2,
+      "level": 1
+    },
+    {
+      "id": "ec069281-fc10-441a-a522-f605d00423b9",
+      "name": "Create macOS-Specific Steps",
+      "details": "Create InstallHomebrewStep checking for brew on PATH. Create InstallBrewPackagesStep to install git, gh, chezmoi via brew.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "0937ef00-a8fd-4bf3-b024-183bb31ef0f4",
+      "completed": false,
+      "createdAt": "2025-10-27T16:14:21.171Z",
+      "updatedAt": "2025-10-27T16:14:21.171Z",
+      "dependsOn": [],
+      "priority": 3,
+      "complexity": 6,
+      "status": "pending",
+      "tags": [
+        "iter-8",
+        "macos",
+        "steps"
+      ],
+      "estimatedHours": 3,
+      "level": 1
+    },
+    {
+      "id": "7a5cad05-c39d-4bdf-a82e-86b65e8131db",
+      "name": "Create Ubuntu-Specific Steps",
+      "details": "Create InstallAptPackagesStep for Ubuntu to install git, gh, curl, chezmoi, python3, build-essential via apt-get.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "0937ef00-a8fd-4bf3-b024-183bb31ef0f4",
+      "completed": false,
+      "createdAt": "2025-10-27T16:14:21.256Z",
+      "updatedAt": "2025-10-27T16:14:21.256Z",
+      "dependsOn": [],
+      "priority": 3,
+      "complexity": 5,
+      "status": "pending",
+      "tags": [
+        "iter-8",
+        "ubuntu",
+        "steps"
+      ],
+      "estimatedHours": 2,
+      "level": 1
+    },
+    {
+      "id": "fc2f4290-78df-4c53-88ed-0c54c76a1392",
+      "name": "Update macOS & Ubuntu Orchestrators",
+      "details": "Update MacOsOrchestrator with InstallHomebrewStep, InstallBrewPackagesStep, InstallVsCodeStep, ConfigureGitUserStep. Update UbuntuOrchestrator with AptUpdateStep, InstallAptPackagesStep, InstallVsCodeStep, ConfigureGitUserStep.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "0937ef00-a8fd-4bf3-b024-183bb31ef0f4",
+      "completed": false,
+      "createdAt": "2025-10-27T16:14:21.338Z",
+      "updatedAt": "2025-10-27T16:14:21.338Z",
+      "dependsOn": [],
+      "priority": 3,
+      "complexity": 3,
+      "status": "pending",
+      "tags": [
+        "iter-8",
+        "orchestrators"
+      ],
+      "estimatedHours": 1,
+      "level": 1
+    },
+    {
+      "id": "fed65b3e-83e3-461c-bad7-dc9d08c92cf3",
+      "name": "Implement CloneProjectRepoStep",
+      "details": "Implement CloneProjectRepoStep.cs in Steps/Shared/ with logic to check if directory exists, if it's a Git repo, clone new repo or git pull if exists. Handle parent directory creation.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "2083a46e-3ab8-424a-876e-d7ab8f6966f9",
+      "completed": false,
+      "createdAt": "2025-10-27T16:14:21.428Z",
+      "updatedAt": "2025-10-27T16:14:21.428Z",
+      "dependsOn": [],
+      "priority": 2,
+      "complexity": 6,
+      "status": "pending",
+      "tags": [
+        "iter-9",
+        "git",
+        "steps"
+      ],
+      "estimatedHours": 3,
+      "level": 1
+    },
+    {
+      "id": "89623801-5fc2-47e8-8fdf-f4a34dc3e77b",
+      "name": "Update Orchestrators with CloneProjectRepoStep",
+      "details": "Add CloneProjectRepoStep to MacOsOrchestrator, UbuntuOrchestrator, and WslGuestOrchestrator as final step before docs. Test end-to-end.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "2083a46e-3ab8-424a-876e-d7ab8f6966f9",
+      "completed": false,
+      "createdAt": "2025-10-27T16:14:21.515Z",
+      "updatedAt": "2025-10-27T16:14:21.515Z",
+      "dependsOn": [],
+      "priority": 2,
+      "complexity": 3,
+      "status": "pending",
+      "tags": [
+        "iter-9",
+        "orchestrators"
+      ],
+      "estimatedHours": 2,
+      "level": 1
+    },
+    {
+      "id": "c680ffe1-b151-42d6-80fe-ec420bdea4da",
+      "name": "Create setup.sh Bootstrapper",
+      "details": "Create setup.sh with OS/Arch detection, binary download from GitHub Release URL, chmod +x, execute with args pass-through ($@), and cleanup.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "b078af20-c7b9-4714-be77-73be6fcb7fe8",
+      "completed": false,
+      "createdAt": "2025-10-27T16:14:21.610Z",
+      "updatedAt": "2025-10-27T16:14:21.610Z",
+      "dependsOn": [],
+      "priority": 1,
+      "complexity": 5,
+      "status": "pending",
+      "tags": [
+        "iter-10",
+        "bootstrap",
+        "shell"
+      ],
+      "estimatedHours": 2,
+      "level": 1
+    },
+    {
+      "id": "8009719f-70e0-4c24-959a-62d0a9b47dfe",
+      "name": "Create setup.ps1 Bootstrapper",
+      "details": "Create setup.ps1 with Windows binary download to $env:TEMP, execution, and cleanup.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "b078af20-c7b9-4714-be77-73be6fcb7fe8",
+      "completed": false,
+      "createdAt": "2025-10-27T16:14:44.373Z",
+      "updatedAt": "2025-10-27T16:14:44.373Z",
+      "dependsOn": [],
+      "priority": 1,
+      "complexity": 4,
+      "status": "pending",
+      "tags": [
+        "iter-10",
+        "bootstrap",
+        "powershell"
+      ],
+      "estimatedHours": 1.5,
+      "level": 1
+    },
+    {
+      "id": "05794210-c7b6-4596-b970-a413fdf8628c",
+      "name": "Create GitHub Actions Release Workflow",
+      "details": "Create .github/workflows/release.yml with matrix build strategy for win-x64, osx-arm64, osx-x64, linux-x64. Trigger on tags (v*.*.*). Execute dotnet publish commands and upload binaries to GitHub Release.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "b078af20-c7b9-4714-be77-73be6fcb7fe8",
+      "completed": false,
+      "createdAt": "2025-10-27T16:14:44.454Z",
+      "updatedAt": "2025-10-27T16:14:44.454Z",
+      "dependsOn": [],
+      "priority": 1,
+      "complexity": 7,
+      "status": "pending",
+      "tags": [
+        "iter-10",
+        "ci-cd",
+        "github-actions"
+      ],
+      "estimatedHours": 2.5,
+      "level": 1
+    },
+    {
+      "id": "c9fc441b-a972-40ee-a0ce-e8d24d27eee9",
+      "name": "Create README.md",
+      "details": "Write comprehensive README.md with project overview, architecture explanation, platform-specific one-liner commands for macOS/Linux/WSL, and multi-step Windows instructions.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "438bc82b-a297-446d-8c48-16f1ac8435c9",
+      "completed": false,
+      "createdAt": "2025-10-27T16:14:44.541Z",
+      "updatedAt": "2025-10-27T16:14:44.541Z",
+      "dependsOn": [],
+      "priority": 1,
+      "complexity": 4,
+      "status": "pending",
+      "tags": [
+        "iter-11",
+        "documentation"
+      ],
+      "estimatedHours": 2,
+      "level": 1
+    },
+    {
+      "id": "973befd6-4039-4530-b532-778b9d031832",
+      "name": "Review User-Facing Text",
+      "details": "Review all IUserInteraction strings across orchestrators and steps. Ensure clear, helpful, consistent language. Verify color coding (headers, success, warning, error).",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "438bc82b-a297-446d-8c48-16f1ac8435c9",
+      "completed": false,
+      "createdAt": "2025-10-27T16:14:44.624Z",
+      "updatedAt": "2025-10-27T16:14:44.624Z",
+      "dependsOn": [],
+      "priority": 1,
+      "complexity": 3,
+      "status": "pending",
+      "tags": [
+        "iter-11",
+        "ux",
+        "polish"
+      ],
+      "estimatedHours": 1,
+      "level": 1
+    },
+    {
+      "id": "0283cda7-863e-41b8-8776-2f7dff54675f",
+      "name": "Error Handling Review",
+      "details": "Review try/catch blocks in Program.cs and orchestrators. Ensure graceful exits with meaningful error messages on failures. Test error scenarios.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "438bc82b-a297-446d-8c48-16f1ac8435c9",
+      "completed": false,
+      "createdAt": "2025-10-27T16:14:44.715Z",
+      "updatedAt": "2025-10-27T16:14:44.715Z",
+      "dependsOn": [],
+      "priority": 1,
+      "complexity": 4,
+      "status": "pending",
+      "tags": [
+        "iter-11",
+        "error-handling",
+        "reliability"
+      ],
+      "estimatedHours": 1,
+      "level": 1
+    }
+  ],
+  "subtasks": [],
+  "migration": {
+    "version": "1.8.1"
+  }
+}
