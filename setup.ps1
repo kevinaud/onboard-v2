@@ -14,6 +14,17 @@ if (-not [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([Syst
   throw 'setup.ps1 currently supports Windows hosts only.'
 }
 
+if (-not $PSBoundParameters.ContainsKey('ReleaseTag') -and [string]::IsNullOrWhiteSpace($ReleaseTag)) {
+  $ReleaseTag = $env:ONBOARD_RELEASE_TAG
+}
+
+$script:PreserveDownloadedBinary = $KeepDownloadedBinary.IsPresent
+if (-not $script:PreserveDownloadedBinary -and -not [string]::IsNullOrWhiteSpace($env:ONBOARD_KEEP_DOWNLOADED_BINARY)) {
+  if ($env:ONBOARD_KEEP_DOWNLOADED_BINARY -match '^(?i:1|true|yes|on)$') {
+    $script:PreserveDownloadedBinary = $true
+  }
+}
+
 function Set-ExecutionPolicyBypass {
   try {
     $currentPolicy = Get-ExecutionPolicy -Scope Process
@@ -159,13 +170,13 @@ try {
 
   Invoke-Binary -Path $script:DownloadPath -Arguments $args
 } finally {
-  if (-not $KeepDownloadedBinary.IsPresent -and $script:DownloadPath -and (Test-Path -Path $script:DownloadPath)) {
+  if (-not $script:PreserveDownloadedBinary -and $script:DownloadPath -and (Test-Path -Path $script:DownloadPath)) {
     try {
       Remove-Item -Path $script:DownloadPath -Force
     } catch {
       Write-Warning "Failed to delete temporary file $script:DownloadPath: $($_.Exception.Message)"
     }
-  } elseif ($KeepDownloadedBinary.IsPresent -and $script:DownloadPath) {
+  } elseif ($script:PreserveDownloadedBinary -and $script:DownloadPath) {
     Write-Host "Binary preserved at $script:DownloadPath" -ForegroundColor Yellow
   }
 }
