@@ -5,6 +5,7 @@
 namespace Onboard.Console.Orchestrators;
 
 using Onboard.Core.Abstractions;
+using Onboard.Core.Steps.MacOs;
 using Onboard.Core.Steps.PlatformAware;
 using Onboard.Core.Steps.Shared;
 
@@ -18,14 +19,20 @@ public class MacOsOrchestrator : IPlatformOrchestrator
 
     public MacOsOrchestrator(
         IUserInteraction ui,
+        InstallHomebrewStep installHomebrewStep,
+        InstallBrewPackagesStep installBrewPackagesStep,
         InstallVsCodeStep installVsCodeStep,
-        ConfigureGitUserStep configureGitUserStep)
+        ConfigureGitUserStep configureGitUserStep,
+        CloneProjectRepoStep cloneProjectRepoStep)
     {
         this.ui = ui;
         this.steps = new IOnboardingStep[]
         {
+            installHomebrewStep,
+            installBrewPackagesStep,
             installVsCodeStep,
             configureGitUserStep,
+            cloneProjectRepoStep,
         };
     }
 

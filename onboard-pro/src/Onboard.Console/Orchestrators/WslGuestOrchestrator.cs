@@ -23,7 +23,8 @@ public class WslGuestOrchestrator : IPlatformOrchestrator
         InstallWslPrerequisitesStep installWslPrerequisitesStep,
         InstallVsCodeStep installVsCodeStep,
         ConfigureWslGitCredentialHelperStep configureWslGitCredentialHelperStep,
-        ConfigureGitUserStep configureGitUserStep)
+        ConfigureGitUserStep configureGitUserStep,
+        CloneProjectRepoStep cloneProjectRepoStep)
     {
         this.ui = ui;
         this.steps = new IOnboardingStep[]
@@ -33,6 +34,7 @@ public class WslGuestOrchestrator : IPlatformOrchestrator
             installVsCodeStep,
             configureWslGitCredentialHelperStep,
             configureGitUserStep,
+            cloneProjectRepoStep,
         };
     }
 

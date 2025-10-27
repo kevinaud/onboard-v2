@@ -7,6 +7,8 @@ namespace Onboard.Console.Orchestrators;
 using Onboard.Core.Abstractions;
 using Onboard.Core.Steps.PlatformAware;
 using Onboard.Core.Steps.Shared;
+using Onboard.Core.Steps.Ubuntu;
+using Onboard.Core.Steps.WslGuest;
 
 /// <summary>
 /// Orchestrator for Ubuntu (native Linux) onboarding.
@@ -18,14 +20,20 @@ public class UbuntuOrchestrator : IPlatformOrchestrator
 
     public UbuntuOrchestrator(
         IUserInteraction ui,
+        AptUpdateStep aptUpdateStep,
+        InstallAptPackagesStep installAptPackagesStep,
         InstallVsCodeStep installVsCodeStep,
-        ConfigureGitUserStep configureGitUserStep)
+        ConfigureGitUserStep configureGitUserStep,
+        CloneProjectRepoStep cloneProjectRepoStep)
     {
         this.ui = ui;
         this.steps = new IOnboardingStep[]
         {
+            aptUpdateStep,
+            installAptPackagesStep,
             installVsCodeStep,
             configureGitUserStep,
+            cloneProjectRepoStep,
         };
     }
 
