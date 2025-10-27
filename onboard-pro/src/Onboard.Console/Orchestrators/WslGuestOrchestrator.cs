@@ -5,6 +5,8 @@
 namespace Onboard.Console.Orchestrators;
 
 using Onboard.Core.Abstractions;
+using Onboard.Core.Steps.PlatformAware;
+using Onboard.Core.Steps.Shared;
 
 /// <summary>
 /// Orchestrator for WSL guest onboarding.
@@ -16,10 +18,15 @@ public class WslGuestOrchestrator : IPlatformOrchestrator
 
     public WslGuestOrchestrator(
         IUserInteraction ui,
-        IOnboardingStep configureGitUserStep)
+        InstallVsCodeStep installVsCodeStep,
+        ConfigureGitUserStep configureGitUserStep)
     {
         this.ui = ui;
-        this.steps = new[] { configureGitUserStep };
+        this.steps = new IOnboardingStep[]
+        {
+            installVsCodeStep,
+            configureGitUserStep,
+        };
     }
 
     public async Task ExecuteAsync()
