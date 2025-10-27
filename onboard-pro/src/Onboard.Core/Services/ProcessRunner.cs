@@ -1,8 +1,13 @@
-using System.Diagnostics;
-using Onboard.Core.Abstractions;
-using Onboard.Core.Models;
+// <copyright file="ProcessRunner.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace Onboard.Core.Services;
+
+using System.Diagnostics;
+
+using Onboard.Core.Abstractions;
+using Onboard.Core.Models;
 
 /// <summary>
 /// Concrete implementation of IProcessRunner using System.Diagnostics.Process.
@@ -18,7 +23,7 @@ public class ProcessRunner : IProcessRunner
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             UseShellExecute = false,
-            CreateNoWindow = true
+            CreateNoWindow = true,
         };
 
         using var process = new Process { StartInfo = startInfo };
@@ -27,10 +32,10 @@ public class ProcessRunner : IProcessRunner
         var outputTask = process.StandardOutput.ReadToEndAsync();
         var errorTask = process.StandardError.ReadToEndAsync();
 
-        await process.WaitForExitAsync();
+        await process.WaitForExitAsync().ConfigureAwait(false);
 
-        var stdout = await outputTask;
-        var stderr = await errorTask;
+        string stdout = await outputTask.ConfigureAwait(false);
+        string stderr = await errorTask.ConfigureAwait(false);
 
         return new ProcessResult(process.ExitCode, stdout, stderr);
     }

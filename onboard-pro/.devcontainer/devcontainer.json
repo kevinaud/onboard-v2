@@ -12,6 +12,6 @@
       ]
     }
   },
-  "postCreateCommand": "dotnet restore",
+  "postCreateCommand": "dotnet restore && dotnet tool restore || true",
   "remoteUser": "vscode"
 }

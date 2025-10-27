@@ -1,22 +1,47 @@
-using Onboard.Core.Abstractions;
+// <copyright file="UbuntuOrchestrator.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace Onboard.Console.Orchestrators;
+
+using Onboard.Core.Abstractions;
 
 /// <summary>
 /// Orchestrator for Ubuntu (native Linux) onboarding.
 /// </summary>
 public class UbuntuOrchestrator : IPlatformOrchestrator
 {
-    private readonly IUserInteraction _ui;
+    private readonly IUserInteraction ui;
+    private readonly IEnumerable<IOnboardingStep> steps;
 
-    public UbuntuOrchestrator(IUserInteraction ui)
+    public UbuntuOrchestrator(
+        IUserInteraction ui,
+        IOnboardingStep configureGitUserStep)
     {
-        _ui = ui;
+        this.ui = ui;
+        this.steps = new[] { configureGitUserStep };
     }
 
     public async Task ExecuteAsync()
     {
-        _ui.WriteHeader("Starting Ubuntu Onboarding...");
-        await Task.CompletedTask;
+        this.ui.WriteHeader("Starting Ubuntu Onboarding...");
+
+        foreach (var step in this.steps)
+        {
+            this.ui.WriteLine($"Checking: {step.Description}");
+
+            if (await step.ShouldExecuteAsync().ConfigureAwait(false))
+            {
+                this.ui.WriteLine($"Executing: {step.Description}");
+                await step.ExecuteAsync().ConfigureAwait(false);
+            }
+            else
+            {
+                this.ui.WriteSuccess($"Already configured: {step.Description}");
+            }
+        }
+
+        this.ui.WriteLine(string.Empty);
+        this.ui.WriteSuccess("Ubuntu onboarding complete!");
     }
 }

@@ -1,6 +1,10 @@
-using Onboard.Core.Abstractions;
+// <copyright file="InstallGitForWindowsStep.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace Onboard.Core.Steps.Windows;
+
+using Onboard.Core.Abstractions;
 
 /// <summary>
 /// Placeholder step for installing Git for Windows.

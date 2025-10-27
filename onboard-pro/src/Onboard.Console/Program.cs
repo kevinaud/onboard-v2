@@ -1,12 +1,18 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+// <copyright file="Program.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+using Onboard.Console.Orchestrators;
 using Onboard.Core.Abstractions;
 using Onboard.Core.Models;
 using Onboard.Core.Services;
-using Onboard.Console.Orchestrators;
-using Onboard.Core.Steps.Shared;
 using Onboard.Core.Steps.PlatformAware;
+using Onboard.Core.Steps.Shared;
 using Onboard.Core.Steps.Windows;
+
 using OS = Onboard.Core.Models.OperatingSystem;
 
 public static class Program
@@ -14,8 +20,8 @@ public static class Program
     public static async Task Main(string[] args)
     {
         // 1. Parse for our custom mode flag
-        bool isWslGuestMode = args.Contains("--mode") &&
-                              args.ElementAtOrDefault(Array.IndexOf(args, "--mode") + 1) == "wsl-guest";
+        bool isWslGuestMode = args.Contains("--mode", StringComparer.Ordinal) &&
+string.Equals(args.ElementAtOrDefault(Array.IndexOf(args, "--mode") + 1), "wsl-guest", StringComparison.Ordinal);
 
         var host = Host.CreateDefaultBuilder(args)
             .ConfigureServices((context, services) =>
@@ -38,8 +44,10 @@ public static class Program
                 // Register all Onboarding Steps
                 // Shared
                 services.AddTransient<ConfigureGitUserStep>();
+
                 // Platform-Aware
                 services.AddTransient<InstallVsCodeStep>();
+
                 // Windows-Specific
                 services.AddTransient<InstallGitForWindowsStep>();
             })
@@ -81,6 +89,6 @@ public static class Program
         }
 
         // 3. Execute the chosen orchestration
-        await orchestrator.ExecuteAsync();
+        await orchestrator.ExecuteAsync().ConfigureAwait(false);
     }
 }

@@ -1,6 +1,10 @@
-using Onboard.Core.Abstractions;
+// <copyright file="InstallVsCodeStep.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace Onboard.Core.Steps.PlatformAware;
+
+using Onboard.Core.Abstractions;
 
 /// <summary>
 /// Placeholder step for installing VS Code.
