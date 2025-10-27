@@ -1,0 +1,70 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release tag (e.g. v1.2.3)'
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-publish-windows:
+    runs-on: windows-latest
+    env:
+      ARTIFACT_NAME: Onboard-win-x64.exe
+      OUTPUT_DIR: artifacts/win-x64
+    defaults:
+      run:
+        working-directory: ./onboard-pro
+        shell: pwsh
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Publish Windows binary
+        run: |
+          $outPath = Join-Path -Path ".." -ChildPath $env:OUTPUT_DIR
+          if (Test-Path $outPath) {
+            Remove-Item $outPath -Recurse -Force
+          }
+          dotnet publish src/Onboard.Console/Onboard.Console.csproj `
+            -c Release `
+            -r win-x64 `
+            --self-contained true `
+            -p:PublishSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            -p:PublishTrimmed=false `
+            -o $outPath
+          $publishedExe = Join-Path $outPath 'Onboard.Console.exe'
+          if (-not (Test-Path $publishedExe)) {
+            throw "Expected publish output at $publishedExe"
+          }
+          Copy-Item $publishedExe (Join-Path $outPath $env:ARTIFACT_NAME)
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-executable
+          path: ${{ env.OUTPUT_DIR }}/${{ env.ARTIFACT_NAME }}
+          if-no-files-found: error
+
+      - name: Publish GitHub release asset
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ env.OUTPUT_DIR }}/${{ env.ARTIFACT_NAME }}
+          generate_release_notes: true
