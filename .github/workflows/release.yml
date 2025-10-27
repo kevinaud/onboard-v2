@@ -87,7 +87,7 @@ jobs:
         working-directory: ${{ env.PROJECT_DIR }}
         run: |
           set -euo pipefail
-          out_dir="../${{ env.OUTPUT_DIR }}"
+          out_dir="${GITHUB_WORKSPACE}/${{ env.OUTPUT_DIR }}"
           rm -rf "$out_dir"
           dotnet publish src/Onboard.Console/Onboard.Console.csproj \
             -c Release \
