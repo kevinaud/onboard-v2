@@ -1,0 +1,44 @@
+{
+    "servers": {
+        "git-mcp-server": {
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+                "@cyanheads/git-mcp-server@latest"
+            ],
+            "env": {
+                "MCP_TRANSPORT_TYPE": "stdio",
+                "MCP_LOG_LEVEL": "info",
+                "GIT_BASE_DIR": "/workspaces/onboard-v2",
+                "LOGS_DIR": "~/Developer/logs/git-mcp-server/",
+                "GIT_USERNAME": "Kevin Aud",
+                "GIT_EMAIL": "kevinaud@gmail.com",
+                "GIT_SIGN_COMMITS": "false"
+            }
+        },
+        "github/github-mcp-server": {
+            "type": "http",
+            "url": "https://api.githubcopilot.com/mcp",
+            "gallery": "https://api.mcp.github.com/2025-09-15/v0/servers/ab12cd34-5678-90ef-1234-567890abcdef",
+            "version": "0.13.0",
+            "headers": {
+                "X-MCP-Toolsets": "default,actions",
+                // "X-MCP-Readonly": "true"
+            }
+        },
+        "agentic-tools-mcp-server": {
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+                "-y",
+                "@pimzino/agentic-tools-mcp"
+            ],
+            // "command": "bash",
+            // "args": [
+            //     "-c",
+            //     ". \"$HOME/.nvm/nvm.sh\" && agentic-tools-mcp"
+            // ],
+            "cwd": "${workspaceFolder}"
+        }
+    }
+}

@@ -1,0 +1,57 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/dotnet
+{
+	"name": "C# (.NET)",
+	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	"image": "mcr.microsoft.com/devcontainers/dotnet:1-9.0-bookworm",
+	"features": {
+		"ghcr.io/devcontainers/features/powershell:1": {},
+		"ghcr.io/devcontainers-extra/features/apt-get-packages:1": {
+			"packages": "jq,procps,snapd"
+		},
+		"ghcr.io/devcontainers-extra/features/uv:1": {
+			"version": "latest"
+		},
+		"ghcr.io/devcontainers/features/python:1": {
+			"version": "3.14.0"
+		},
+		"ghcr.io/devcontainers-extra/features/ts-node:1": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				// Core C#/.NET Development
+				"ms-dotnettools.csdevkit",
+				"patcx.vscode-nuget-gallery",
+				"ms-dotnettools.vscode-dotnet-runtime",
+				// Dev Container & Docker Integration
+				"ms-vscode-remote.remote-containers",
+				"ms-azuretools.vscode-docker",
+				// Code Quality and Version Control
+				"EditorConfig.EditorConfig",
+				"eamodio.gitlens",
+				"GitHub.vscode-pull-request-github",
+				// AI & Productivity
+				"GitHub.copilot",
+				"GitHub.copilot-chat",
+				"openai.chatgpt",
+				"pimzino.agentic-tools-mcp-companion"
+			]
+		}
+	}
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	// "features": {},
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [5000, 5001],
+	// "portsAttributes": {
+	//		"5001": {
+	//			"protocol": "https"
+	//		}
+	// }
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "dotnet restore",
+	// Configure tool-specific properties.
+	// "customizations": {},
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "root"
+}
