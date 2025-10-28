@@ -15,7 +15,7 @@ The Onboard Pro binary now mirrors every user-visible message and external comma
 ## What the log contains
 
 - A timestamped entry for every console message (`INFO`, `HEADER`, `SUCCESS`, `WARNING`, `ERROR`, `PROMPT`, `PROMPT_RESPONSE`).
-- A Debug-level entry for every external command, including the executable path, arguments, exit code, and the first 1024 characters of stdout/stderr. Longer outputs are truncated with an ellipsis.
+- A Debug-level entry for every external command, including the executable path, arguments, exit code, and the first 1024 characters of stdout/stderr. Longer outputs are truncated with an ellipsis. Running the tool with `--verbose` mirrors these entries to the console so you can confirm commands in real time.
 - Exceptions raised by onboarding steps, including the step name when available.
 
 Sensitive information such as personal access tokens should not appear in the log because prompts echo only what the user typed. Nevertheless, review the file before sharing externally.
@@ -27,7 +27,7 @@ Sensitive information such as personal access tokens should not appear in the lo
 3. Compress the file if requested (e.g., `zip onboard-pro-log.zip onboard-pro.log`).
 4. Provide the archive along with the command-line flags you used (such as `--mode wsl-guest --dry-run`).
 
-Dry-run mode still records the console transcript but skips process execution, so the log will not contain command entries in that scenario.
+Dry-run mode still records the console transcript but skips process execution, so the log will not contain command entries in that scenario. If you pair `--dry-run` with `--verbose`, the console and log capture `[DRY-RUN]` lines for each command that would have executed.
 
 ## Confirm Windows WSL configuration
 

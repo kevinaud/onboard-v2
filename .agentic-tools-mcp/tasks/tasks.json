@@ -2266,15 +2266,15 @@
       "details": "Plan verbose mode UX, debug messaging, and dry-run behaviour changes per Iteration 15 specs.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "b7147a8a-2d5d-4244-94e9-09fe986b78ed",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:23:40.280Z",
-      "updatedAt": "2025-10-28T01:23:40.280Z",
+      "updatedAt": "2025-10-28T21:12:53.230Z",
       "dependsOn": [
         "19090d33-6b64-474a-a780-41979a29fc75"
       ],
       "priority": 5,
       "complexity": 4,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-15",
         "planning"
@@ -2288,15 +2288,15 @@
       "details": "Branch iter-15 from main to isolate verbose/interactive debugging work.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "752555a1-1836-4b15-99e8-c38073a3898e",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:23:44.679Z",
-      "updatedAt": "2025-10-28T01:23:44.679Z",
+      "updatedAt": "2025-10-28T21:08:22.527Z",
       "dependsOn": [
         "19090d33-6b64-474a-a780-41979a29fc75"
       ],
       "priority": 5,
       "complexity": 2,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-15",
         "planning",
@@ -2311,15 +2311,15 @@
       "details": "Define UX for --verbose flag, debug messaging palette, and dry-run messaging updates; document acceptance criteria.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "752555a1-1836-4b15-99e8-c38073a3898e",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:23:48.544Z",
-      "updatedAt": "2025-10-28T01:23:48.544Z",
+      "updatedAt": "2025-10-28T21:12:43.603Z",
       "dependsOn": [
         "583c06ca-0cf5-43d8-99b1-027f9978375a"
       ],
       "priority": 5,
       "complexity": 3,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-15",
         "planning"
@@ -2333,9 +2333,9 @@
       "details": "Implement verbose mode flag, IUserInteraction debug output, ProcessRunner instrumentation, and SequentialOrchestrator dry-run updates for Iteration 15.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "b7147a8a-2d5d-4244-94e9-09fe986b78ed",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:23:52.726Z",
-      "updatedAt": "2025-10-28T16:18:59.985Z",
+      "updatedAt": "2025-10-28T21:23:50.031Z",
       "dependsOn": [
         "752555a1-1836-4b15-99e8-c38073a3898e"
       ],
@@ -2355,9 +2355,9 @@
       "details": "Update CommandLineOptions, parser, and ExecutionOptions to support --verbose/-v per Iteration 15 requirements.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "3711b477-baa3-4694-a5d1-88fa90bea6cc",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:24:08.741Z",
-      "updatedAt": "2025-10-28T01:24:08.741Z",
+      "updatedAt": "2025-10-28T21:22:55.921Z",
       "dependsOn": [
         "a6eff2ba-1207-4a5d-8219-acb92061a100"
       ],
@@ -2378,9 +2378,9 @@
       "details": "Add WriteDebug method, update interface implementations, and ensure ExecutionOptions is available for conditional verbosity.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "3711b477-baa3-4694-a5d1-88fa90bea6cc",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:24:13.433Z",
-      "updatedAt": "2025-10-28T01:24:13.433Z",
+      "updatedAt": "2025-10-28T21:22:59.939Z",
       "dependsOn": [
         "e1d0cf8b-dc90-48a3-a883-506b790d8be9"
       ],
@@ -2401,9 +2401,9 @@
       "details": "Inject ExecutionOptions/ILogger into ConsoleUserInteraction, emit debug messages when --verbose is active, and style them per UX guidelines.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "3711b477-baa3-4694-a5d1-88fa90bea6cc",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:24:20.442Z",
-      "updatedAt": "2025-10-28T01:24:20.442Z",
+      "updatedAt": "2025-10-28T21:23:03.805Z",
       "dependsOn": [
         "6c6f39d7-25fc-4027-a950-be35c69973e0"
       ],
@@ -2424,9 +2424,9 @@
       "details": "Inject ExecutionOptions and IUserInteraction into ProcessRunner to print command transcripts when verbose or dry-run modes are enabled, including stdout/stderr dumps.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "3711b477-baa3-4694-a5d1-88fa90bea6cc",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:24:27.728Z",
-      "updatedAt": "2025-10-28T01:24:27.728Z",
+      "updatedAt": "2025-10-28T21:23:11.848Z",
       "dependsOn": [
         "6c6f39d7-25fc-4027-a950-be35c69973e0"
       ],
@@ -2447,9 +2447,9 @@
       "details": "Update SequentialOrchestrator to surface simulated command execution when dry-run + verbose is active, leveraging ProcessRunner instrumentation.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "3711b477-baa3-4694-a5d1-88fa90bea6cc",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:24:33.242Z",
-      "updatedAt": "2025-10-28T01:24:33.242Z",
+      "updatedAt": "2025-10-28T21:23:19.506Z",
       "dependsOn": [
         "19fcd9b5-f3f1-40e3-9b72-ca8b76d6329d",
         "a2066e08-b3b9-469d-9fdb-b55e2c0587f4"
@@ -2471,9 +2471,9 @@
       "details": "Update Program.cs registrations so ExecutionOptions, IUserInteraction, and ProcessRunner receive the verbose flag and necessary injections.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "3711b477-baa3-4694-a5d1-88fa90bea6cc",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:24:40.684Z",
-      "updatedAt": "2025-10-28T01:24:40.684Z",
+      "updatedAt": "2025-10-28T21:23:24.729Z",
       "dependsOn": [
         "e1d0cf8b-dc90-48a3-a883-506b790d8be9",
         "6c6f39d7-25fc-4027-a950-be35c69973e0",
@@ -2496,9 +2496,9 @@
       "details": "Complete verbose mode implementation work on iter-15 branch ensuring solution builds succeed.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "3711b477-baa3-4694-a5d1-88fa90bea6cc",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:24:47.363Z",
-      "updatedAt": "2025-10-28T01:24:47.363Z",
+      "updatedAt": "2025-10-28T21:23:29.264Z",
       "dependsOn": [
         "a2066e08-b3b9-469d-9fdb-b55e2c0587f4",
         "19fcd9b5-f3f1-40e3-9b72-ca8b76d6329d",
@@ -2521,9 +2521,9 @@
       "details": "Validate Iteration 15 verbose-mode changes locally through automated suites and hands-on checks before opening the PR.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "b7147a8a-2d5d-4244-94e9-09fe986b78ed",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:24:56.906Z",
-      "updatedAt": "2025-10-28T16:20:56.363Z",
+      "updatedAt": "2025-10-28T21:26:00.430Z",
       "dependsOn": [
         "3711b477-baa3-4694-a5d1-88fa90bea6cc"
       ],
@@ -2566,9 +2566,9 @@
       "details": "Exercise representative orchestrator flows to confirm verbose and dry-run messaging align with UX expectations before opening the PR.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "ae932e73-fe23-4cd1-aa6e-41c805844d9c",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:25:21.186Z",
-      "updatedAt": "2025-10-28T16:19:45.656Z",
+      "updatedAt": "2025-10-28T21:25:49.647Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 4,
@@ -2609,9 +2609,9 @@
       "details": "Execute dotnet format/build/test and run orchestrator dry-run with --verbose to validate output pipeline.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "ae932e73-fe23-4cd1-aa6e-41c805844d9c",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:25:30.420Z",
-      "updatedAt": "2025-10-28T16:19:32.518Z",
+      "updatedAt": "2025-10-28T21:25:42.165Z",
       "dependsOn": [
         "3110ace7-69e2-4fcb-9850-a14a37b70d5d"
       ],
@@ -2632,9 +2632,9 @@
       "details": "Add coverage for CommandLineOptionsParser, ProcessRunner, and SequentialOrchestrator to exercise verbose flag behaviour and dry-run transcripts.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "3711b477-baa3-4694-a5d1-88fa90bea6cc",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:25:36.942Z",
-      "updatedAt": "2025-10-28T16:19:54.774Z",
+      "updatedAt": "2025-10-28T21:23:32.592Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 5,
@@ -2652,9 +2652,9 @@
       "details": "Run Onboard Pro end-to-end with --verbose on multiple scenarios to ensure debug output is actionable and not overwhelming.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "ae932e73-fe23-4cd1-aa6e-41c805844d9c",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:25:41.365Z",
-      "updatedAt": "2025-10-28T16:19:37.868Z",
+      "updatedAt": "2025-10-28T21:25:53.454Z",
       "dependsOn": [
         "f3bb34cf-2016-4366-859f-b17b3c9d4764"
       ],
@@ -2675,9 +2675,9 @@
       "details": "Revise README and troubleshooting sections to explain the --verbose flag, expected debug output, and how verbose mode interacts with dry-run.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "3711b477-baa3-4694-a5d1-88fa90bea6cc",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:25:58.023Z",
-      "updatedAt": "2025-10-28T16:20:22.439Z",
+      "updatedAt": "2025-10-28T21:23:35.480Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 3,
@@ -2695,9 +2695,9 @@
       "details": "Revise architecture or ux_polish notes to document verbose mode outputs, debug color scheme, and dry-run messaging changes.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "3711b477-baa3-4694-a5d1-88fa90bea6cc",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:26:05.569Z",
-      "updatedAt": "2025-10-28T16:20:14.907Z",
+      "updatedAt": "2025-10-28T21:23:42.485Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 3,

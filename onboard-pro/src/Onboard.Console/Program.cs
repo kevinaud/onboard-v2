@@ -33,12 +33,12 @@ public static class Program
         // 1. Parse the supported command-line options
         if (!CommandLineOptionsParser.TryParse(args, out var commandLineOptions, out string? parseError))
         {
-            var fallbackUi = new ConsoleUserInteraction(NullLogger<ConsoleUserInteraction>.Instance);
+            var fallbackUi = new ConsoleUserInteraction(NullLogger<ConsoleUserInteraction>.Instance, new ExecutionOptions(IsDryRun: false, IsVerbose: false));
             fallbackUi.WriteError(parseError ?? "Invalid command-line arguments.");
             return;
         }
 
-        var executionOptions = new ExecutionOptions(commandLineOptions.IsDryRun);
+        var executionOptions = new ExecutionOptions(commandLineOptions.IsDryRun, commandLineOptions.IsVerbose);
         string logFilePath = Path.Combine(Path.GetTempPath(), "onboard-pro.log");
 
         using var host = Host.CreateDefaultBuilder(args)

@@ -21,6 +21,7 @@ public class CommandLineOptionsParserTests
             Assert.That(success, Is.True);
             Assert.That(options.IsWslGuestMode, Is.False);
             Assert.That(options.IsDryRun, Is.False);
+            Assert.That(options.IsVerbose, Is.False);
             Assert.That(error, Is.Null);
         });
     }
@@ -146,6 +147,69 @@ public class CommandLineOptionsParserTests
         {
             Assert.That(success, Is.False);
             Assert.That(error, Is.EqualTo("The --dry-run option can only be specified once."));
+        });
+    }
+
+    [Test]
+    public void TryParse_WithVerboseFlag_SetsVerbose()
+    {
+        bool success = CommandLineOptionsParser.TryParse(new[] { "--verbose" }, out var options, out string? error);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(success, Is.True);
+            Assert.That(options.IsVerbose, Is.True);
+            Assert.That(error, Is.Null);
+        });
+    }
+
+    [Test]
+    public void TryParse_WithVerboseAlias_SetsVerbose()
+    {
+        bool success = CommandLineOptionsParser.TryParse(new[] { "-v" }, out var options, out string? error);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(success, Is.True);
+            Assert.That(options.IsVerbose, Is.True);
+            Assert.That(error, Is.Null);
+        });
+    }
+
+    [Test]
+    public void TryParse_WithVerboseEqualsFalse_AcceptsValue()
+    {
+        bool success = CommandLineOptionsParser.TryParse(new[] { "--verbose=false" }, out var options, out string? error);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(success, Is.True);
+            Assert.That(options.IsVerbose, Is.False);
+            Assert.That(error, Is.Null);
+        });
+    }
+
+    [Test]
+    public void TryParse_WithDuplicateVerboseFlag_ReturnsError()
+    {
+        bool success = CommandLineOptionsParser.TryParse(new[] { "--verbose", "--verbose" }, out _, out string? error);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(success, Is.False);
+            Assert.That(error, Is.EqualTo("The --verbose option can only be specified once."));
+        });
+    }
+
+    [Test]
+    public void TryParse_WithVerboseAndAlias_ReturnsError()
+    {
+        bool success = CommandLineOptionsParser.TryParse(new[] { "--verbose", "-v" }, out _, out string? error);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(success, Is.False);
+            Assert.That(error, Is.EqualTo("The --verbose option can only be specified once."));
         });
     }
 }
