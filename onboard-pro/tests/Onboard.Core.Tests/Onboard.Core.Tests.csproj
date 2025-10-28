@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Onboard.Core\Onboard.Core.csproj" />
+    <ProjectReference Include="..\..\src\Onboard.Console\Onboard.Console.csproj" />
   </ItemGroup>
 
 </Project>
