@@ -179,6 +179,10 @@ Development will be done within a VS Code Dev Container. The .devcontainer/devco
 * **User interaction mirroring** – `ConsoleUserInteraction` mirrors all user-facing output (headers, prompts, warnings, etc.) to the same logger so the log file forms a complete transcript of the session.
 * **Linux reliability hardening** – When running on Linux, `ProcessRunner` injects `DEBIAN_FRONTEND=noninteractive` into the child process environment if the variable is not already defined, eliminating blocking prompts from apt-based installers.
 
+#### **3.5. Centralized Configuration**
+
+`OnboardingConfiguration` is a simple record in `Onboard.Core/Models` that captures shared constants used across multiple steps. The first properties added are `WslDistroName` (the normalized distro label returned by `wsl.exe -l -q`) and `WslDistroImage` (the identifier passed to `wsl --install`). `Program.cs` registers a singleton instance so Windows steps pull their inputs from one place: `EnableWslFeaturesStep` checks `WslDistroName` when determining whether onboarding can proceed, and `InstallDockerDesktopStep` writes the same value into `settings-store.json` when enabling WSL integration. Future iterations can extend this record (or load it from JSON) without hunting down scattered literals in the step implementations.
+
 ---
 
 ### **4\. Low-Level Class Design**

@@ -30,10 +30,11 @@ public class WindowsOrchestratorTests
             { ("git", "config --global user.email"), new ProcessResult(0, "test@example.com", string.Empty) },
         });
 
-        var enableWslStep = new EnableWslFeaturesStep(processRunner, ui.Object);
+        var configuration = new OnboardingConfiguration();
+        var enableWslStep = new EnableWslFeaturesStep(processRunner, ui.Object, configuration);
         var installGitStep = new InstallGitForWindowsStep(processRunner, ui.Object);
         var installVsCodeStep = new InstallWindowsVsCodeStep(processRunner, ui.Object);
-        var installDockerStep = new InstallDockerDesktopStep(processRunner, ui.Object);
+        var installDockerStep = new InstallDockerDesktopStep(processRunner, ui.Object, configuration);
         var configureGitStep = new ConfigureGitUserStep(processRunner, ui.Object);
 
         var orchestrator = new WindowsOrchestrator(
@@ -75,10 +76,11 @@ public class WindowsOrchestratorTests
             { ("git", "config --global user.email"), new ProcessResult(0, "test@example.com", string.Empty) },
         });
 
-        var enableWslStep = new EnableWslFeaturesStep(processRunner, ui.Object);
+        var configuration = new OnboardingConfiguration();
+        var enableWslStep = new EnableWslFeaturesStep(processRunner, ui.Object, configuration);
         var installGitStep = new InstallGitForWindowsStep(processRunner, ui.Object);
         var installVsCodeStep = new InstallWindowsVsCodeStep(processRunner, ui.Object);
-        var installDockerStep = new InstallDockerDesktopStep(processRunner, ui.Object);
+        var installDockerStep = new InstallDockerDesktopStep(processRunner, ui.Object, configuration);
         var configureGitStep = new ConfigureGitUserStep(processRunner, ui.Object);
 
         var orchestrator = new WindowsOrchestrator(
@@ -103,10 +105,11 @@ public class WindowsOrchestratorTests
 
         var processRunner = new FakeProcessRunner(new Dictionary<(string, string), ProcessResult>());
 
-        var enableWslStep = new EnableWslFeaturesStep(processRunner, ui.Object);
+        var configuration = new OnboardingConfiguration();
+        var enableWslStep = new EnableWslFeaturesStep(processRunner, ui.Object, configuration);
         var installGitStep = new InstallGitForWindowsStep(processRunner, ui.Object);
         var installVsCodeStep = new InstallWindowsVsCodeStep(processRunner, ui.Object);
-        var installDockerStep = new InstallDockerDesktopStep(processRunner, ui.Object);
+        var installDockerStep = new InstallDockerDesktopStep(processRunner, ui.Object, configuration);
         var configureGitStep = new ConfigureGitUserStep(processRunner, ui.Object);
 
         var orchestrator = new WindowsOrchestrator(

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Onboard.Core.Abstractions;
+using Onboard.Core.Models;
 
 /// <summary>
 /// Verifies that WSL optional features are enabled and Ubuntu 22.04 is installed.
@@ -13,17 +14,21 @@ public class EnableWslFeaturesStep : IOnboardingStep
 {
     private const string WslStatusCommand = "--status";
     private const string WslListDistributionsCommand = "-l -q";
-    private const string UbuntuDistributionName = "Ubuntu-22.04";
 
     private readonly IProcessRunner processRunner;
     private readonly IUserInteraction userInteraction;
+    private readonly OnboardingConfiguration configuration;
 
     private WslReadiness readiness = WslReadiness.Uninitialized;
 
-    public EnableWslFeaturesStep(IProcessRunner processRunner, IUserInteraction userInteraction)
+    public EnableWslFeaturesStep(
+        IProcessRunner processRunner,
+        IUserInteraction userInteraction,
+        OnboardingConfiguration configuration)
     {
         this.processRunner = processRunner;
         this.userInteraction = userInteraction;
+        this.configuration = configuration;
     }
 
     public string Description => "Verify Windows Subsystem for Linux prerequisites";
@@ -55,13 +60,13 @@ public class EnableWslFeaturesStep : IOnboardingStep
 
         if (!readiness.HasUbuntuDistribution)
         {
-            userInteraction.WriteWarning("Ubuntu 22.04 is not installed in WSL.");
+            userInteraction.WriteWarning($"{configuration.WslDistroName} is not installed in WSL.");
         }
 
         userInteraction.WriteLine("Follow these steps in an administrator PowerShell window:");
-        userInteraction.WriteLine("  1. Run: wsl --install -d Ubuntu-22.04");
+        userInteraction.WriteLine($"  1. Run: wsl --install -d {configuration.WslDistroImage}");
         userInteraction.WriteLine("  2. Restart Windows if prompted to complete the installation.");
-        userInteraction.WriteLine("  3. Launch Ubuntu once so the user account is created, then rerun this onboarding tool.");
+        userInteraction.WriteLine($"  3. Launch {configuration.WslDistroName} once so the user account is created, then rerun this onboarding tool.");
     }
 
     private async Task<WslReadiness> EvaluateReadinessAsync()
@@ -80,7 +85,7 @@ public class EnableWslFeaturesStep : IOnboardingStep
 
         bool hasUbuntu = listResult.StandardOutput
             .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-            .Any(line => string.Equals(line.Trim(), UbuntuDistributionName, StringComparison.OrdinalIgnoreCase));
+            .Any(line => string.Equals(line.Trim(), configuration.WslDistroName, StringComparison.OrdinalIgnoreCase));
 
         return WslReadiness.Create(true, hasUbuntu);
     }

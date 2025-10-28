@@ -20,6 +20,7 @@ public class InstallDockerDesktopStepTests
 {
     private Mock<IProcessRunner> processRunner = null!;
     private Mock<IUserInteraction> userInteraction = null!;
+    private OnboardingConfiguration configuration = null!;
     private string? originalAppData;
     private string tempAppDataPath = null!;
 
@@ -28,6 +29,7 @@ public class InstallDockerDesktopStepTests
     {
         processRunner = new Mock<IProcessRunner>(MockBehavior.Strict);
         userInteraction = new Mock<IUserInteraction>(MockBehavior.Strict);
+        configuration = new OnboardingConfiguration();
         originalAppData = Environment.GetEnvironmentVariable("APPDATA");
         tempAppDataPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(tempAppDataPath);
@@ -115,6 +117,8 @@ public class InstallDockerDesktopStepTests
         userInteraction.Setup(ui => ui.WriteSuccess("Docker Desktop installed via winget."));
         userInteraction.Setup(ui => ui.WriteLine(It.IsAny<string>())).Callback<string>(messages.Add);
 
+        configuration = configuration with { WslDistroName = "ContosoLinux" };
+
         var step = CreateStep();
         await step.ExecuteAsync().ConfigureAwait(false);
 
@@ -134,8 +138,8 @@ public class InstallDockerDesktopStepTests
             distros = Array.Empty<string?>();
         }
 
-        Assert.That(distros, Does.Contain("Ubuntu-22.04"));
-        Assert.That(messages.Any(message => message.Contains("pre-configured", StringComparison.OrdinalIgnoreCase)), Is.True);
+        Assert.That(distros, Does.Contain(configuration.WslDistroName));
+        Assert.That(messages.Any(message => message.Contains(configuration.WslDistroName, StringComparison.OrdinalIgnoreCase)), Is.True);
         processRunner.VerifyAll();
         userInteraction.VerifyAll();
     }
@@ -154,6 +158,6 @@ public class InstallDockerDesktopStepTests
 
     private InstallDockerDesktopStep CreateStep()
     {
-        return new InstallDockerDesktopStep(processRunner.Object, userInteraction.Object);
+        return new InstallDockerDesktopStep(processRunner.Object, userInteraction.Object, configuration);
     }
 }

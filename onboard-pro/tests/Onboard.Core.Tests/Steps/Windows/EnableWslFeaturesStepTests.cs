@@ -18,12 +18,14 @@ public class EnableWslFeaturesStepTests
 {
     private Mock<IProcessRunner> processRunner = null!;
     private Mock<IUserInteraction> userInteraction = null!;
+    private OnboardingConfiguration configuration = null!;
 
     [SetUp]
     public void SetUp()
     {
         processRunner = new Mock<IProcessRunner>(MockBehavior.Strict);
         userInteraction = new Mock<IUserInteraction>(MockBehavior.Strict);
+        configuration = new OnboardingConfiguration();
     }
 
     [Test]
@@ -65,7 +67,7 @@ public class EnableWslFeaturesStepTests
             .ReturnsAsync(new ProcessResult(0, "WSL is installed", string.Empty));
         processRunner
             .Setup(runner => runner.RunAsync("wsl.exe", "-l -q"))
-            .ReturnsAsync(new ProcessResult(0, "Ubuntu-22.04\r\n", string.Empty));
+            .ReturnsAsync(new ProcessResult(0, $"{configuration.WslDistroName}\r\n", string.Empty));
 
         var step = CreateStep();
         bool result = await step.ShouldExecuteAsync().ConfigureAwait(false);
@@ -86,18 +88,22 @@ public class EnableWslFeaturesStepTests
         userInteraction.Setup(ui => ui.WriteWarning(It.IsAny<string>())).Callback<string>(messages.Add);
         userInteraction.Setup(ui => ui.WriteLine(It.IsAny<string>())).Callback<string>(messages.Add);
 
+        configuration = configuration with { WslDistroName = "ContosoLinux", WslDistroImage = "ContosoLinux" };
+
         var step = CreateStep();
         await step.ShouldExecuteAsync().ConfigureAwait(false);
         await step.ExecuteAsync().ConfigureAwait(false);
 
         Assert.That(messages.Any(message => message.Contains("Manual WSL setup", StringComparison.OrdinalIgnoreCase)), Is.True);
         Assert.That(messages.Any(message => message.Contains("administrator", StringComparison.OrdinalIgnoreCase)), Is.True);
+        Assert.That(messages.Any(message => message.Contains("ContosoLinux", StringComparison.OrdinalIgnoreCase)), Is.True);
+        Assert.That(messages.Any(message => message.Contains("wsl --install -d ContosoLinux", StringComparison.OrdinalIgnoreCase)), Is.True);
         processRunner.VerifyAll();
         userInteraction.VerifyAll();
     }
 
     private EnableWslFeaturesStep CreateStep()
     {
-        return new EnableWslFeaturesStep(processRunner.Object, userInteraction.Object);
+        return new EnableWslFeaturesStep(processRunner.Object, userInteraction.Object, configuration);
     }
 }
