@@ -1098,15 +1098,15 @@
     {
       "id": "78f287da-1cbd-4517-a609-0272bde6274b",
       "name": "Iteration 12: Reliability and Diagnostics",
-      "details": "Deliver reliability enhancements outlined in prds/iterations.md by hardening process execution and adding persistent logging. Scope includes injecting DEBIAN_FRONTEND=noninteractive on Linux hosts, wiring Serilog file sinks into Onboard.Console, and ensuring ProcessRunner and ConsoleUserInteraction produce detailed diagnostics without overwhelming end users. Acceptance: updated unit coverage, verified logs written to OS-specific temp paths, dry-run semantics unchanged.",
+      "details": "Iteration 12 shipped via PR #18 with green ci workflow run 18882752801. Logging pipeline, ProcessRunner hardening, transcript capture, unit tests, and docs updates are all merged to the iter-12 branch awaiting review.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:15:48.258Z",
-      "updatedAt": "2025-10-28T01:15:48.258Z",
+      "updatedAt": "2025-10-28T17:00:06.223Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 7,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iteration",
         "iter-12"
@@ -1137,18 +1137,18 @@
     {
       "id": "a011b322-41cc-4434-82c1-d31e4620995f",
       "name": "10 Planning",
-      "details": "Prepare iteration branch and finalize technical approach for reliability and diagnostics enhancements.",
+      "details": "Planning complete: iter-12 branch created, scope reviewed, and implementation approach locked before coding started.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "78f287da-1cbd-4517-a609-0272bde6274b",
       "completed": true,
       "createdAt": "2025-10-28T01:15:56.232Z",
-      "updatedAt": "2025-10-28T16:47:57.300Z",
+      "updatedAt": "2025-10-28T16:59:39.724Z",
       "dependsOn": [
         "11757bc6-1419-41a3-9858-38a6c34957f8"
       ],
       "priority": 5,
       "complexity": 4,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-12",
         "planning"
@@ -1182,18 +1182,18 @@
     {
       "id": "dd7c72f6-450b-478a-9321-d3227f8070a6",
       "name": "20 Build & Document",
-      "details": "Implement ProcessRunner Linux enhancement, Serilog pipeline, command/transcript logging, unit tests, and architecture documentation updates for Iteration 12.",
+      "details": "ProcessRunner env injection, Serilog host pipeline, logging instrumentation, transcript capture, and documentation/tests all implemented per Iteration 12 scope.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "78f287da-1cbd-4517-a609-0272bde6274b",
       "completed": true,
       "createdAt": "2025-10-28T01:16:18.744Z",
-      "updatedAt": "2025-10-28T16:51:44.777Z",
+      "updatedAt": "2025-10-28T16:59:44.164Z",
       "dependsOn": [
         "a011b322-41cc-4434-82c1-d31e4620995f"
       ],
       "priority": 5,
       "complexity": 6,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-12",
         "build"
@@ -3641,15 +3641,15 @@
     {
       "id": "f27a611b-ff58-414e-9223-8970069650d0",
       "name": "30 Local Validation",
-      "details": "Execute full local test suite and dry-run validation to ensure logging changes don't break existing functionality.",
+      "details": "dotnet format/build/test and dry-run executed successfully on iter-12 branch prior to delivery; results captured in local validation notes.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "78f287da-1cbd-4517-a609-0272bde6274b",
       "completed": true,
       "createdAt": "2025-10-28T15:47:10.659Z",
-      "updatedAt": "2025-10-28T16:53:04.345Z",
+      "updatedAt": "2025-10-28T16:59:27.286Z",
       "dependsOn": [],
       "priority": 5,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-12",
         "validation"
@@ -3659,15 +3659,15 @@
     {
       "id": "57ac6eff-00a2-4a87-827b-45e5ded08fe8",
       "name": "40 Delivery & CI",
-      "details": "Open PR for iter-12 and monitor CI until all checks pass.",
+      "details": "Delivery complete: PR #18 opened for Iteration 12 and ci workflow run 18882752801 finished green. No outstanding follow-up actions.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "78f287da-1cbd-4517-a609-0272bde6274b",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T15:47:11.154Z",
-      "updatedAt": "2025-10-28T15:47:11.154Z",
+      "updatedAt": "2025-10-28T16:59:15.464Z",
       "dependsOn": [],
       "priority": 5,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-12",
         "delivery"
@@ -3732,15 +3732,15 @@
     {
       "id": "0d7852f9-5635-4308-91d0-a3edd6cabce2",
       "name": "Open PR: iter-12",
-      "details": "Open pull request for iter-12 branch with summary of reliability and diagnostics enhancements.",
+      "details": "Opened PR #18 (https://github.com/kevinaud/onboard-v2/pull/18) for iteration 12 reliability & diagnostics work after validating code, tests, and documentation updates.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "57ac6eff-00a2-4a87-827b-45e5ded08fe8",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T15:47:48.044Z",
-      "updatedAt": "2025-10-28T15:47:48.044Z",
+      "updatedAt": "2025-10-28T16:59:01.235Z",
       "dependsOn": [],
       "priority": 5,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-12",
         "delivery",
@@ -3751,15 +3751,15 @@
     {
       "id": "97c88f2b-6405-4e58-91b0-3c1e908b62f8",
       "name": "Monitor CI & Resolve Failures",
-      "details": "Monitor CI workflows for iter-12 and resolve any build, lint, or test failures until all checks are green.",
+      "details": "GitHub Actions run 18882752801 for PR #18 completed successfully (ci workflow). No follow-up fixes required.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "57ac6eff-00a2-4a87-827b-45e5ded08fe8",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T15:47:48.302Z",
-      "updatedAt": "2025-10-28T16:09:38.278Z",
+      "updatedAt": "2025-10-28T16:59:07.378Z",
       "dependsOn": [],
       "priority": 5,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-12",
         "delivery",
