@@ -7,6 +7,7 @@ using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
 using Onboard.Core.Abstractions;
+using Onboard.Core.Models;
 
 /// <summary>
 /// Installs Docker Desktop via winget and reminds the user to finish configuration.
@@ -15,15 +16,19 @@ public class InstallDockerDesktopStep : IOnboardingStep
 {
     private const string DetectionArguments = "-NoProfile -Command \"(Test-Path 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe') -or (Test-Path (Join-Path $env:LOCALAPPDATA 'Programs\\Docker\\Docker Desktop.exe'))\"";
     private const string WingetCommand = "install --id Docker.DockerDesktop -e --source winget";
-    private const string UbuntuDistroName = "Ubuntu-22.04";
 
     private readonly IProcessRunner processRunner;
     private readonly IUserInteraction userInteraction;
+    private readonly OnboardingConfiguration configuration;
 
-    public InstallDockerDesktopStep(IProcessRunner processRunner, IUserInteraction userInteraction)
+    public InstallDockerDesktopStep(
+        IProcessRunner processRunner,
+        IUserInteraction userInteraction,
+        OnboardingConfiguration configuration)
     {
         this.processRunner = processRunner;
         this.userInteraction = userInteraction;
+        this.configuration = configuration;
     }
 
     public string Description => "Install Docker Desktop";
@@ -57,11 +62,11 @@ public class InstallDockerDesktopStep : IOnboardingStep
 
         if (integrationConfigured)
         {
-            userInteraction.WriteLine("WSL integration for Ubuntu-22.04 has been pre-configured. Restart Docker Desktop if it was already running.");
+            userInteraction.WriteLine($"WSL integration for {configuration.WslDistroName} has been pre-configured. Restart Docker Desktop if it was already running.");
         }
         else
         {
-            userInteraction.WriteLine("Verify WSL integration for Ubuntu-22.04 inside Docker Desktop before continuing.");
+            userInteraction.WriteLine($"Verify WSL integration for {configuration.WslDistroName} inside Docker Desktop before continuing.");
         }
     }
 
@@ -134,7 +139,7 @@ public class InstallDockerDesktopStep : IOnboardingStep
             settings = new JsonObject();
         }
 
-        bool updated = EnsureIntegratedDistro(settings, UbuntuDistroName);
+        bool updated = EnsureIntegratedDistro(settings, configuration.WslDistroName);
         if (!updated)
         {
             return true;

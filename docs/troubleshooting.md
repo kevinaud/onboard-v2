@@ -29,6 +29,10 @@ Sensitive information such as personal access tokens should not appear in the lo
 
 Dry-run mode still records the console transcript but skips process execution, so the log will not contain command entries in that scenario.
 
+## Confirm Windows WSL configuration
+
+If the Windows workflow reports that the expected WSL distribution is missing or Docker Desktop does not automatically integrate with it, confirm that the distro name configured in `src/Onboard.Core/Models/OnboardingConfiguration.cs` matches what `wsl.exe -l -q` outputs on the affected machine. Both `EnableWslFeaturesStep` and `InstallDockerDesktopStep` read from this configuration record, so updating the value keeps the checks and the Docker integration in sync.
+
 ## Resetting the log between runs
 
 Delete the existing file (`del %TEMP%\onboard-pro.log` on Windows, `rm /tmp/onboard-pro.log` on macOS/Linux) if you want to ensure the next run starts with a clean slate. The application will recreate the file automatically.

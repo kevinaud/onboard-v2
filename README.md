@@ -61,6 +61,16 @@ Key concepts:
 - **Orchestrators** – one per platform (`WindowsOrchestrator`, `MacOsOrchestrator`, `UbuntuOrchestrator`, `WslGuestOrchestrator`) that compose the required steps.
 - **Steps** – each implements `IOnboardingStep`, performs an idempotency check via `ShouldExecuteAsync`, and executes safely when required.
 - **Process execution** – commands run through `IProcessRunner`, making both live runs and unit tests consistent.
+- **Configuration** – `OnboardingConfiguration` centralizes host-specific constants (for example the default WSL distro name/image) and is injected into steps that need them.
+
+## Configuration defaults
+
+The defaults that drive host-specific behaviour live in `src/Onboard.Core/Models/OnboardingConfiguration.cs`. Today the record exposes two properties:
+
+- `WslDistroName` – the distribution name returned by `wsl.exe -l -q`.
+- `WslDistroImage` – the identifier passed to `wsl --install -d <image>`.
+
+`Program.cs` registers a single `OnboardingConfiguration` instance in the DI container, so Windows steps such as `EnableWslFeaturesStep` and `InstallDockerDesktopStep` consume the same values. Updating the record allows you to align the onboarding workflow with a different corporate-standard WSL distribution without hunting down hard-coded strings.
 
 ## Release workflow
 

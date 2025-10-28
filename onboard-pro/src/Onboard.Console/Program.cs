@@ -63,6 +63,7 @@ public static class Program
                 services.AddSingleton<IUserInteraction, ConsoleUserInteraction>();
                 services.AddSingleton<IPlatformDetector, PlatformDetector>();
                 services.AddSingleton<IFileSystem, FileSystem>();
+                services.AddSingleton(new OnboardingConfiguration());
                 services.AddSingleton(executionOptions);
 
                 // Register PlatformFacts by invoking the detector once at startup
