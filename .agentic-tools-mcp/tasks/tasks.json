@@ -2712,15 +2712,15 @@
     {
       "id": "8501a7e1-6e5a-44b8-88b6-7a17c9143f10",
       "name": "Iteration 16: Spectre Presentation Layer",
-      "details": "Goal: Replace the legacy console interaction layer with a Spectre.Console-driven implementation while keeping the core library free of UI dependencies. Scope:\n- Extend IUserInteraction with rich output APIs (WriteNormal/Success/Warning/Error/Debug, ShowWelcomeBanner, ShowSummary, RunStatusAsync, Ask, Confirm) and introduce the IStatusContext abstraction for spinner updates without leaking Spectre types.\n- Add shared UX primitives in Onboard.Core.Models (StepStatus enum and StepResult record) to support completion summaries.\n- Relocate console presentation into Onboard.Console by removing ConsoleUserInteraction from Onboard.Core, creating SpectreUserInteraction that implements the new contract using Spectre.Console, referencing the Spectre.Console package, and wiring the service into the DI container.",
+      "details": "Spectre.Console presentation layer delivered: abstractions expanded, SpectreUserInteraction implemented, documentation refreshed, validations green, and PR #23 with passing CI is live.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:28:48.165Z",
-      "updatedAt": "2025-10-28T14:22:01.812Z",
+      "updatedAt": "2025-10-28T22:21:37.993Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 8,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iteration",
         "iter-16"
@@ -3029,18 +3029,18 @@
     {
       "id": "796e7fcd-2a7f-440b-ad1f-3d0ee4843d32",
       "name": "Open PR: iter-16",
-      "details": "Publish draft PR for Spectre.Console UX polish capturing UX demos, screenshots, and architecture notes.",
+      "details": "Opened PR #23 (https://github.com/kevinaud/onboard-v2/pull/23) after completing build, tests, documentation, and local Spectre validation. PR summary highlights Spectre.Console adoption and expanded IUserInteraction surface.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "d9b140ac-fd2c-4081-921e-60db125d1598",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:31:57.220Z",
-      "updatedAt": "2025-10-28T16:21:33.356Z",
+      "updatedAt": "2025-10-28T22:21:22.352Z",
       "dependsOn": [
         "90620fb1-695f-434a-bf12-4f0496616365"
       ],
       "priority": 5,
       "complexity": 2,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-16",
         "delivery",
@@ -3073,18 +3073,18 @@
     {
       "id": "d9b140ac-fd2c-4081-921e-60db125d1598",
       "name": "40 Delivery & CI",
-      "details": "Push Iteration 16 Spectre presentation changes for review and keep PR CI green.",
+      "details": "PR #23 opened and CI run 18890856328 succeeded. Iteration 16 delivery gate closed with no outstanding follow-up actions.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "8501a7e1-6e5a-44b8-88b6-7a17c9143f10",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:32:22.150Z",
-      "updatedAt": "2025-10-28T16:23:17.827Z",
+      "updatedAt": "2025-10-28T22:21:32.262Z",
       "dependsOn": [
         "1637469b-367d-4db5-8192-e72d62b48d90"
       ],
       "priority": 5,
       "complexity": 3,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-16",
         "delivery"
@@ -3825,16 +3825,16 @@
     {
       "id": "29666a20-6635-4fc0-83d1-e20b900c3770",
       "name": "Monitor CI & Resolve Failures",
-      "details": "Watch iter-16 PR workflows and push fixes until all CI checks pass.",
+      "details": "CI workflow run 18890856328 for PR #23 finished successfully (ci.yml). No follow-up fixes required.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "d9b140ac-fd2c-4081-921e-60db125d1598",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T16:23:11.707Z",
-      "updatedAt": "2025-10-28T16:23:11.707Z",
+      "updatedAt": "2025-10-28T22:21:26.197Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 3,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-16",
         "delivery",
