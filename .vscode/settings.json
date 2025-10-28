@@ -1,0 +1,10 @@
+{
+    "[markdown]": {
+        "editor.wordWrap": "wordWrapColumn",
+        "editor.wordWrapColumn": 100,
+        "editor.rulers": [
+            100
+        ]
+    },
+    "markdown.extension.preview.autoShowPreviewToSide": true
+}
