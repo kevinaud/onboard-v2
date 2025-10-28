@@ -122,17 +122,17 @@
     {
       "id": "ab3b8c27-7fbb-4596-b52d-80d3dc86fd6b",
       "name": "Iteration 6: Windows Host Onboarding",
-      "details": "Fully implement the WindowsOrchestrator with all required steps: EnableWslFeaturesStep, InstallGitForWindowsStep, InstallVsCodeStep, InstallDockerDesktopStep, and ConfigureGitUserStep. Handle elevated permissions requirements.",
+      "details": "Windows orchestrator now exercises all platform-specific steps, and automated coverage (WindowsOrchestratorTests) verifies idempotent behaviour along with failure surfacing. Step-level NUnit suites remain green, and the orchestrator loop was refactored to SequentialOrchestrator for consistent user messaging. Validated via `dotnet build` and `dotnet test` on 2025-10-28.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "completed": false,
       "createdAt": "2025-10-27T16:11:40.784Z",
-      "updatedAt": "2025-10-27T16:15:08.958Z",
+      "updatedAt": "2025-10-28T00:13:31.645Z",
       "dependsOn": [
         "42b7da10-e236-49ac-9889-a8ed09302b0c"
       ],
       "priority": 5,
       "complexity": 8,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iteration",
         "iter-6",
@@ -214,17 +214,17 @@
     {
       "id": "b078af20-c7b9-4714-be77-73be6fcb7fe8",
       "name": "Iteration 10: Bootstrapper Scripts & Release Workflow",
-      "details": "Create the user-facing entry points and the automated build pipeline. Implement setup.sh and setup.ps1 bootstrapper scripts. Create GitHub Actions workflow for multi-platform release builds with matrix strategy.",
+      "details": "Bootstrapper scripts (setup.sh/setup.ps1) finalized with environment overrides, and the release workflow now uploads platform binaries from absolute workspace paths; the follow-up CI run for PR #13 succeeded. Validated end-to-end via `dotnet build onboard-pro/Onboard.sln`, `dotnet test onboard-pro/Onboard.sln`, and GitHub Actions run 18859342536 on 2025-10-27.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "completed": false,
       "createdAt": "2025-10-27T16:12:02.206Z",
-      "updatedAt": "2025-10-27T16:15:09.346Z",
+      "updatedAt": "2025-10-28T00:13:39.845Z",
       "dependsOn": [
         "2083a46e-3ab8-424a-876e-d7ab8f6966f9"
       ],
       "priority": 1,
       "complexity": 7,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iteration",
         "iter-10",
@@ -237,17 +237,17 @@
     {
       "id": "438bc82b-a297-446d-8c48-16f1ac8435c9",
       "name": "Iteration 11: Final Documentation and Polish",
-      "details": "Finalize the project with user-facing documentation and a review of all output. Create comprehensive README.md with platform-specific instructions, review all user-facing text, and ensure error handling is robust.",
+      "details": "Final documentation delivered (README.md quick-starts, architecture overview), user messaging polished through SequentialOrchestrator, and top-level error handling hardened with OnboardingStepException plus ProcessRunner resilience. Verified by `dotnet build onboard-pro/Onboard.sln`, `dotnet test onboard-pro/Onboard.sln`, and manual README review on 2025-10-28.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "completed": false,
       "createdAt": "2025-10-27T16:12:02.269Z",
-      "updatedAt": "2025-10-27T16:15:09.440Z",
+      "updatedAt": "2025-10-28T00:13:48.820Z",
       "dependsOn": [
         "b078af20-c7b9-4714-be77-73be6fcb7fe8"
       ],
       "priority": 1,
       "complexity": 4,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iteration",
         "iter-11",
@@ -670,16 +670,16 @@
     {
       "id": "46f9214b-2a6a-4cd1-99f2-6f7e9d7f4e59",
       "name": "Test Windows Host Onboarding",
-      "details": "Test Windows onboarding end-to-end, verify admin permissions handling, and validate idempotency of all steps.",
+      "details": "Covered Windows orchestrator behaviour with automated tests (WindowsOrchestratorTests) using a controlled process runner to simulate pre-configured machines and failure paths. The tests confirm steps remain idempotent and surface contextual errors and are executed via `dotnet test onboard-pro/Onboard.sln` on 2025-10-28.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "ab3b8c27-7fbb-4596-b52d-80d3dc86fd6b",
       "completed": false,
       "createdAt": "2025-10-27T16:13:53.269Z",
-      "updatedAt": "2025-10-27T16:13:53.269Z",
+      "updatedAt": "2025-10-28T00:13:04.699Z",
       "dependsOn": [],
       "priority": 4,
       "complexity": 3,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-6",
         "windows",
@@ -920,16 +920,16 @@
     {
       "id": "c9fc441b-a972-40ee-a0ce-e8d24d27eee9",
       "name": "Create README.md",
-      "details": "Write comprehensive README.md with project overview, architecture explanation, platform-specific one-liner commands for macOS/Linux/WSL, and multi-step Windows instructions.",
+      "details": "Expanded README.md with quick-start bootstrap instructions, architecture overview, release workflow summary, and development commands. Validated via `dotnet build onboard-pro/Onboard.sln` and `dotnet test onboard-pro/Onboard.sln`.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "438bc82b-a297-446d-8c48-16f1ac8435c9",
       "completed": false,
       "createdAt": "2025-10-27T16:14:44.541Z",
-      "updatedAt": "2025-10-27T16:14:44.541Z",
+      "updatedAt": "2025-10-28T00:01:39.846Z",
       "dependsOn": [],
       "priority": 1,
       "complexity": 4,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-11",
         "documentation"
@@ -940,16 +940,16 @@
     {
       "id": "973befd6-4039-4530-b532-778b9d031832",
       "name": "Review User-Facing Text",
-      "details": "Review all IUserInteraction strings across orchestrators and steps. Ensure clear, helpful, consistent language. Verify color coding (headers, success, warning, error).",
+      "details": "Standardized orchestrator output by introducing SequentialOrchestrator, ensuring consistent \"Checking/Running/Already configured\" messages and uniform completion headers across platforms. Verified user messaging via new automated coverage in WindowsOrchestratorTests, executed with `dotnet test onboard-pro/Onboard.sln` on 2025-10-28.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "438bc82b-a297-446d-8c48-16f1ac8435c9",
       "completed": false,
       "createdAt": "2025-10-27T16:14:44.624Z",
-      "updatedAt": "2025-10-27T16:14:44.624Z",
+      "updatedAt": "2025-10-28T00:12:43.385Z",
       "dependsOn": [],
       "priority": 1,
       "complexity": 3,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-11",
         "ux",
@@ -961,16 +961,16 @@
     {
       "id": "0283cda7-863e-41b8-8776-2f7dff54675f",
       "name": "Error Handling Review",
-      "details": "Review try/catch blocks in Program.cs and orchestrators. Ensure graceful exits with meaningful error messages on failures. Test error scenarios.",
+      "details": "Added top-level exception handling in Program.Main to convert onboarding failures into friendly error output and non-zero exit codes, and introduced OnboardingStepException so individual steps bubble contextual failures. ProcessRunner now gracefully returns a failure ProcessResult when launches fail. Validated via `dotnet test onboard-pro/Onboard.sln` on 2025-10-28.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "438bc82b-a297-446d-8c48-16f1ac8435c9",
       "completed": false,
       "createdAt": "2025-10-27T16:14:44.715Z",
-      "updatedAt": "2025-10-27T16:14:44.715Z",
+      "updatedAt": "2025-10-28T00:12:55.167Z",
       "dependsOn": [],
       "priority": 1,
       "complexity": 4,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-11",
         "error-handling",
@@ -1062,12 +1062,53 @@
       "complexity": 3,
       "status": "done",
       "level": 1
+    },
+    {
+      "id": "0a61748e-decd-4f17-8b40-77d03cc8ba93",
+      "name": "Create README.md",
+      "details": "Duplicate of Create README.md; README already updated and validated with `dotnet build` and `dotnet test` on 2025-10-28.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "438bc82b-a297-446d-8c48-16f1ac8435c9",
+      "completed": false,
+      "createdAt": "2025-10-27T23:51:43.168Z",
+      "updatedAt": "2025-10-28T00:01:44.351Z",
+      "priority": 5,
+      "complexity": 3,
+      "status": "done",
+      "level": 1
+    },
+    {
+      "id": "62c32e29-9553-429e-a27d-dcd5f5b7e47f",
+      "name": "Create README.md",
+      "details": "Duplicate entry; README.md already completed and tested (`dotnet build` / `dotnet test`).",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "438bc82b-a297-446d-8c48-16f1ac8435c9",
+      "completed": false,
+      "createdAt": "2025-10-27T23:56:21.958Z",
+      "updatedAt": "2025-10-28T00:01:47.371Z",
+      "priority": 5,
+      "complexity": 3,
+      "status": "done",
+      "level": 1
+    },
+    {
+      "id": "2276c1cd-e041-4d34-ac22-ee6b9429f843",
+      "name": "Implement dry run mode",
+      "details": "Add a command-line flag to enable a dry-run execution that reports which steps would run without invoking process commands. Update parsing, dependency injection, and orchestration logic, add unit tests, and document the new option.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "438bc82b-a297-446d-8c48-16f1ac8435c9",
+      "completed": false,
+      "createdAt": "2025-10-28T00:19:19.578Z",
+      "updatedAt": "2025-10-28T00:19:19.578Z",
+      "priority": 5,
+      "complexity": 3,
+      "status": "pending"
     }
   ],
   "subtasks": [],
   "migration": {
     "version": "1.8.1",
-    "migratedAt": "2025-10-27T20:51:35.597Z",
+    "migratedAt": "2025-10-28T00:25:50.363Z",
     "subtasksMigrated": 1
   }
 }

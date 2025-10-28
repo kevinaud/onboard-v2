@@ -4,6 +4,7 @@
 
 namespace Onboard.Core.Services;
 
+using System;
 using System.Diagnostics;
 
 using Onboard.Core.Abstractions;
@@ -16,27 +17,38 @@ public class ProcessRunner : IProcessRunner
 {
     public async Task<ProcessResult> RunAsync(string fileName, string arguments)
     {
-        var startInfo = new ProcessStartInfo
+        try
         {
-            FileName = fileName,
-            Arguments = arguments,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-        };
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = fileName,
+                Arguments = arguments,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            };
 
-        using var process = new Process { StartInfo = startInfo };
-        process.Start();
+            using var process = new Process { StartInfo = startInfo };
 
-        var outputTask = process.StandardOutput.ReadToEndAsync();
-        var errorTask = process.StandardError.ReadToEndAsync();
+            if (!process.Start())
+            {
+                return new ProcessResult(-1, string.Empty, $"Failed to start process '{fileName}'.");
+            }
 
-        await process.WaitForExitAsync().ConfigureAwait(false);
+            var outputTask = process.StandardOutput.ReadToEndAsync();
+            var errorTask = process.StandardError.ReadToEndAsync();
 
-        string stdout = await outputTask.ConfigureAwait(false);
-        string stderr = await errorTask.ConfigureAwait(false);
+            await process.WaitForExitAsync().ConfigureAwait(false);
 
-        return new ProcessResult(process.ExitCode, stdout, stderr);
+            string stdout = await outputTask.ConfigureAwait(false);
+            string stderr = await errorTask.ConfigureAwait(false);
+
+            return new ProcessResult(process.ExitCode, stdout, stderr);
+        }
+        catch (Exception ex)
+        {
+            return new ProcessResult(-1, string.Empty, ex.Message);
+        }
     }
 }
