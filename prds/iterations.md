@@ -312,3 +312,86 @@ This document provides a sequential, iterative plan for migrating the legacy onb
 
 3.  **Error Handling Review:**
     *   Review the `try/catch` block in `Program.cs` and the general error handling in the orchestrators. Ensure that if a step fails, the application exits gracefully with a meaningful error message.
+Here are the additional iterations to address the most pressing issues, formatted for inclusion in `iterations.md`.
+
+***
+
+### **Iteration 12: Reliability and Diagnostics**
+
+**Goal:** Improve the robustness of external process execution and add persistent logging to aid in debugging user issues.
+
+1.  **Enhance `IProcessRunner` for Linux:**
+    *   Modify `ProcessRunner.cs` to automatically inject the `DEBIAN_FRONTEND=noninteractive` environment variable into the process start info when running on Linux. This prevents `apt-get` from hanging on standard input requests (like `tzdata` configuration).
+
+2.  **Implement Persistent Logging:**
+    *   Introduce `Serilog` and `Serilog.Sinks.File` packages to `Onboard.Console`.
+    *   Configure standard .NET `ILogger<T>` in `Program.cs` to write to a log file in a standard location (e.g., `%TEMP%/onboard-pro.log` on Windows, `/tmp/onboard-pro.log` on Linux/macOS).
+    *   Inject `ILogger<ProcessRunner>` into `ProcessRunner` and log *all* command executions (command, arguments, exit code, and a truncated version of stdout/stderr) at the `Debug` level.
+    *   Update `ConsoleUserInteraction` to also log all user-facing output to the file logger, ensuring a complete transcript of the session exists.
+
+---
+
+### **Iteration 13: Refactoring Platform-Aware Steps**
+
+**Goal:** Eliminate the `PlatformAwareStep` anti-pattern to adhere to the Single Responsibility Principle and improve maintainability.
+
+1.  **Decompose `InstallVsCodeStep`:**
+    *   Create three distinct classes:
+        *   `src/Onboard.Core/Steps/Windows/InstallWindowsVsCodeStep.cs` (containing the `winget` logic).
+        *   `src/Onboard.Core/Steps/MacOs/InstallMacVsCodeStep.cs` (containing the `brew` logic).
+        *   `src/Onboard.Core/Steps/Linux/InstallLinuxVsCodeStep.cs` (containing the `.deb`/`apt` logic).
+    *   Ensure each new step implements `IOnboardingStep` directly and contains its specific unit tests.
+
+2.  **Update Composition Root (`Program.cs`):**
+    *   Remove the registration for the generic `InstallVsCodeStep`.
+    *   Update the orchestrator registrations to inject the specific concrete step they need (e.g., `WindowsOrchestrator` now demands `InstallWindowsVsCodeStep`).
+
+3.  **Remove Legacy Abstraction:**
+    *   Delete `src/Onboard.Core/Steps/PlatformAware/PlatformAwareStep.cs` once it is no longer used.
+
+---
+
+### **Iteration 14: Centralized Configuration**
+
+**Goal:** Extract hardcoded values (like distro versions) into a centralized configuration source to prevent future maintenance headaches.
+
+1.  **Create Configuration Model:**
+    *   Create `src/Onboard.Core/Models/OnboardingConfiguration.cs`.
+    *   Add properties for standard values, for example:
+        ```csharp
+        public string WslDistroName { get; init; } = "Ubuntu-22.04";
+        public string WslDistroImage { get; init; } = "Ubuntu-22.04";
+        ```
+
+2.  **Register Configuration:**
+    *   In `Program.cs`, register this configuration object as a singleton. (For now, hardcoded defaults in the class are acceptable, but this paves the way for reading from a JSON file later if needed).
+
+3.  **Refactor Steps to use Configuration:**
+    *   Update `EnableWslFeaturesStep.cs` to inject `OnboardingConfiguration` and use `WslDistroName` instead of the hardcoded "Ubuntu-22.04" string.
+    *   Update `InstallDockerDesktopStep.cs` to use the same configuration value when checking/updating `settings-store.json`.
+
+To significantly improve the experience of manual testing and troubleshooting, you need real-time visibility into what the tool is actually doing "under the hood." The current design hides too much information from the console user.
+
+Here is an additional iteration focused specifically on interactive debuggability.
+
+### **Iteration 15: Enhanced Interactive Debugging**
+
+**Goal:** Provide optional, highly verbose real-time console output to allow developers to see exactly which commands are being executed and their raw output during manual tests.
+
+1.  **Implement Verbose Mode Flag:**
+    *   Update `CommandLineOptions.cs` and `CommandLineOptionsParser.cs` to support a new `--verbose` (alias `-v`) flag.
+    *   Update `ExecutionOptions.cs` to carry this new boolean flag.
+
+2.  **Enhance `IUserInteraction` for Verbosity:**
+    *   Add a `WriteDebug(string message)` method to the `IUserInteraction` interface.
+    *   Update `ConsoleUserInteraction.cs` to only output these messages when the `--verbose` flag is active (likely by injecting `ExecutionOptions` into it). Use a distinct color (e.g., DarkGray) to differentiate debug noise from standard progress.
+
+3.  **Transparent `ProcessRunner`:**
+    *   Modify `ProcessRunner.cs` to accept `ExecutionOptions` and `IUserInteraction`.
+    *   When Verbose mode is active:
+        *   Print the *exact* command and arguments being executed before they run (e.g., `[DEBUG] Executing: git clone https://...`).
+        *   Print the full `StandardOutput` and `StandardError` captured from the process, even if it succeeded. This is crucial for understanding *why* a `ShouldExecuteAsync` check might have returned `false` unexpectedly during testing.
+
+4.  **Detailed Dry-Run:**
+    *   Update the `SequentialOrchestrator`'s dry-run loop. Instead of just printing the step description, it should ideally be able to ask the step *what* it would do.
+    *   *Refinement:* A simpler approach for now is to have `ProcessRunner` respect both `IsDryRun` and `IsVerbose`. If both are true, it prints `[DRY-RUN] Would execute: <command> <args>` and returns a fake success result, rather than the orchestrator just skipping the whole step. This allows you to see the *exact* commands a dry run would trigger.
