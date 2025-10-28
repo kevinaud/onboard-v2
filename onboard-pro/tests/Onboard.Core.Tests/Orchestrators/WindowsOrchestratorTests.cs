@@ -2,6 +2,8 @@ namespace Onboard.Core.Tests.Orchestrators;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Moq;
@@ -18,7 +20,12 @@ public class WindowsOrchestratorTests
     [Test]
     public async Task ExecuteAsync_SkipsStepsWhenAlreadyConfigured()
     {
-        var ui = new Mock<IUserInteraction>(MockBehavior.Loose);
+        var capturedSummary = new List<StepResult>();
+        var ui = CreateUserInteractionMock(results =>
+        {
+            capturedSummary.Clear();
+            capturedSummary.AddRange(results);
+        });
         var processRunner = new FakeProcessRunner(new Dictionary<(string, string), ProcessResult>
         {
             { ("wsl.exe", "--status"), new ProcessResult(0, "Version: 1.0", string.Empty) },
@@ -48,22 +55,34 @@ public class WindowsOrchestratorTests
 
         await orchestrator.ExecuteAsync().ConfigureAwait(false);
 
-        ui.Verify(x => x.WriteNormal("Windows host onboarding"), Times.Once);
-        ui.Verify(x => x.WriteNormal("Checking Verify Windows Subsystem for Linux prerequisites..."), Times.Once);
-        ui.Verify(x => x.WriteSuccess("Verify Windows Subsystem for Linux prerequisites already configured."), Times.Once);
-        ui.Verify(x => x.WriteSuccess("Install Git for Windows already configured."), Times.Once);
-        ui.Verify(x => x.WriteSuccess("Install Visual Studio Code already configured."), Times.Once);
-        ui.Verify(x => x.WriteSuccess("Install Docker Desktop already configured."), Times.Once);
-        ui.Verify(x => x.WriteSuccess("Configure Git user identity already configured."), Times.Once);
+        ui.Verify(x => x.WriteNormal("Starting Windows host onboarding..."), Times.Once);
+        ui.Verify(x => x.RunStatusAsync(It.IsAny<string>(), It.IsAny<Func<IStatusContext, Task>>(), It.IsAny<CancellationToken>()), Times.Exactly(5));
+        ui.Verify(x => x.ShowSummary(It.IsAny<IReadOnlyCollection<StepResult>>()), Times.Once);
         ui.Verify(x => x.WriteSuccess("Windows host onboarding complete."), Times.Once);
-        ui.Verify(x => x.Ask(It.IsAny<string>(), It.IsAny<string?>()), Times.Never);
-        ui.Verify(x => x.WriteNormal(It.Is<string>(s => s.StartsWith("Running", StringComparison.Ordinal))), Times.Never);
+
+        Assert.That(capturedSummary, Has.Count.EqualTo(5));
+        Assert.That(capturedSummary.All(result => result.Status == StepStatus.Skipped), "Expected all steps to be skipped.");
+        bool allAlreadyConfigured = capturedSummary.All(result => string.Equals(result.SkipReason, "Already configured", StringComparison.Ordinal));
+        Assert.That(allAlreadyConfigured, "Expected skip reason to report already configured.");
+        Assert.That(capturedSummary.Select(result => result.StepName), Is.EqualTo(new[]
+        {
+            "Verify Windows Subsystem for Linux prerequisites",
+            "Install Git for Windows",
+            "Install Visual Studio Code",
+            "Install Docker Desktop",
+            "Configure Git user identity",
+        }));
     }
 
     [Test]
     public void ExecuteAsync_WhenStepFails_ThrowsOnboardingStepException()
     {
-        var ui = new Mock<IUserInteraction>(MockBehavior.Loose);
+        var capturedSummary = new List<StepResult>();
+        var ui = CreateUserInteractionMock(results =>
+        {
+            capturedSummary.Clear();
+            capturedSummary.AddRange(results);
+        });
 
         var processRunner = new FakeProcessRunner(new Dictionary<(string, string), ProcessResult>
         {
@@ -95,13 +114,26 @@ public class WindowsOrchestratorTests
         var exception = Assert.ThrowsAsync<OnboardingStepException>(() => orchestrator.ExecuteAsync())!;
 
         Assert.That(exception.Message, Does.Contain("Install Git for Windows"));
+        ui.Verify(x => x.ShowSummary(It.IsAny<IReadOnlyCollection<StepResult>>()), Times.Once);
         ui.Verify(x => x.WriteSuccess("Windows host onboarding complete."), Times.Never);
+
+        Assert.That(capturedSummary, Has.Count.EqualTo(2));
+        Assert.That(capturedSummary[0].StepName, Is.EqualTo("Verify Windows Subsystem for Linux prerequisites"));
+        Assert.That(capturedSummary[0].Status, Is.EqualTo(StepStatus.Skipped));
+        Assert.That(capturedSummary[1].StepName, Is.EqualTo("Install Git for Windows"));
+        Assert.That(capturedSummary[1].Status, Is.EqualTo(StepStatus.Failed));
+        Assert.That(capturedSummary[1].Exception, Is.Not.Null);
     }
 
     [Test]
     public async Task ExecuteAsync_WithDryRun_OnlyReportsSteps()
     {
-        var ui = new Mock<IUserInteraction>(MockBehavior.Loose);
+        var capturedSummary = new List<StepResult>();
+        var ui = CreateUserInteractionMock(results =>
+        {
+            capturedSummary.Clear();
+            capturedSummary.AddRange(results);
+        });
 
         var processRunner = new FakeProcessRunner(new Dictionary<(string, string), ProcessResult>
         {
@@ -132,11 +164,74 @@ public class WindowsOrchestratorTests
 
         await orchestrator.ExecuteAsync().ConfigureAwait(false);
 
-        ui.Verify(x => x.WriteNormal("Windows host onboarding"), Times.Once);
-        ui.Verify(x => x.WriteNormal(It.Is<string>(s => s.StartsWith("Checking", StringComparison.Ordinal))), Times.AtLeastOnce);
-        ui.Verify(x => x.WriteNormal(It.Is<string>(s => s.StartsWith("Dry run: would execute", StringComparison.Ordinal))), Times.AtLeastOnce);
+        ui.Verify(x => x.WriteNormal("Starting Windows host onboarding..."), Times.Once);
         ui.Verify(x => x.WriteSuccess("Windows host onboarding dry run complete."), Times.Once);
-        ui.Verify(x => x.WriteNormal(It.Is<string>(s => s.StartsWith("Running", StringComparison.Ordinal))), Times.Never);
+        ui.Verify(x => x.RunStatusAsync(It.IsAny<string>(), It.IsAny<Func<IStatusContext, Task>>(), It.IsAny<CancellationToken>()), Times.Exactly(5));
+
+        Assert.That(capturedSummary, Has.Count.EqualTo(5));
+        Assert.That(capturedSummary.All(result => result.Status == StepStatus.Skipped));
+        bool allDryRun = capturedSummary.All(result => string.Equals(result.SkipReason, "Dry run", StringComparison.Ordinal));
+        Assert.That(allDryRun);
+    }
+
+    private static Mock<IUserInteraction> CreateUserInteractionMock(Action<IReadOnlyCollection<StepResult>> summaryCallback)
+    {
+        var ui = new Mock<IUserInteraction>(MockBehavior.Loose);
+
+        ui.Setup(x => x.RunStatusAsync(It.IsAny<string>(), It.IsAny<Func<IStatusContext, Task>>(), It.IsAny<CancellationToken>()))
+            .Returns((string _, Func<IStatusContext, Task> action, CancellationToken token) => action(new TestStatusContext(ui.Object, token)));
+
+        ui.Setup(x => x.ShowSummary(It.IsAny<IReadOnlyCollection<StepResult>>()))
+            .Callback(summaryCallback);
+
+        return ui;
+    }
+
+    private sealed class TestStatusContext : IStatusContext
+    {
+        private readonly IUserInteraction interaction;
+        private readonly CancellationToken cancellationToken;
+
+        public TestStatusContext(IUserInteraction interaction, CancellationToken cancellationToken)
+        {
+            this.interaction = interaction;
+            this.cancellationToken = cancellationToken;
+        }
+
+        public void UpdateStatus(string status)
+        {
+            this.cancellationToken.ThrowIfCancellationRequested();
+        }
+
+        public void WriteNormal(string message)
+        {
+            this.cancellationToken.ThrowIfCancellationRequested();
+            this.interaction.WriteNormal(message);
+        }
+
+        public void WriteSuccess(string message)
+        {
+            this.cancellationToken.ThrowIfCancellationRequested();
+            this.interaction.WriteSuccess(message);
+        }
+
+        public void WriteWarning(string message)
+        {
+            this.cancellationToken.ThrowIfCancellationRequested();
+            this.interaction.WriteWarning(message);
+        }
+
+        public void WriteError(string message)
+        {
+            this.cancellationToken.ThrowIfCancellationRequested();
+            this.interaction.WriteError(message);
+        }
+
+        public void WriteDebug(string message)
+        {
+            this.cancellationToken.ThrowIfCancellationRequested();
+            this.interaction.WriteDebug(message);
+        }
     }
 
     private sealed class FakeProcessRunner : IProcessRunner

@@ -199,6 +199,18 @@ await _ui.RunStatusAsync("Starting onboarding...", async ctx =>
 _ui.ShowSummary(results);
 ```
 
+### 3.3. Iteration 17 orchestration refinements
+
+The production implementation goes a step further than the pseudocode above:
+
+- Each step is wrapped in `RunStatusAsync` so spinner updates transition from "Checking" to "Running" without clearing the console or losing pending prompts.
+- Dry-run mode records a skipped `StepResult` (`Status = StepStatus.Skipped`, `Details = "Dry run"`) and prints `[grey]` skip markup to keep the transcript consistent.
+- Platform orchestrators now supply user-facing skip reasons (for example "Already configured" or "Dry run") so the final summary table explains why work was skipped.
+- Failures capture the thrown `OnboardingStepException` message inside the `StepResult` before rethrowing, ensuring the summary shows a red row even when execution aborts early.
+- After processing the full list the orchestrator invokes `ShowSummary(results)` once, producing a Spectre table with the step name, status, and details columns.
+
+These refinements keep the UX calm: the console shows one spinner at a time, while the history above it contains the same markup that eventually appears in the completion summary.
+
 ---
 
 ## 4. Testing Implications

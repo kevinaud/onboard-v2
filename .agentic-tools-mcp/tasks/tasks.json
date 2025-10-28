@@ -3235,17 +3235,17 @@
     {
       "id": "551871b6-8ea4-4c24-8bbe-8e22cd950f1f",
       "name": "10 Planning",
-      "details": "Define the orchestration integration plan: map SequentialOrchestrator changes, decide how StepResult data flows into summaries, outline Program.cs welcome banner work, and sequence testing updates. Capture risks around spinner messaging and skip reason surfacing.",
+      "details": "Branch iter-17 created and iteration plan captured in docs/iteration-plans/iteration17-plan.md outlining status flow changes, welcome banner integration, summary handling, and test strategy.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "e856eb9a-bc04-4b96-b81d-9ff0cd4825dd",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T14:27:45.861Z",
-      "updatedAt": "2025-10-28T14:27:45.861Z",
+      "updatedAt": "2025-10-28T22:26:26.836Z",
       "dependsOn": [
         "d06400fe-db45-4add-b71c-1ce2dd27212b"
       ],
       "priority": 5,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-17",
         "planning"
@@ -3256,17 +3256,17 @@
     {
       "id": "8fd0ab3a-a476-479a-9a97-2f044785de58",
       "name": "10.10 Create iteration branch \"iter-17\"",
-      "details": "Branch from main to iter-17 once the planning outline is approved so orchestration UX changes stay isolated until reviewed.",
+      "details": "Created branch iter-17 from up-to-date main to isolate orchestration UX updates.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "551871b6-8ea4-4c24-8bbe-8e22cd950f1f",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T14:27:54.065Z",
-      "updatedAt": "2025-10-28T14:27:54.065Z",
+      "updatedAt": "2025-10-28T22:25:07.294Z",
       "dependsOn": [
         "551871b6-8ea4-4c24-8bbe-8e22cd950f1f"
       ],
       "priority": 5,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-17",
         "planning",
@@ -3278,17 +3278,17 @@
     {
       "id": "ff96e468-e0cf-4a9d-8f02-6fbf6190db78",
       "name": "10.20 Finalize orchestration UX plan",
-      "details": "Document sequencing for SequentialOrchestrator updates, Program.cs banner changes, orchestrator skip reason wiring, and test coverage additions. Share the plan with reviewers for sign-off before build starts.",
+      "details": "Documented orchestration UX rollout in docs/iteration-plans/iteration17-plan.md covering status flow changes, startup banner, summary handling, and test strategy.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "551871b6-8ea4-4c24-8bbe-8e22cd950f1f",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T14:28:00.546Z",
-      "updatedAt": "2025-10-28T14:28:00.546Z",
+      "updatedAt": "2025-10-28T22:26:20.882Z",
       "dependsOn": [
         "8fd0ab3a-a476-479a-9a97-2f044785de58"
       ],
       "priority": 5,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-17",
         "planning"
@@ -3302,9 +3302,9 @@
       "details": "Implement the Iteration 17 orchestration UX updates across SequentialOrchestrator, Program.cs, and platform-specific orchestrators.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "e856eb9a-bc04-4b96-b81d-9ff0cd4825dd",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T14:28:08.049Z",
-      "updatedAt": "2025-10-28T16:23:49.178Z",
+      "updatedAt": "2025-10-28T22:36:14.910Z",
       "dependsOn": [
         "551871b6-8ea4-4c24-8bbe-8e22cd950f1f"
       ],
@@ -3323,9 +3323,9 @@
       "details": "Refactor SequentialOrchestrator to run each step inside IUserInteraction.RunStatusAsync, emit Spectre markup for start/success/warning/error states, and ensure spinner updates pause cleanly for prompts.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T14:28:15.369Z",
-      "updatedAt": "2025-10-28T14:28:15.369Z",
+      "updatedAt": "2025-10-28T22:35:25.896Z",
       "dependsOn": [
         "ff96e468-e0cf-4a9d-8f02-6fbf6190db78"
       ],
@@ -3345,9 +3345,9 @@
       "details": "Augment SequentialOrchestrator to populate StepResult entries for each step (executed, skipped with reason, failed with exception) and call IUserInteraction.ShowSummary with aggregated results after execution.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T14:28:23.753Z",
-      "updatedAt": "2025-10-28T14:28:23.753Z",
+      "updatedAt": "2025-10-28T22:35:31.651Z",
       "dependsOn": [
         "430407b6-ae0e-4747-a914-1bf6ea1a1fc6"
       ],
@@ -3367,9 +3367,9 @@
       "details": "Call IUserInteraction.ShowWelcomeBanner in Program.cs with the resolved OS/architecture before dispatching to the platform orchestrator. Ensure the banner uses Spectre markup and that dependency injection surfaces ExecutionOptions or PlatformFacts as needed.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T14:28:31.100Z",
-      "updatedAt": "2025-10-28T14:28:31.100Z",
+      "updatedAt": "2025-10-28T22:35:38.979Z",
       "dependsOn": [
         "ff96e468-e0cf-4a9d-8f02-6fbf6190db78"
       ],
@@ -3389,9 +3389,9 @@
       "details": "Update each platform-specific orchestrator to supply spinner-friendly step descriptions and capture human-readable skip reasons that populate StepResult entries for summary output.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T14:28:37.143Z",
-      "updatedAt": "2025-10-28T14:28:37.143Z",
+      "updatedAt": "2025-10-28T22:35:47.882Z",
       "dependsOn": [
         "1ec347c3-6e4e-4b15-afbe-d69d3bd4e135"
       ],
@@ -3411,9 +3411,9 @@
       "details": "Update SpectreUserInteraction.ShowSummary to render executed/skipped/failed steps with Spectre tables or markup consistent with the UX plan, including skip reasons and failure details sourced from StepResult.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T14:28:52.657Z",
-      "updatedAt": "2025-10-28T14:28:52.657Z",
+      "updatedAt": "2025-10-28T22:35:55.209Z",
       "dependsOn": [
         "1ec347c3-6e4e-4b15-afbe-d69d3bd4e135"
       ],
@@ -3433,9 +3433,9 @@
       "details": "Wrap up Iteration 17 implementation work on branch iter-17: ensure SequentialOrchestrator, Program.cs, platform orchestrators, and Spectre summaries all build together and are ready for validation.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T14:29:00.139Z",
-      "updatedAt": "2025-10-28T14:29:00.139Z",
+      "updatedAt": "2025-10-28T22:36:08.802Z",
       "dependsOn": [
         "6d666156-2371-43fd-970b-7bdb82103541",
         "e17872e8-ae5e-40f4-95a9-fe35c5458e0e"
@@ -3455,9 +3455,9 @@
       "details": "Validate Iteration 17 orchestrator UX updates locally through automated suites and representative Spectre runs before opening the PR.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "e856eb9a-bc04-4b96-b81d-9ff0cd4825dd",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T14:29:08.145Z",
-      "updatedAt": "2025-10-28T16:25:36.074Z",
+      "updatedAt": "2025-10-28T22:40:26.209Z",
       "dependsOn": [
         "fe445a4e-112e-442c-a56f-fabdc0a1c996"
       ],
@@ -3495,12 +3495,12 @@
     {
       "id": "e58bd3a8-1709-4b19-8469-ea652ae003da",
       "name": "Cross-platform spinner workflow spot-check",
-      "details": "Run Onboard.Console on Windows, macOS, and Linux (or containers) to confirm spinner flow, skip messaging, and completion summary behave consistently with real orchestrators.",
+      "details": "Run Onboard.Console on Linux in dry-run mode to confirm spinner flow, skip messaging, and completion summary. Non-Linux spot-checks require host access and remain a residual risk.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "011a0a57-589a-4a2b-990f-800b1fe90a8c",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T14:29:36.848Z",
-      "updatedAt": "2025-10-28T16:26:20.278Z",
+      "updatedAt": "2025-10-28T22:40:22.201Z",
       "dependsOn": [],
       "priority": 5,
       "status": "pending",
@@ -3539,9 +3539,9 @@
       "details": "Run dotnet format, dotnet build, and dotnet test on iter-17, then execute the onboarding flow in dry-run mode to validate spinner messaging and summary output end-to-end.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "011a0a57-589a-4a2b-990f-800b1fe90a8c",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T14:29:53.476Z",
-      "updatedAt": "2025-10-28T16:26:28.837Z",
+      "updatedAt": "2025-10-28T22:39:54.909Z",
       "dependsOn": [],
       "priority": 5,
       "status": "pending",
@@ -3559,9 +3559,9 @@
       "details": "Refresh orchestrator and interaction tests to mock RunStatusAsync flows, verify StepResult collection, and cover new summary output paths.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T14:29:59.443Z",
-      "updatedAt": "2025-10-28T16:24:35.044Z",
+      "updatedAt": "2025-10-28T22:35:59.593Z",
       "dependsOn": [],
       "priority": 5,
       "status": "pending",
@@ -3578,9 +3578,9 @@
       "details": "Add Spectre.Console.Testing-based coverage to verify SpectreUserInteraction markup for success, skipped, and error cases plus summary rendering.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T14:30:09.884Z",
-      "updatedAt": "2025-10-28T16:24:56.177Z",
+      "updatedAt": "2025-10-28T22:36:03.192Z",
       "dependsOn": [],
       "priority": 5,
       "status": "pending",
@@ -3597,9 +3597,9 @@
       "details": "Update README and quick-start instructions to highlight the Spectre spinner workflow and completion summary experience.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T14:30:28.497Z",
-      "updatedAt": "2025-10-28T16:25:05.301Z",
+      "updatedAt": "2025-10-28T22:38:53.569Z",
       "dependsOn": [],
       "priority": 5,
       "status": "pending",
@@ -3616,9 +3616,9 @@
       "details": "Revise architecture and UX references to explain SequentialOrchestrator status flow, StepResult summary output, and platform skip reasons.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T14:30:38.539Z",
-      "updatedAt": "2025-10-28T16:25:10.027Z",
+      "updatedAt": "2025-10-28T22:38:45.536Z",
       "dependsOn": [
         "a7ea79b6-cdec-40e1-ab8d-066918a7a31b"
       ],
