@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging.Abstractions;
 
 using Onboard.Console.Orchestrators;
+using Onboard.Console.Services;
 using Onboard.Core.Abstractions;
 using Onboard.Core.Models;
 using Onboard.Core.Services;
@@ -24,6 +25,8 @@ using Onboard.Core.Steps.WslGuest;
 using Serilog;
 using Serilog.Events;
 
+using Spectre.Console;
+
 using OS = Onboard.Core.Models.OperatingSystem;
 
 public static class Program
@@ -33,7 +36,7 @@ public static class Program
         // 1. Parse the supported command-line options
         if (!CommandLineOptionsParser.TryParse(args, out var commandLineOptions, out string? parseError))
         {
-            var fallbackUi = new ConsoleUserInteraction(NullLogger<ConsoleUserInteraction>.Instance, new ExecutionOptions(IsDryRun: false, IsVerbose: false));
+            var fallbackUi = new SpectreUserInteraction(AnsiConsole.Console, NullLogger<SpectreUserInteraction>.Instance, new ExecutionOptions(IsDryRun: false, IsVerbose: false));
             fallbackUi.WriteError(parseError ?? "Invalid command-line arguments.");
             return;
         }
@@ -60,7 +63,8 @@ public static class Program
             {
                 // Register all singleton services
                 services.AddSingleton<IProcessRunner, ProcessRunner>();
-                services.AddSingleton<IUserInteraction, ConsoleUserInteraction>();
+                services.AddSingleton<IAnsiConsole>(_ => AnsiConsole.Console);
+                services.AddSingleton<IUserInteraction, SpectreUserInteraction>();
                 services.AddSingleton<IPlatformDetector, PlatformDetector>();
                 services.AddSingleton<IFileSystem, FileSystem>();
                 services.AddSingleton(new OnboardingConfiguration());

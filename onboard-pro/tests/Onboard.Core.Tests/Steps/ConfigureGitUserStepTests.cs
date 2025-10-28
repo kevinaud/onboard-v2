@@ -114,9 +114,9 @@ public class ConfigureGitUserStepTests
         var mockUI = new Mock<IUserInteraction>();
 
         // Simulate user input
-        mockUI.Setup(ui => ui.Prompt("Please enter your full name for Git commits: "))
+        mockUI.Setup(ui => ui.Ask("Please enter your full name for Git commits:", null))
             .Returns("Test User");
-        mockUI.Setup(ui => ui.Prompt("Please enter your email for Git commits: "))
+        mockUI.Setup(ui => ui.Ask("Please enter your email for Git commits:", null))
             .Returns("test@example.com");
 
         // Simulate successful git config commands
@@ -144,10 +144,10 @@ public class ConfigureGitUserStepTests
         var mockUI = new Mock<IUserInteraction>();
 
         int promptCount = 0;
-        mockUI.Setup(ui => ui.Prompt("Please enter your full name for Git commits: "))
+        mockUI.Setup(ui => ui.Ask("Please enter your full name for Git commits:", null))
             .Returns(() => promptCount++ == 0 ? string.Empty : "Test User");
 
-        mockUI.Setup(ui => ui.Prompt("Please enter your email for Git commits: "))
+        mockUI.Setup(ui => ui.Ask("Please enter your email for Git commits:", null))
             .Returns("test@example.com");
 
         mockProcessRunner.Setup(p => p.RunAsync("git", It.IsAny<string>()))
@@ -159,7 +159,7 @@ public class ConfigureGitUserStepTests
         await step.ExecuteAsync();
 
         // Assert
-        mockUI.Verify(ui => ui.Prompt("Please enter your full name for Git commits: "), Times.Exactly(2));
+        mockUI.Verify(ui => ui.Ask("Please enter your full name for Git commits:", null), Times.Exactly(2));
         mockUI.Verify(ui => ui.WriteWarning("Name cannot be empty."), Times.Once);
     }
 
@@ -170,9 +170,9 @@ public class ConfigureGitUserStepTests
         var mockProcessRunner = new Mock<IProcessRunner>();
         var mockUI = new Mock<IUserInteraction>();
 
-        mockUI.Setup(ui => ui.Prompt("Please enter your full name for Git commits: "))
+        mockUI.Setup(ui => ui.Ask("Please enter your full name for Git commits:", null))
             .Returns("Test User");
-        mockUI.Setup(ui => ui.Prompt("Please enter your email for Git commits: "))
+        mockUI.Setup(ui => ui.Ask("Please enter your email for Git commits:", null))
             .Returns("test@example.com");
 
         // Simulate git config failure

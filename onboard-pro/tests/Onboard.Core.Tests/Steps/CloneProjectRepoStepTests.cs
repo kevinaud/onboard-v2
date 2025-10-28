@@ -83,7 +83,7 @@ public class CloneProjectRepoStepTests
     public async Task ExecuteAsync_WhenRepositoryMissing_ClonesAndReportsSuccess()
     {
         fileSystem.Setup(fs => fs.DirectoryExists(DefaultWorkspace)).Returns(false);
-        userInteraction.Setup(ui => ui.WriteLine($"Creating workspace directory at {DefaultWorkspace}"));
+        userInteraction.Setup(ui => ui.WriteNormal($"Creating workspace directory at {DefaultWorkspace}"));
         fileSystem.Setup(fs => fs.CreateDirectory(DefaultWorkspace));
         fileSystem.Setup(fs => fs.DirectoryExists(RepositoryPath)).Returns(false);
         processRunner

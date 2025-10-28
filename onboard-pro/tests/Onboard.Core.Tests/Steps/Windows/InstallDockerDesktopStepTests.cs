@@ -115,7 +115,7 @@ public class InstallDockerDesktopStepTests
 
         var messages = new List<string>();
         userInteraction.Setup(ui => ui.WriteSuccess("Docker Desktop installed via winget."));
-        userInteraction.Setup(ui => ui.WriteLine(It.IsAny<string>())).Callback<string>(messages.Add);
+        userInteraction.Setup(ui => ui.WriteNormal(It.IsAny<string>())).Callback<string>(messages.Add);
 
         configuration = configuration with { WslDistroName = "ContosoLinux" };
 

@@ -28,11 +28,11 @@ public abstract class SequentialOrchestrator : IPlatformOrchestrator
 
     public async Task ExecuteAsync()
     {
-        userInteraction.WriteHeader(title);
+        this.userInteraction.WriteNormal(title);
 
-        foreach (var step in steps)
+        foreach (var step in this.steps)
         {
-            userInteraction.WriteLine($"Checking {step.Description}...");
+            this.userInteraction.WriteNormal($"Checking {step.Description}...");
 
             bool shouldExecute;
             try
@@ -46,17 +46,17 @@ public abstract class SequentialOrchestrator : IPlatformOrchestrator
 
             if (!shouldExecute)
             {
-                userInteraction.WriteSuccess($"{step.Description} already configured.");
+                this.userInteraction.WriteSuccess($"{step.Description} already configured.");
                 continue;
             }
 
-            if (executionOptions.IsDryRun)
+            if (this.executionOptions.IsDryRun)
             {
-                userInteraction.WriteLine($"Dry run: would execute {step.Description}.");
+                this.userInteraction.WriteNormal($"Dry run: would execute {step.Description}.");
                 continue;
             }
 
-            userInteraction.WriteLine($"Running {step.Description}...");
+            this.userInteraction.WriteNormal($"Running {step.Description}...");
 
             try
             {
@@ -68,7 +68,7 @@ public abstract class SequentialOrchestrator : IPlatformOrchestrator
             }
         }
 
-        userInteraction.WriteLine(string.Empty);
-        userInteraction.WriteSuccess(executionOptions.IsDryRun ? $"{title} dry run complete." : $"{title} complete.");
+        this.userInteraction.WriteNormal(string.Empty);
+        this.userInteraction.WriteSuccess(this.executionOptions.IsDryRun ? $"{this.title} dry run complete." : $"{this.title} complete.");
     }
 }

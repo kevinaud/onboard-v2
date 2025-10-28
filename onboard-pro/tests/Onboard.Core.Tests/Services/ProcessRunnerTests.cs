@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -109,6 +111,23 @@ public class ProcessRunnerTests
 
     private sealed class NullUserInteraction : IUserInteraction
     {
+        public string Ask(string prompt, string? defaultValue = null) => defaultValue ?? string.Empty;
+
+        public bool Confirm(string prompt, bool defaultValue = false) => defaultValue;
+
+        public void ShowSummary(IReadOnlyCollection<StepResult> results)
+        {
+        }
+
+        public void ShowWelcomeBanner(PlatformFacts platformFacts)
+        {
+        }
+
+        public Task RunStatusAsync(string statusMessage, Func<IStatusContext, Task> action, CancellationToken cancellationToken = default)
+        {
+            return action(new NullStatusContext());
+        }
+
         public void WriteDebug(string message)
         {
         }
@@ -117,11 +136,7 @@ public class ProcessRunnerTests
         {
         }
 
-        public void WriteHeader(string message)
-        {
-        }
-
-        public void WriteLine(string message)
+        public void WriteNormal(string message)
         {
         }
 
@@ -132,25 +147,36 @@ public class ProcessRunnerTests
         public void WriteWarning(string message)
         {
         }
-
-        public string Prompt(string message) => string.Empty;
     }
 
     private sealed class RecordingUserInteraction : IUserInteraction
     {
         public List<string> DebugMessages { get; } = new();
 
-        public void WriteDebug(string message) => DebugMessages.Add(message);
+        public string Ask(string prompt, string? defaultValue = null) => defaultValue ?? string.Empty;
+
+        public bool Confirm(string prompt, bool defaultValue = false) => defaultValue;
+
+        public Task RunStatusAsync(string statusMessage, Func<IStatusContext, Task> action, CancellationToken cancellationToken = default)
+        {
+            return action(new NullStatusContext());
+        }
+
+        public void ShowSummary(IReadOnlyCollection<StepResult> results)
+        {
+        }
+
+        public void ShowWelcomeBanner(PlatformFacts platformFacts)
+        {
+        }
+
+        public void WriteDebug(string message) => this.DebugMessages.Add(message);
 
         public void WriteError(string message)
         {
         }
 
-        public void WriteHeader(string message)
-        {
-        }
-
-        public void WriteLine(string message)
+        public void WriteNormal(string message)
         {
         }
 
@@ -161,7 +187,32 @@ public class ProcessRunnerTests
         public void WriteWarning(string message)
         {
         }
+    }
 
-        public string Prompt(string message) => string.Empty;
+    private sealed class NullStatusContext : IStatusContext
+    {
+        public void UpdateStatus(string status)
+        {
+        }
+
+        public void WriteDebug(string message)
+        {
+        }
+
+        public void WriteError(string message)
+        {
+        }
+
+        public void WriteNormal(string message)
+        {
+        }
+
+        public void WriteSuccess(string message)
+        {
+        }
+
+        public void WriteWarning(string message)
+        {
+        }
     }
 }

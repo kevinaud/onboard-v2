@@ -2734,9 +2734,9 @@
       "details": "Turn the iteration16.md scope into an actionable checklist. Define how the IUserInteraction surface expands, how IStatusContext is represented without leaking Spectre types, the location and structure of StepResult/StepStatus, and the sequence for moving ConsoleUserInteraction into Onboard.Console. Capture dependencies on package references, DI updates, and any temporary adapters needed for legacy tests.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "8501a7e1-6e5a-44b8-88b6-7a17c9143f10",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:29:00.507Z",
-      "updatedAt": "2025-10-28T14:23:08.422Z",
+      "updatedAt": "2025-10-28T21:47:54.893Z",
       "dependsOn": [
         "f22586ce-fb6f-406d-be3a-cd032429f20e"
       ],
@@ -2756,9 +2756,9 @@
       "details": "Branch from main to iter-16 to isolate Spectre.Console UX polish work.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "258d5609-d4a3-45a2-9267-5fae1049db89",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:29:12.475Z",
-      "updatedAt": "2025-10-28T01:29:12.475Z",
+      "updatedAt": "2025-10-28T21:47:15.955Z",
       "dependsOn": [
         "f22586ce-fb6f-406d-be3a-cd032429f20e"
       ],
@@ -2779,9 +2779,9 @@
       "details": "Produce the detailed rollout doc covering: interface method signatures, new IStatusContext API contracts, StepResult/StepStatus placement, SpectreUserInteraction responsibilities, temporary shims for existing tests, and the order of commits. Share planning notes with reviewers before build starts.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "258d5609-d4a3-45a2-9267-5fae1049db89",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:29:17.564Z",
-      "updatedAt": "2025-10-28T14:23:13.460Z",
+      "updatedAt": "2025-10-28T21:47:51.117Z",
       "dependsOn": [
         "2c3147c7-8e7f-4230-99fb-79308785d0b0"
       ],
@@ -2801,9 +2801,9 @@
       "details": "Deliver the Iteration 16 Spectre presentation layer changes across Onboard.Core and Onboard.Console: expand abstractions, add StepResult models, implement SpectreUserInteraction plus status adapters, register dependencies, and keep the core library free of UI references.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "8501a7e1-6e5a-44b8-88b6-7a17c9143f10",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:30:53.717Z",
-      "updatedAt": "2025-10-28T16:21:10.469Z",
+      "updatedAt": "2025-10-28T22:12:29.106Z",
       "dependsOn": [
         "258d5609-d4a3-45a2-9267-5fae1049db89"
       ],
@@ -2823,9 +2823,9 @@
       "details": "Expand Onboard.Core/Abstractions/IUserInteraction.cs with the richer contract (WriteNormal/Success/Warning/Error/Debug, ShowWelcomeBanner, ShowSummary, RunStatusAsync, Ask, Confirm) and introduce Onboard.Core/Abstractions/IStatusContext.cs to expose spinner updates without leaking Spectre types. Update any compile-time references and document default behaviours expected by downstream orchestrators.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:30:59.225Z",
-      "updatedAt": "2025-10-28T14:23:20.242Z",
+      "updatedAt": "2025-10-28T22:11:28.755Z",
       "dependsOn": [
         "c03f2b65-7262-4c12-bb43-c62fa1ecfe8c"
       ],
@@ -2846,9 +2846,9 @@
       "details": "Remove ConsoleUserInteraction from Onboard.Core and add Onboard.Console/Services/SpectreUserInteraction.cs implementing the expanded IUserInteraction interface. Use Spectre.Console primitives for semantic colors, prompts, status contexts, and welcome/summary output. Ensure constructors accept injected IAnsiConsole/IConfiguration as needed without introducing Spectre dependencies into Onboard.Core.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:31:04.414Z",
-      "updatedAt": "2025-10-28T14:23:27.842Z",
+      "updatedAt": "2025-10-28T22:11:34.042Z",
       "dependsOn": [
         "aecb8db4-6be6-429f-bc62-a6feff38b814"
       ],
@@ -2869,9 +2869,9 @@
       "details": "Create Onboard.Core/Models/StepResult.cs containing the StepStatus enum (Executed, Skipped, Failed) and the StepResult record with step name, status, optional skip reason, and failure details. Ensure the model lives in Onboard.Core so orchestrators can consume it without UI dependencies. Update project files and namespaces accordingly.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:31:13.884Z",
-      "updatedAt": "2025-10-28T14:23:33.745Z",
+      "updatedAt": "2025-10-28T22:11:49.924Z",
       "dependsOn": [
         "aecb8db4-6be6-429f-bc62-a6feff38b814"
       ],
@@ -2892,9 +2892,9 @@
       "details": "Implement an internal adapter inside Onboard.Console that bridges IUserInteraction.RunStatusAsync to Spectre.Console's Status API. Provide an IStatusContext implementation that proxies update messages, cancellation, and progress reporting without leaking Spectre types to Onboard.Core. Unit-test the adapter at the service level once Spectre.Console.Testing is available.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:31:18.830Z",
-      "updatedAt": "2025-10-28T14:23:40.166Z",
+      "updatedAt": "2025-10-28T22:11:54.434Z",
       "dependsOn": [
         "23fcec7b-a99b-4b05-af90-c6ca89440f95",
         "26213253-c887-4524-9663-bc884ff7493d"
@@ -2916,9 +2916,9 @@
       "details": "Add the Spectre.Console package reference to Onboard.Console, register SpectreUserInteraction and supporting adapters in Program.cs, and ensure dependency injection keeps Onboard.Core free of Spectre references. Update composition root tests or bootstrapping smoke checks to cover the registration changes.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:31:25.883Z",
-      "updatedAt": "2025-10-28T14:23:47.694Z",
+      "updatedAt": "2025-10-28T22:11:58.697Z",
       "dependsOn": [
         "26213253-c887-4524-9663-bc884ff7493d"
       ],
@@ -2939,9 +2939,9 @@
       "details": "Sweep Onboard.Core for lingering ConsoleUserInteraction references, adjust project files to remove Spectre dependencies, and update any helper classes or factories that previously lived in the core library. Confirm the build outputs show a clean separation between Onboard.Core (no Spectre) and Onboard.Console (Spectre-aware).",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:31:32.005Z",
-      "updatedAt": "2025-10-28T14:23:53.128Z",
+      "updatedAt": "2025-10-28T22:12:05.674Z",
       "dependsOn": [
         "aecb8db4-6be6-429f-bc62-a6feff38b814"
       ],
@@ -2962,9 +2962,9 @@
       "details": "Add the Spectre.Console.Testing dependency to the test project, create helper fakes/mocks for IAnsiConsole and IStatusContext, and update existing unit tests to compile after the IUserInteraction expansion. Defer the full SpectreUserInteraction coverage to Iteration 17 but ensure the plumbing is in place.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:31:37.364Z",
-      "updatedAt": "2025-10-28T14:24:01.035Z",
+      "updatedAt": "2025-10-28T22:12:09.680Z",
       "dependsOn": [
         "26213253-c887-4524-9663-bc884ff7493d"
       ],
@@ -2985,9 +2985,9 @@
       "details": "Wrap up Iteration 16 implementation work on branch iter-16: ensure IUserInteraction expansion, StepResult models, SpectreUserInteraction, adapters, DI changes, and testing scaffolding all compile together. Capture commit notes for hand-off to Iteration 17.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:31:43.654Z",
-      "updatedAt": "2025-10-28T14:24:07.715Z",
+      "updatedAt": "2025-10-28T22:12:12.681Z",
       "dependsOn": [
         "3c61e5b5-4ccb-43a0-a250-435464199746",
         "ba51e0db-8ed7-43eb-a72e-f8cc06393814",
@@ -3010,9 +3010,9 @@
       "details": "Validate Iteration 16 Spectre presentation changes locally with automated suites and targeted Spectre runs before opening the PR.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "8501a7e1-6e5a-44b8-88b6-7a17c9143f10",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:31:49.811Z",
-      "updatedAt": "2025-10-28T16:23:22.691Z",
+      "updatedAt": "2025-10-28T22:18:21.423Z",
       "dependsOn": [
         "310a9786-1bb2-44a8-a0e6-ac9b07252209"
       ],
@@ -3055,9 +3055,9 @@
       "details": "Run Onboard.Console on Windows, macOS, and Linux environments to confirm SpectreUserInteraction initializes, status adapter runs, and no Spectre types leak into Onboard.Core before publishing the PR.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "1637469b-367d-4db5-8192-e72d62b48d90",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:32:18.217Z",
-      "updatedAt": "2025-10-28T16:22:25.800Z",
+      "updatedAt": "2025-10-28T22:18:16.799Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 3,
@@ -3098,9 +3098,9 @@
       "details": "Run dotnet format, dotnet build, and dotnet test on iter-16. Exercise Onboard.Console with the new SpectreUserInteraction in dry-run mode to ensure the presentation layer initializes without the sequential orchestration changes planned for Iteration 17.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "1637469b-367d-4db5-8192-e72d62b48d90",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:32:26.724Z",
-      "updatedAt": "2025-10-28T16:23:31.177Z",
+      "updatedAt": "2025-10-28T22:18:08.046Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 2,
@@ -3119,9 +3119,9 @@
       "details": "Update or add tests to cover the expanded IUserInteraction contract, Spectre status adapter, and DI wiring so the new presentation layer is exercised.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:32:31.246Z",
-      "updatedAt": "2025-10-28T16:22:09.177Z",
+      "updatedAt": "2025-10-28T22:12:18.461Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 3,
@@ -3139,9 +3139,9 @@
       "details": "Manually exercise SpectreUserInteraction via harness or dry-run to confirm welcome banner, semantic colors, and status updates behave before orchestrator integration lands in Iteration 17.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "1637469b-367d-4db5-8192-e72d62b48d90",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:32:39.009Z",
-      "updatedAt": "2025-10-28T16:22:13.872Z",
+      "updatedAt": "2025-10-28T22:18:09.585Z",
       "dependsOn": [
         "cdd23712-36a4-45d3-830e-0bcd76aa2ca6"
       ],
@@ -3162,9 +3162,9 @@
       "details": "Document the Spectre presentation layer architecture, including IUserInteraction changes, IStatusContext, and the new separation between Onboard.Core and Onboard.Console.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:32:52.631Z",
-      "updatedAt": "2025-10-28T16:22:43.024Z",
+      "updatedAt": "2025-10-28T22:11:07.883Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 2,
@@ -3182,9 +3182,9 @@
       "details": "Refresh README/troubleshooting content to explain the Spectre-based interaction layer, logging expectations, and any interim gaps before Iteration 17.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:32:57.562Z",
-      "updatedAt": "2025-10-28T16:22:50.016Z",
+      "updatedAt": "2025-10-28T22:11:12.781Z",
       "dependsOn": [
         "fa668889-9f94-4f71-b6a4-ef73ca6c65c8"
       ],

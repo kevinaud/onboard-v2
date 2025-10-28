@@ -51,22 +51,22 @@ public class EnableWslFeaturesStep : IOnboardingStep
             return;
         }
 
-        userInteraction.WriteHeader("Manual WSL setup required");
+        this.userInteraction.WriteWarning("Manual WSL setup required");
 
         if (!readiness.FeaturesEnabled)
         {
-            userInteraction.WriteWarning("Windows Subsystem for Linux optional features are not enabled.");
+            this.userInteraction.WriteWarning("Windows Subsystem for Linux optional features are not enabled.");
         }
 
         if (!readiness.HasUbuntuDistribution)
         {
-            userInteraction.WriteWarning($"{configuration.WslDistroName} is not installed in WSL.");
+            this.userInteraction.WriteWarning($"{this.configuration.WslDistroName} is not installed in WSL.");
         }
 
-        userInteraction.WriteLine("Follow these steps in an administrator PowerShell window:");
-        userInteraction.WriteLine($"  1. Run: wsl --install -d {configuration.WslDistroImage}");
-        userInteraction.WriteLine("  2. Restart Windows if prompted to complete the installation.");
-        userInteraction.WriteLine($"  3. Launch {configuration.WslDistroName} once so the user account is created, then rerun this onboarding tool.");
+        this.userInteraction.WriteNormal("Follow these steps in an administrator PowerShell window:");
+        this.userInteraction.WriteNormal($"  1. Run: wsl --install -d {this.configuration.WslDistroImage}");
+        this.userInteraction.WriteNormal("  2. Restart Windows if prompted to complete the installation.");
+        this.userInteraction.WriteNormal($"  3. Launch {this.configuration.WslDistroName} once so the user account is created, then rerun this onboarding tool.");
     }
 
     private async Task<WslReadiness> EvaluateReadinessAsync()
