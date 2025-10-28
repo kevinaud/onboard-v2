@@ -117,7 +117,9 @@ This is a documented, three-step procedure.
 │   │   │   ├── WindowsOrchestrator.cs  
 │   │   │   ├── MacOsOrchestrator.cs  
 │   │   │   ├── UbuntuOrchestrator.cs  
-│   │   │   └── WslGuestOrchestrator.cs  \<-- NEW  
+│   │   │   └── WslGuestOrchestrator.cs  <-- NEW  
+│   │   ├── Services/  
+│   │   │   └── SpectreUserInteraction.cs  
 │   │   └── Onboard.Console.csproj  
 │   ├── Onboard.Core/       \# Class library (all logic, abstractions, steps)  
 │   │   ├── Abstractions/  
@@ -125,14 +127,15 @@ This is a documented, three-step procedure.
 │   │   │   ├── IPlatformOrchestrator.cs  
 │   │   │   ├── IProcessRunner.cs  
 │   │   │   ├── IUserInteraction.cs  
+│   │   │   ├── IStatusContext.cs  
 │   │   │   └── IPlatformDetector.cs  
 │   │   ├── Models/  
 │   │   │   ├── PlatformFacts.cs  
-│   │   │   └── ProcessResult.cs  
+│   │   │   ├── ProcessResult.cs  
+│   │   │   └── StepResult.cs  
 │   │   ├── Services/  
 │   │   │   ├── PlatformDetector.cs  
-│   │   │   ├── ProcessRunner.cs        \# Concrete implementation  
-│   │   │   └── ConsoleUserInteraction.cs \# Concrete implementation  
+│   │   │   └── ProcessRunner.cs        # Concrete implementation  
 │   │   ├── Steps/  
 │   │   │   ├── Shared/  
 │   │   │   │   ├── CloneProjectRepoStep.cs  
@@ -176,7 +179,7 @@ Development will be done within a VS Code Dev Container. The .devcontainer/devco
 
 * **Persistent log pipeline** – The console host configures Serilog to write a single rolling log file to `Path.GetTempPath()/onboard-pro.log` with a one-second flush interval. This keeps diagnostics off the user's Desktop while remaining easy to discover across platforms.
 * **Command transcripts** – `ProcessRunner` receives `ILogger<ProcessRunner>` and records each external command at `Debug` level along with the exit code and the first 1024 characters of stdout/stderr. This is crucial for diagnosing package manager failures without rerunning the tool.
-* **User interaction mirroring** – `ConsoleUserInteraction` mirrors all user-facing output (headers, prompts, warnings, etc.) to the same logger so the log file forms a complete transcript of the session.
+* **User interaction mirroring** – `SpectreUserInteraction` mirrors all user-facing output (banner, prompts, semantic status messages, summary entries) to the same logger so the log file forms a complete transcript of the session.
 * **Linux reliability hardening** – When running on Linux, `ProcessRunner` injects `DEBIAN_FRONTEND=noninteractive` into the child process environment if the variable is not already defined, eliminating blocking prompts from apt-based installers.
 
 #### **3.5. Centralized Configuration**
@@ -210,17 +213,36 @@ These interfaces are the key to testability. No class (outside of their concrete
 
 * **Onboard.Core/Abstractions/IUserInteraction.cs**  
   C\#  
-  /// \<summary\>  
-  /// An abstraction for all console I/O.  
-  /// \</summary\>  
+  /// <summary>  
+  /// An abstraction for all console I/O, banners, prompts, and spinner-driven status updates.  
+  /// </summary>  
   public interface IUserInteraction  
   {  
-      void WriteLine(string message);  
-      void WriteHeader(string message);  
+      void WriteNormal(string message);  
       void WriteSuccess(string message);  
       void WriteWarning(string message);  
       void WriteError(string message);  
-      string Prompt(string message);  
+      void WriteDebug(string message);  
+      void ShowWelcomeBanner(PlatformFacts platformFacts);  
+      void ShowSummary(IReadOnlyCollection<StepResult> results);  
+      Task RunStatusAsync(string statusMessage, Func<IStatusContext, Task> action, CancellationToken cancellationToken = default);  
+      string Ask(string prompt, string? defaultValue = null);  
+      bool Confirm(string prompt, bool defaultValue = false);  
+  }
+
+* **Onboard.Core/Abstractions/IStatusContext.cs**  
+  C\#  
+  /// <summary>  
+  /// Represents the live status surface exposed while a spinner is running.  
+  /// </summary>  
+  public interface IStatusContext  
+  {  
+      void UpdateStatus(string status);  
+      void WriteNormal(string message);  
+      void WriteSuccess(string message);  
+      void WriteWarning(string message);  
+      void WriteError(string message);  
+      void WriteDebug(string message);  
   }
 
 #### **4.2. Platform Detection**
@@ -304,6 +326,8 @@ These interfaces are the key to testability. No class (outside of their concrete
   
   The macOS and Linux variants follow the same structure, swapping in the appropriate `brew` and `apt` commands. This keeps each installer focused on a single operating system and eliminates the need for a shared strategy layer.
 
+* **Step result aggregation** – Orchestrators collect `StepResult` instances (containing the step name, `StepStatus`, optional skip reason, and any surfaced exception) so that the presentation layer can render a completion summary without duplicating decision logic.
+
 #### **4.4. Orchestration**
 
 * **Onboard.Core/Abstractions/IPlatformOrchestrator.cs**  
@@ -327,9 +351,8 @@ These interfaces are the key to testability. No class (outside of their concrete
       InstallDockerDesktopStep installDockerDesktopStep,  
       ConfigureGitUserStep configureGitUserStep)  
       : base(  
-        ui,  
-                services.AddTransient<CloneProjectRepoStep>();  
-        executionOptions,  
+  ui,  
+  executionOptions,  
         "Windows host onboarding",  
         new IOnboardingStep[]  
         {  
@@ -356,6 +379,8 @@ using Microsoft.Extensions.Hosting;
 using Onboard.Core.Abstractions;  
 using Onboard.Core.Services;  
 using Onboard.Console.Orchestrators;
+using Onboard.Console.Services;  
+using Spectre.Console;
 
 public static class Program  
 {  
@@ -370,7 +395,8 @@ public static class Program
             {  
                 // Register all singleton services  
                 services.AddSingleton\<IProcessRunner, ProcessRunner\>();  
-                services.AddSingleton\<IUserInteraction, ConsoleUserInteraction\>();  
+                services.AddSingleton\<IAnsiConsole\>(_ => AnsiConsole.Console);  
+                services.AddSingleton\<IUserInteraction, SpectreUserInteraction\>();  
                 services.AddSingleton\<IPlatformDetector, PlatformDetector\>();
 
                 // Register PlatformFacts by invoking the detector once at startup  

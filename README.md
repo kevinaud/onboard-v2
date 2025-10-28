@@ -54,8 +54,8 @@ All other platforms (Windows host, native macOS, native Ubuntu) are selected aut
 
 ## Architecture overview
 
-- `Onboard.Core` – domain logic, abstractions (e.g., `IProcessRunner`, `IUserInteraction`), immutable `PlatformFacts`, and platform-specific onboarding steps.
-- `Onboard.Console` – composition root. Configures dependency injection, selects the appropriate orchestrator, and executes the ordered step pipeline.
+- `Onboard.Core` – domain logic, abstractions (e.g., `IProcessRunner`, `IUserInteraction`, `IStatusContext`), immutable models such as `PlatformFacts` and `StepResult`, and platform-specific onboarding steps.
+- `Onboard.Console` – composition root and presentation host. Configures dependency injection, wires Serilog logging, and implements the Spectre.Console-based `SpectreUserInteraction` service that renders banners, prompts, semantic status output, and completion summaries.
 - `Onboard.Core.Tests` – NUnit test suite with Moq-based doubles covering services, step idempotency, and orchestrator wiring.
 
 Key concepts:
@@ -63,6 +63,8 @@ Key concepts:
 - **Orchestrators** – one per platform (`WindowsOrchestrator`, `MacOsOrchestrator`, `UbuntuOrchestrator`, `WslGuestOrchestrator`) that compose the required steps.
 - **Steps** – each implements `IOnboardingStep`, performs an idempotency check via `ShouldExecuteAsync`, and executes safely when required.
 - **Process execution** – commands run through `IProcessRunner`, making both live runs and unit tests consistent.
+- **Presentation** – `SpectreUserInteraction` implements the richer `IUserInteraction` contract, keeping Spectre types in the console project while exposing `RunStatusAsync`, banner, prompt, and summary helpers to orchestrators.
+- **Summaries** – orchestrators collect `StepResult` snapshots (executed, skipped with reason, failed with exception) so the interaction layer can render a completion table without duplicating step logic.
 - **Configuration** – `OnboardingConfiguration` centralizes host-specific constants (for example the default WSL distro name/image) and is injected into steps that need them.
 
 ## Configuration defaults

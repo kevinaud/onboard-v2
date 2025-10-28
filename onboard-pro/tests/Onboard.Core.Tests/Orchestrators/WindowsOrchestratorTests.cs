@@ -48,16 +48,16 @@ public class WindowsOrchestratorTests
 
         await orchestrator.ExecuteAsync().ConfigureAwait(false);
 
-        ui.Verify(x => x.WriteHeader("Windows host onboarding"), Times.Once);
-        ui.Verify(x => x.WriteLine("Checking Verify Windows Subsystem for Linux prerequisites..."), Times.Once);
+        ui.Verify(x => x.WriteNormal("Windows host onboarding"), Times.Once);
+        ui.Verify(x => x.WriteNormal("Checking Verify Windows Subsystem for Linux prerequisites..."), Times.Once);
         ui.Verify(x => x.WriteSuccess("Verify Windows Subsystem for Linux prerequisites already configured."), Times.Once);
         ui.Verify(x => x.WriteSuccess("Install Git for Windows already configured."), Times.Once);
         ui.Verify(x => x.WriteSuccess("Install Visual Studio Code already configured."), Times.Once);
         ui.Verify(x => x.WriteSuccess("Install Docker Desktop already configured."), Times.Once);
         ui.Verify(x => x.WriteSuccess("Configure Git user identity already configured."), Times.Once);
         ui.Verify(x => x.WriteSuccess("Windows host onboarding complete."), Times.Once);
-        ui.Verify(x => x.Prompt(It.IsAny<string>()), Times.Never);
-        ui.Verify(x => x.WriteLine(It.Is<string>(s => s.StartsWith("Running", StringComparison.Ordinal))), Times.Never);
+        ui.Verify(x => x.Ask(It.IsAny<string>(), It.IsAny<string?>()), Times.Never);
+        ui.Verify(x => x.WriteNormal(It.Is<string>(s => s.StartsWith("Running", StringComparison.Ordinal))), Times.Never);
     }
 
     [Test]
@@ -132,11 +132,11 @@ public class WindowsOrchestratorTests
 
         await orchestrator.ExecuteAsync().ConfigureAwait(false);
 
-        ui.Verify(x => x.WriteHeader("Windows host onboarding"), Times.Once);
-        ui.Verify(x => x.WriteLine(It.Is<string>(s => s.StartsWith("Checking", StringComparison.Ordinal))), Times.AtLeastOnce);
-        ui.Verify(x => x.WriteLine(It.Is<string>(s => s.StartsWith("Dry run: would execute", StringComparison.Ordinal))), Times.AtLeastOnce);
+        ui.Verify(x => x.WriteNormal("Windows host onboarding"), Times.Once);
+        ui.Verify(x => x.WriteNormal(It.Is<string>(s => s.StartsWith("Checking", StringComparison.Ordinal))), Times.AtLeastOnce);
+        ui.Verify(x => x.WriteNormal(It.Is<string>(s => s.StartsWith("Dry run: would execute", StringComparison.Ordinal))), Times.AtLeastOnce);
         ui.Verify(x => x.WriteSuccess("Windows host onboarding dry run complete."), Times.Once);
-        ui.Verify(x => x.WriteLine(It.Is<string>(s => s.StartsWith("Running", StringComparison.Ordinal))), Times.Never);
+        ui.Verify(x => x.WriteNormal(It.Is<string>(s => s.StartsWith("Running", StringComparison.Ordinal))), Times.Never);
     }
 
     private sealed class FakeProcessRunner : IProcessRunner

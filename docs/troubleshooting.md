@@ -14,7 +14,7 @@ The Onboard Pro binary now mirrors every user-visible message and external comma
 
 ## What the log contains
 
-- A timestamped entry for every console message (`INFO`, `HEADER`, `SUCCESS`, `WARNING`, `ERROR`, `PROMPT`, `PROMPT_RESPONSE`).
+- A timestamped entry for every console message (`INFO`, `SUCCESS`, `WARNING`, `ERROR`, `DEBUG`, `BANNER`, `SUMMARY`, `SUMMARY_ITEM`, `PROMPT`, `PROMPT_RESPONSE`). Spinner lifecycles emit `STATUS` when a run starts and `STATUS_UPDATE` as the progress text changes.
 - A Debug-level entry for every external command, including the executable path, arguments, exit code, and the first 1024 characters of stdout/stderr. Longer outputs are truncated with an ellipsis. Running the tool with `--verbose` mirrors these entries to the console so you can confirm commands in real time.
 - Exceptions raised by onboarding steps, including the step name when available.
 

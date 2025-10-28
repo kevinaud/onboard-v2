@@ -56,17 +56,17 @@ public class InstallDockerDesktopStep : IOnboardingStep
             throw new InvalidOperationException(message);
         }
 
-        userInteraction.WriteSuccess("Docker Desktop installed via winget.");
-        bool integrationConfigured = await ConfigureDockerSettingsAsync().ConfigureAwait(false);
-        userInteraction.WriteLine("Launch Docker Desktop and accept the terms of service if prompted.");
+        this.userInteraction.WriteSuccess("Docker Desktop installed via winget.");
+        bool integrationConfigured = await this.ConfigureDockerSettingsAsync().ConfigureAwait(false);
+        this.userInteraction.WriteNormal("Launch Docker Desktop and accept the terms of service if prompted.");
 
         if (integrationConfigured)
         {
-            userInteraction.WriteLine($"WSL integration for {configuration.WslDistroName} has been pre-configured. Restart Docker Desktop if it was already running.");
+            this.userInteraction.WriteNormal($"WSL integration for {this.configuration.WslDistroName} has been pre-configured. Restart Docker Desktop if it was already running.");
         }
         else
         {
-            userInteraction.WriteLine($"Verify WSL integration for {configuration.WslDistroName} inside Docker Desktop before continuing.");
+            this.userInteraction.WriteNormal($"Verify WSL integration for {this.configuration.WslDistroName} inside Docker Desktop before continuing.");
         }
     }
 

@@ -84,9 +84,8 @@ public class EnableWslFeaturesStepTests
             .ReturnsAsync(new ProcessResult(1, string.Empty, "WSL not installed"));
 
         var messages = new List<string>();
-        userInteraction.Setup(ui => ui.WriteHeader(It.IsAny<string>())).Callback<string>(messages.Add);
         userInteraction.Setup(ui => ui.WriteWarning(It.IsAny<string>())).Callback<string>(messages.Add);
-        userInteraction.Setup(ui => ui.WriteLine(It.IsAny<string>())).Callback<string>(messages.Add);
+        userInteraction.Setup(ui => ui.WriteNormal(It.IsAny<string>())).Callback<string>(messages.Add);
 
         configuration = configuration with { WslDistroName = "ContosoLinux", WslDistroImage = "ContosoLinux" };
 

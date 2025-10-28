@@ -60,21 +60,21 @@ public class CloneProjectRepoStep : IOnboardingStep
 
     public async Task ExecuteAsync()
     {
-        var paths = ResolvePaths();
+        var paths = this.ResolvePaths();
 
-        if (!fileSystem.DirectoryExists(paths.WorkspacePath))
+        if (!this.fileSystem.DirectoryExists(paths.WorkspacePath))
         {
-            userInteraction.WriteLine($"Creating workspace directory at {paths.WorkspacePath}");
-            fileSystem.CreateDirectory(paths.WorkspacePath);
+            this.userInteraction.WriteNormal($"Creating workspace directory at {paths.WorkspacePath}");
+            this.fileSystem.CreateDirectory(paths.WorkspacePath);
         }
 
-        if (!fileSystem.DirectoryExists(paths.RepositoryPath))
+        if (!this.fileSystem.DirectoryExists(paths.RepositoryPath))
         {
-            await CloneRepositoryAsync(paths.RepositoryPath).ConfigureAwait(false);
+            await this.CloneRepositoryAsync(paths.RepositoryPath).ConfigureAwait(false);
             return;
         }
 
-        if (!IsGitRepository(paths.RepositoryPath))
+        if (!this.IsGitRepository(paths.RepositoryPath))
         {
             // Safety net: bail out if a non-git directory suddenly appears between ShouldExecuteAsync and ExecuteAsync.
             userInteraction.WriteWarning($"Path '{paths.RepositoryPath}' exists but is not a Git repository. Skipping clone/update.");

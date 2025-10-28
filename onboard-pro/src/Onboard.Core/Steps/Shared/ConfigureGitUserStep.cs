@@ -35,21 +35,21 @@ public class ConfigureGitUserStep : IOnboardingStep
 
     public async Task ExecuteAsync()
     {
-        this.ui.WriteLine(string.Empty);
-        this.ui.WriteLine("Git requires a user identity for commits.");
+        this.ui.WriteNormal(string.Empty);
+        this.ui.WriteNormal("Git requires a user identity for commits.");
 
-        string name = this.ui.Prompt("Please enter your full name for Git commits: ");
+        string name = this.ui.Ask("Please enter your full name for Git commits:");
         while (string.IsNullOrWhiteSpace(name))
         {
             this.ui.WriteWarning("Name cannot be empty.");
-            name = this.ui.Prompt("Please enter your full name for Git commits: ");
+            name = this.ui.Ask("Please enter your full name for Git commits:");
         }
 
-        string email = this.ui.Prompt("Please enter your email for Git commits: ");
+        string email = this.ui.Ask("Please enter your email for Git commits:");
         while (string.IsNullOrWhiteSpace(email))
         {
             this.ui.WriteWarning("Email cannot be empty.");
-            email = this.ui.Prompt("Please enter your email for Git commits: ");
+            email = this.ui.Ask("Please enter your email for Git commits:");
         }
 
         var nameSetResult = await processRunner.RunAsync("git", $"config --global user.name \"{name}\"").ConfigureAwait(false);
