@@ -33,6 +33,8 @@ The PowerShell bootstrapper mirrors the bash script behaviour: it resolves the l
 
 > Tip: run `./setup.sh --mode wsl-guest` **inside** your WSL distribution to execute the WSL-specific workflow.
 
+When the onboarding binary launches it renders a Spectre.Console welcome banner, walks through each step with spinner-driven status updates, and concludes with a completion summary table that highlights executed, skipped, and failed steps (including skip reasons).
+
 ## Command-line modes
 
 The compiled onboarding binary auto-detects the host platform. When running inside a WSL distribution you must explicitly select the guest workflow:
@@ -66,6 +68,17 @@ Key concepts:
 - **Presentation** – `SpectreUserInteraction` implements the richer `IUserInteraction` contract, keeping Spectre types in the console project while exposing `RunStatusAsync`, banner, prompt, and summary helpers to orchestrators.
 - **Summaries** – orchestrators collect `StepResult` snapshots (executed, skipped with reason, failed with exception) so the interaction layer can render a completion table without duplicating step logic.
 - **Configuration** – `OnboardingConfiguration` centralizes host-specific constants (for example the default WSL distro name/image) and is injected into steps that need them.
+
+### Sequential orchestration flow
+
+`SequentialOrchestrator` runs every onboarding step inside `IUserInteraction.RunStatusAsync` so the Spectre spinner reflects real-time progress. The orchestrator:
+
+- announces the step being checked, updates the spinner when execution starts, and hands control back to the step for prompts without tearing down the status context;
+- short-circuits `ExecuteAsync` when dry-run mode is active, storing a `StepResult` with a dry-run skip reason instead;
+- records failures as `StepResult` entries with the surfaced `OnboardingStepException` message before rethrowing so the application exits non-zero;
+- emits `[grey]` skip markup and `[green]` success markup through the interaction service, ensuring the transcript and final table stay aligned.
+
+At the end of the run the orchestrator calls `ShowSummary(results)` to render a single Spectre table containing every step, the final status, and any skip reasons supplied by the platform orchestrator.
 
 ## Configuration defaults
 

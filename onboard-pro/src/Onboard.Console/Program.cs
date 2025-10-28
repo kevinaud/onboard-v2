@@ -113,6 +113,8 @@ public static class Program
         var platformFacts = host.Services.GetRequiredService<PlatformFacts>();
         var ui = host.Services.GetRequiredService<IUserInteraction>();
 
+        ui.ShowWelcomeBanner(platformFacts);
+
         IPlatformOrchestrator orchestrator;
 
         try
