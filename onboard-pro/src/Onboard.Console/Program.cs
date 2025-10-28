@@ -3,9 +3,12 @@
 // </copyright>
 
 using System;
+using System.IO;
+using System.Threading.Tasks;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging.Abstractions;
 
 using Onboard.Console.Orchestrators;
 using Onboard.Core.Abstractions;
@@ -18,6 +21,9 @@ using Onboard.Core.Steps.Ubuntu;
 using Onboard.Core.Steps.Windows;
 using Onboard.Core.Steps.WslGuest;
 
+using Serilog;
+using Serilog.Events;
+
 using OS = Onboard.Core.Models.OperatingSystem;
 
 public static class Program
@@ -27,13 +33,29 @@ public static class Program
         // 1. Parse the supported command-line options
         if (!CommandLineOptionsParser.TryParse(args, out var commandLineOptions, out string? parseError))
         {
-            new ConsoleUserInteraction().WriteError(parseError ?? "Invalid command-line arguments.");
+            var fallbackUi = new ConsoleUserInteraction(NullLogger<ConsoleUserInteraction>.Instance);
+            fallbackUi.WriteError(parseError ?? "Invalid command-line arguments.");
             return;
         }
 
         var executionOptions = new ExecutionOptions(commandLineOptions.IsDryRun);
+        string logFilePath = Path.Combine(Path.GetTempPath(), "onboard-pro.log");
 
-        var host = Host.CreateDefaultBuilder(args)
+        using var host = Host.CreateDefaultBuilder(args)
+            .UseSerilog((context, services, configuration) =>
+            {
+                configuration
+                    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                    .MinimumLevel.Debug()
+                    .Enrich.FromLogContext()
+                    .WriteTo.File(
+                        path: logFilePath,
+                        restrictedToMinimumLevel: LogEventLevel.Debug,
+                        rollingInterval: RollingInterval.Infinite,
+                        retainedFileCountLimit: 1,
+                        shared: true,
+                        flushToDiskInterval: TimeSpan.FromSeconds(1));
+            })
             .ConfigureServices((context, services) =>
             {
                 // Register all singleton services

@@ -43,6 +43,13 @@ Add `--dry-run` to preview the ordered steps without running any external comman
 
 All other platforms (Windows host, native macOS, native Ubuntu) are selected automatically.
 
+## Diagnostics & Troubleshooting
+
+- Every run writes a detailed transcript to `Path.GetTempPath()/onboard-pro.log`. On Windows this resolves to `%TEMP%\onboard-pro.log`; on macOS and Linux it resolves to `/tmp/onboard-pro.log`.
+- The log captures all user-facing console output plus every external command invocation (command line, exit code, and the first 1024 characters of stdout/stderr) to simplify support escalation.
+- Retention is deliberately simple: the most recent run overwrites the previous file. Copy the log somewhere safe before starting a new attempt if you need to keep historical output.
+- When reporting issues, attach the log file together with the command-line arguments you used (for example `--mode wsl-guest --dry-run`). Dry-run mode still records the console transcript but skips external command execution, so the absence of process entries is expected in that scenario.
+
 ## Architecture overview
 
 - `Onboard.Core` – domain logic, abstractions (e.g., `IProcessRunner`, `IUserInteraction`), immutable `PlatformFacts`, and platform-specific onboarding steps.

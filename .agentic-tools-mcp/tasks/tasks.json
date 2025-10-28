@@ -1116,33 +1116,33 @@
     },
     {
       "id": "11757bc6-1419-41a3-9858-38a6c34957f8",
-      "name": "00 Pre-flight & Identity",
-      "details": "Confirm Iteration 12 prerequisites: review logging design notes, ensure Serilog packages are approved, and capture current ProcessRunner behaviours for regression comparison.",
+      "name": "Review iteration prerequisites",
+      "details": "Review logging design notes, confirm Serilog package approvals, and capture current ProcessRunner behavior baselines before implementation work begins.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "78f287da-1cbd-4517-a609-0272bde6274b",
-      "completed": false,
+      "parentId": "a011b322-41cc-4434-82c1-d31e4620995f",
+      "completed": true,
       "createdAt": "2025-10-28T01:15:52.688Z",
-      "updatedAt": "2025-10-28T01:15:52.688Z",
+      "updatedAt": "2025-10-28T15:51:03.288Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 4,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-12",
         "pre-flight"
       ],
       "estimatedHours": 1.5,
-      "level": 1
+      "level": 2
     },
     {
       "id": "a011b322-41cc-4434-82c1-d31e4620995f",
       "name": "10 Planning",
-      "details": "Translate reliability goals into a concrete plan: schedule Serilog introduction, map logging targets per OS, and align test strategy with QA.",
+      "details": "Prepare iteration branch and finalize technical approach for reliability and diagnostics enhancements.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "78f287da-1cbd-4517-a609-0272bde6274b",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:15:56.232Z",
-      "updatedAt": "2025-10-28T01:15:56.232Z",
+      "updatedAt": "2025-10-28T16:47:57.300Z",
       "dependsOn": [
         "11757bc6-1419-41a3-9858-38a6c34957f8"
       ],
@@ -1158,13 +1158,13 @@
     },
     {
       "id": "fc259594-b588-4d77-a955-73eb475b53c3",
-      "name": "10.10 Create iteration branch \"iter-12\"",
-      "details": "Create working branch iter-12 from main so reliability and diagnostics changes stay isolated until review.",
+      "name": "Create iteration branch \"iter-12\"",
+      "details": "Create branch iter-12 from main so reliability and diagnostics changes stay isolated.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "a011b322-41cc-4434-82c1-d31e4620995f",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:16:04.677Z",
-      "updatedAt": "2025-10-28T01:16:04.677Z",
+      "updatedAt": "2025-10-28T16:47:51.268Z",
       "dependsOn": [
         "11757bc6-1419-41a3-9858-38a6c34957f8"
       ],
@@ -1180,36 +1180,14 @@
       "level": 2
     },
     {
-      "id": "2428f2fc-af00-424d-90a7-8096c7f82b54",
-      "name": "10.20 Finalize reliability & diagnostics plan",
-      "details": "Document sequence for adding Serilog, updating ProcessRunner, and touching ConsoleUserInteraction; capture testing and rollback strategy before coding.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "a011b322-41cc-4434-82c1-d31e4620995f",
-      "completed": false,
-      "createdAt": "2025-10-28T01:16:12.396Z",
-      "updatedAt": "2025-10-28T01:16:12.396Z",
-      "dependsOn": [
-        "fc259594-b588-4d77-a955-73eb475b53c3"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-12",
-        "planning"
-      ],
-      "estimatedHours": 0.75,
-      "level": 2
-    },
-    {
       "id": "dd7c72f6-450b-478a-9321-d3227f8070a6",
-      "name": "20 Build",
-      "details": "Implement code changes for Iteration 12 across ProcessRunner, logging configuration, and console interaction surfaces.",
+      "name": "20 Build & Document",
+      "details": "Implement ProcessRunner Linux enhancement, Serilog pipeline, command/transcript logging, unit tests, and architecture documentation updates for Iteration 12.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "78f287da-1cbd-4517-a609-0272bde6274b",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:16:18.744Z",
-      "updatedAt": "2025-10-28T01:16:18.744Z",
+      "updatedAt": "2025-10-28T16:51:44.777Z",
       "dependsOn": [
         "a011b322-41cc-4434-82c1-d31e4620995f"
       ],
@@ -1225,19 +1203,19 @@
     },
     {
       "id": "26deecc8-197c-4b81-8e2a-628c54141edf",
-      "name": "20.10 Add DEBIAN_FRONTEND injection to ProcessRunner",
-      "details": "Update ProcessRunner to set DEBIAN_FRONTEND=noninteractive for Linux commands per Iteration 12 spec; ensure env var is merged without overwriting existing values.",
+      "name": "Add DEBIAN_FRONTEND injection to ProcessRunner",
+      "details": "Completed: ProcessRunner.cs now automatically injects DEBIAN_FRONTEND=noninteractive on Linux hosts. Implementation includes proper environment variable detection to preserve existing values. Verified via ProcessRunnerTests with Linux-specific test coverage checking both injection and preservation behaviors.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "dd7c72f6-450b-478a-9321-d3227f8070a6",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:16:23.684Z",
-      "updatedAt": "2025-10-28T01:16:23.684Z",
+      "updatedAt": "2025-10-28T16:49:22.202Z",
       "dependsOn": [
         "2428f2fc-af00-424d-90a7-8096c7f82b54"
       ],
       "priority": 5,
       "complexity": 5,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-12",
         "build",
@@ -1248,19 +1226,19 @@
     },
     {
       "id": "999cea82-501e-4b8e-b4fa-922b77a5e41a",
-      "name": "20.20 Integrate Serilog file logging pipeline",
-      "details": "Add Serilog and Serilog.Sinks.File to Onboard.Console, configure host builder to write to per-OS log files, and ensure ILogger<T> is available to ProcessRunner and ConsoleUserInteraction.",
+      "name": "Integrate Serilog file logging pipeline",
+      "details": "Completed: Serilog and Serilog.Sinks.File packages added to Onboard.Console via Directory.Packages.props (v4.0.0 and v6.0.0 respectively). Program.cs now configures UseSerilog with file output to {temp}/onboard-pro.log at Debug level, with 1-second flush intervals and single file retention. ILogger<T> is available throughout the DI container.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "dd7c72f6-450b-478a-9321-d3227f8070a6",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:16:28.440Z",
-      "updatedAt": "2025-10-28T01:16:28.440Z",
+      "updatedAt": "2025-10-28T16:49:25.179Z",
       "dependsOn": [
         "2428f2fc-af00-424d-90a7-8096c7f82b54"
       ],
       "priority": 5,
       "complexity": 6,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-12",
         "build",
@@ -1271,19 +1249,19 @@
     },
     {
       "id": "8fced7f3-4086-4523-868f-9f44484203b5",
-      "name": "20.30 Instrument ProcessRunner command logging",
-      "details": "Inject ILogger<ProcessRunner> into ProcessRunner, log command, arguments, exit codes, and truncated stdout/stderr at Debug level, honoring dry-run behaviour.",
+      "name": "Instrument ProcessRunner command logging",
+      "details": "Completed: ProcessRunner now injects ILogger<ProcessRunner> and logs all command executions at Debug level. Logs include: command/arguments at start, exit code/truncated stdout/stderr (max 1024 chars) on completion, and exceptions on failure. Verified via ProcessRunnerTests.RunAsync_LogsCommandLifecycle test using InMemoryLogger test double.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "dd7c72f6-450b-478a-9321-d3227f8070a6",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:16:34.490Z",
-      "updatedAt": "2025-10-28T01:16:34.490Z",
+      "updatedAt": "2025-10-28T16:49:30.818Z",
       "dependsOn": [
         "999cea82-501e-4b8e-b4fa-922b77a5e41a"
       ],
       "priority": 5,
       "complexity": 6,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-12",
         "build",
@@ -1294,19 +1272,19 @@
     },
     {
       "id": "1c093578-d4dc-41cd-846b-7fd225c5a6dd",
-      "name": "20.40 Extend ConsoleUserInteraction for transcript logging",
-      "details": "Update ConsoleUserInteraction to accept ILogger, mirror all user-facing messages to the logger, and preserve colorized console experience per Iteration 12 requirements.",
+      "name": "Extend ConsoleUserInteraction transcript logging",
+      "details": "Completed: ConsoleUserInteraction now accepts ILogger<ConsoleUserInteraction> via constructor and logs all user-facing output through LogTranscript helper. All WriteLine, WriteHeader, WriteSuccess, WriteWarning, WriteError, and Prompt calls are mirrored to the logger with appropriate categories (INFO, HEADER, SUCCESS, WARNING, ERROR, PROMPT, PROMPT_RESPONSE). Verified via ConsoleUserInteractionTests with InMemoryLogger assertions.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "dd7c72f6-450b-478a-9321-d3227f8070a6",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:16:40.619Z",
-      "updatedAt": "2025-10-28T01:16:40.619Z",
+      "updatedAt": "2025-10-28T16:49:34.627Z",
       "dependsOn": [
         "999cea82-501e-4b8e-b4fa-922b77a5e41a"
       ],
       "priority": 5,
       "complexity": 5,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-12",
         "build",
@@ -1317,13 +1295,13 @@
     },
     {
       "id": "427364e9-055f-463b-b566-73d411dce518",
-      "name": "20.90 Implement changes for iter-12",
-      "details": "Complete all coding tasks for Iteration 12 on branch iter-12, ensuring ProcessRunner, logging configuration, and ConsoleUserInteraction updates compile together.",
+      "name": "Integrate logging enhancements",
+      "details": "Consolidate Iteration 12 coding changes (ProcessRunner env injection, Serilog configuration, command logging, and transcript logging) and verify the solution builds successfully.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "dd7c72f6-450b-478a-9321-d3227f8070a6",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:16:49.129Z",
-      "updatedAt": "2025-10-28T01:16:49.129Z",
+      "updatedAt": "2025-10-28T16:49:38.352Z",
       "dependsOn": [
         "26deecc8-197c-4b81-8e2a-628c54141edf",
         "999cea82-501e-4b8e-b4fa-922b77a5e41a",
@@ -1332,7 +1310,7 @@
       ],
       "priority": 5,
       "complexity": 5,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-12",
         "build"
@@ -1341,246 +1319,15 @@
       "level": 2
     },
     {
-      "id": "b6bdb655-ec59-4e39-9cd4-2e08485c1bc1",
-      "name": "30 Integration",
-      "details": "Coordinate integration work: ensure DI registrations, logging configuration, and cross-platform behaviours align before PR.",
+      "id": "75eaa70c-8378-4159-a4d1-dbf662f3747f",
+      "name": "Update README with diagnostics guidance",
+      "details": "Ensure README/Troubleshooting sections document new logging and diagnostics capabilities prior to opening the PR.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "78f287da-1cbd-4517-a609-0272bde6274b",
-      "completed": false,
-      "createdAt": "2025-10-28T01:16:54.845Z",
-      "updatedAt": "2025-10-28T01:16:54.845Z",
-      "dependsOn": [
-        "dd7c72f6-450b-478a-9321-d3227f8070a6"
-      ],
-      "priority": 5,
-      "complexity": 5,
-      "status": "pending",
-      "tags": [
-        "iter-12",
-        "integration"
-      ],
-      "estimatedHours": 1.5,
-      "level": 1
-    },
-    {
-      "id": "d736a33b-3516-49eb-873a-98cc3ecbc30e",
-      "name": "30.10 Open PR: iter-12",
-      "details": "Open a draft PR for iter-12 once local changes and baseline validation are complete.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "b6bdb655-ec59-4e39-9cd4-2e08485c1bc1",
-      "completed": false,
-      "createdAt": "2025-10-28T01:16:59.443Z",
-      "updatedAt": "2025-10-28T01:16:59.443Z",
-      "dependsOn": [
-        "427364e9-055f-463b-b566-73d411dce518"
-      ],
-      "priority": 5,
-      "complexity": 2,
-      "status": "pending",
-      "tags": [
-        "iter-12",
-        "integration",
-        "pr"
-      ],
-      "estimatedHours": 0.25,
-      "level": 2
-    },
-    {
-      "id": "774c8fca-ad2a-4443-bc38-bdc51cc315bf",
-      "name": "30.20 Verify CI checks",
-      "details": "Ensure the iter-12 PR triggers main CI workflows and verify Serilog package restore and updated tests succeed in automation.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "b6bdb655-ec59-4e39-9cd4-2e08485c1bc1",
-      "completed": false,
-      "createdAt": "2025-10-28T01:17:02.654Z",
-      "updatedAt": "2025-10-28T01:17:02.654Z",
-      "dependsOn": [
-        "d736a33b-3516-49eb-873a-98cc3ecbc30e"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-12",
-        "integration",
-        "ci"
-      ],
-      "estimatedHours": 0.5,
-      "level": 2
-    },
-    {
-      "id": "e9b902e4-5be3-4341-84e9-941f3b819729",
-      "name": "30.30 Resolve review feedback",
-      "details": "Address reviewer comments for iter-12, especially around logging verbosity, configuration defaults, and dependency management.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "b6bdb655-ec59-4e39-9cd4-2e08485c1bc1",
-      "completed": false,
-      "createdAt": "2025-10-28T01:17:06.853Z",
-      "updatedAt": "2025-10-28T01:17:06.853Z",
-      "dependsOn": [
-        "774c8fca-ad2a-4443-bc38-bdc51cc315bf"
-      ],
-      "priority": 5,
-      "complexity": 4,
-      "status": "pending",
-      "tags": [
-        "iter-12",
-        "integration",
-        "review"
-      ],
-      "estimatedHours": 0.75,
-      "level": 2
-    },
-    {
-      "id": "c7d95bcb-43eb-49cb-9edb-6fa19e79d5da",
-      "name": "30.40 Validate DI wiring and log paths across platforms",
-      "details": "Manually exercise Windows, macOS, and Linux execution paths (via unit/integration coverage or targeted runs) to confirm Serilog configuration writes logs to the intended temp directories.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "b6bdb655-ec59-4e39-9cd4-2e08485c1bc1",
-      "completed": false,
-      "createdAt": "2025-10-28T01:17:16.392Z",
-      "updatedAt": "2025-10-28T01:17:16.392Z",
-      "dependsOn": [
-        "e9b902e4-5be3-4341-84e9-941f3b819729"
-      ],
-      "priority": 5,
-      "complexity": 4,
-      "status": "pending",
-      "tags": [
-        "iter-12",
-        "integration",
-        "verification"
-      ],
-      "estimatedHours": 0.75,
-      "level": 2
-    },
-    {
-      "id": "e6ecd680-705a-456b-b9b2-2e35cc1ec4ec",
-      "name": "40 Validation & Delivery",
-      "details": "Validate Iteration 12 updates via automated tests, manual smoke passes, and release readiness checks.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "78f287da-1cbd-4517-a609-0272bde6274b",
-      "completed": false,
-      "createdAt": "2025-10-28T01:17:19.863Z",
-      "updatedAt": "2025-10-28T01:17:19.863Z",
-      "dependsOn": [
-        "b6bdb655-ec59-4e39-9cd4-2e08485c1bc1"
-      ],
-      "priority": 5,
-      "complexity": 5,
-      "status": "pending",
-      "tags": [
-        "iter-12",
-        "validation"
-      ],
-      "estimatedHours": 2,
-      "level": 1
-    },
-    {
-      "id": "90d210d1-b41b-4cc9-9721-4a33ba17c096",
-      "name": "40.10 Local lint/test & dry-run",
-      "details": "Run dotnet format, dotnet build, dotnet test, and the orchestrator dry-run to ensure ProcessRunner logging doesn\u0019t break existing behaviour.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "e6ecd680-705a-456b-b9b2-2e35cc1ec4ec",
-      "completed": false,
-      "createdAt": "2025-10-28T01:17:25.138Z",
-      "updatedAt": "2025-10-28T01:17:25.138Z",
-      "dependsOn": [
-        "c7d95bcb-43eb-49cb-9edb-6fa19e79d5da"
-      ],
-      "priority": 5,
-      "complexity": 4,
-      "status": "pending",
-      "tags": [
-        "iter-12",
-        "validation",
-        "testing"
-      ],
-      "estimatedHours": 0.75,
-      "level": 2
-    },
-    {
-      "id": "6f6ae59b-f2bf-4007-b231-c355ea8c7469",
-      "name": "40.20 Expand unit coverage for logging changes",
-      "details": "Add NUnit coverage for ProcessRunner logging decisions and ConsoleUserInteraction logger integration; validate Serilog configuration via unit/integration hooks.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "e6ecd680-705a-456b-b9b2-2e35cc1ec4ec",
-      "completed": false,
-      "createdAt": "2025-10-28T01:17:30.280Z",
-      "updatedAt": "2025-10-28T01:17:30.280Z",
-      "dependsOn": [
-        "90d210d1-b41b-4cc9-9721-4a33ba17c096"
-      ],
-      "priority": 5,
-      "complexity": 5,
-      "status": "pending",
-      "tags": [
-        "iter-12",
-        "validation",
-        "testing"
-      ],
-      "estimatedHours": 1,
-      "level": 2
-    },
-    {
-      "id": "e460f879-249c-4254-ba87-d39beea9a290",
-      "name": "40.30 Manual smoke test for log capture",
-      "details": "Perform on-device run of Onboard Pro to confirm log file creation, content redaction, and location messaging align with troubleshooting story.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "e6ecd680-705a-456b-b9b2-2e35cc1ec4ec",
-      "completed": false,
-      "createdAt": "2025-10-28T01:17:36.107Z",
-      "updatedAt": "2025-10-28T01:17:36.107Z",
-      "dependsOn": [
-        "6f6ae59b-f2bf-4007-b231-c355ea8c7469"
-      ],
-      "priority": 5,
-      "complexity": 4,
-      "status": "pending",
-      "tags": [
-        "iter-12",
-        "validation",
-        "manual-test"
-      ],
-      "estimatedHours": 0.75,
-      "level": 2
-    },
-    {
-      "id": "ca27a722-9b74-4376-9ae8-77d61a09ace6",
-      "name": "40.40 Squash/merge PR",
-      "details": "Once approvals land, squash-merge iter-12 into main, ensuring release notes capture logging upgrades.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "e6ecd680-705a-456b-b9b2-2e35cc1ec4ec",
-      "completed": false,
-      "createdAt": "2025-10-28T01:17:44.019Z",
-      "updatedAt": "2025-10-28T01:17:44.019Z",
-      "dependsOn": [
-        "e9b902e4-5be3-4341-84e9-941f3b819729",
-        "e460f879-249c-4254-ba87-d39beea9a290"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-12",
-        "validation",
-        "merge"
-      ],
-      "estimatedHours": 0.25,
-      "level": 2
-    },
-    {
-      "id": "31224f88-ffb1-48c7-a793-f9f2c3b375eb",
-      "name": "50 Docs & Comms",
-      "details": "Update documentation and communications to reflect Iteration 12 logging and diagnostics improvements.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "78f287da-1cbd-4517-a609-0272bde6274b",
-      "completed": false,
-      "createdAt": "2025-10-28T01:17:50.382Z",
-      "updatedAt": "2025-10-28T01:17:50.382Z",
-      "dependsOn": [
-        "e6ecd680-705a-456b-b9b2-2e35cc1ec4ec"
-      ],
+      "parentId": "dd7c72f6-450b-478a-9321-d3227f8070a6",
+      "completed": true,
+      "createdAt": "2025-10-28T01:17:55.744Z",
+      "updatedAt": "2025-10-28T16:51:15.680Z",
+      "dependsOn": [],
       "priority": 5,
       "complexity": 3,
       "status": "pending",
@@ -1588,41 +1335,18 @@
         "iter-12",
         "docs"
       ],
-      "estimatedHours": 1,
-      "level": 1
-    },
-    {
-      "id": "75eaa70c-8378-4159-a4d1-dbf662f3747f",
-      "name": "50.10 Post-merge validation + README updates",
-      "details": "After merging iter-12, pull main locally, run smoke tests, and update README/troubleshooting sections with new logging guidance.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "31224f88-ffb1-48c7-a793-f9f2c3b375eb",
-      "completed": false,
-      "createdAt": "2025-10-28T01:17:55.744Z",
-      "updatedAt": "2025-10-28T01:17:55.744Z",
-      "dependsOn": [
-        "ca27a722-9b74-4376-9ae8-77d61a09ace6"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-12",
-        "docs",
-        "post-merge"
-      ],
       "estimatedHours": 0.5,
       "level": 2
     },
     {
       "id": "c5230753-b3b3-45c3-9f5d-cce24d48031a",
-      "name": "50.20 Update troubleshooting guidance for diagnostics",
+      "name": "Update troubleshooting guidance for diagnostics",
       "details": "Add documentation covering log file locations, retention expectations, and instructions for attaching logs to support tickets.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "31224f88-ffb1-48c7-a793-f9f2c3b375eb",
-      "completed": false,
+      "parentId": "dd7c72f6-450b-478a-9321-d3227f8070a6",
+      "completed": true,
       "createdAt": "2025-10-28T01:18:08.851Z",
-      "updatedAt": "2025-10-28T01:18:08.851Z",
+      "updatedAt": "2025-10-28T16:51:22.282Z",
       "dependsOn": [
         "75eaa70c-8378-4159-a4d1-dbf662f3747f"
       ],
@@ -1634,28 +1358,6 @@
         "docs"
       ],
       "estimatedHours": 0.5,
-      "level": 2
-    },
-    {
-      "id": "7b56c7b8-6e46-4e80-b9e4-b67b720600eb",
-      "name": "50.30 Share diagnostics rollout update",
-      "details": "Send release summary to stakeholders/slack covering new logging behaviour, how to retrieve logs, and next steps for observability.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "31224f88-ffb1-48c7-a793-f9f2c3b375eb",
-      "completed": false,
-      "createdAt": "2025-10-28T01:18:12.288Z",
-      "updatedAt": "2025-10-28T01:18:12.288Z",
-      "dependsOn": [
-        "c5230753-b3b3-45c3-9f5d-cce24d48031a"
-      ],
-      "priority": 5,
-      "complexity": 2,
-      "status": "pending",
-      "tags": [
-        "iter-12",
-        "comms"
-      ],
-      "estimatedHours": 0.25,
       "level": 2
     },
     {
@@ -1679,13 +1381,13 @@
     },
     {
       "id": "115abe61-03bf-4349-96b6-4c4126828321",
-      "name": "00 Pre-flight & Identity",
-      "details": "Audit existing PlatformAwareStep usage, confirm InstallVsCodeStep coverage, and capture baseline orchestrator wiring before refactor.",
+      "name": "Review platform-aware baseline",
+      "details": "Audit current PlatformAwareStep usage, verify InstallVsCodeStep coverage, and capture orchestrator wiring notes before planning refactor work.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "c4d056ef-db9e-4909-bfac-936a89bdb37d",
+      "parentId": "7343e982-306c-4e44-b82d-277de36bd35b",
       "completed": false,
       "createdAt": "2025-10-28T01:18:22.956Z",
-      "updatedAt": "2025-10-28T01:18:22.956Z",
+      "updatedAt": "2025-10-28T16:02:53.816Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 4,
@@ -1695,7 +1397,7 @@
         "pre-flight"
       ],
       "estimatedHours": 1.5,
-      "level": 1
+      "level": 2
     },
     {
       "id": "7343e982-306c-4e44-b82d-277de36bd35b",
@@ -1721,13 +1423,13 @@
     },
     {
       "id": "07a2d103-534b-4404-9795-fb4c85798a6a",
-      "name": "10.10 Create iteration branch \"iter-13\"",
+      "name": "Create iteration branch \"iter-13\"",
       "details": "Branch from main to iter-13 for the platform-aware refactor to preserve mainline stability.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "7343e982-306c-4e44-b82d-277de36bd35b",
       "completed": false,
       "createdAt": "2025-10-28T01:18:32.791Z",
-      "updatedAt": "2025-10-28T01:18:32.791Z",
+      "updatedAt": "2025-10-28T16:13:47.521Z",
       "dependsOn": [
         "115abe61-03bf-4349-96b6-4c4126828321"
       ],
@@ -1744,13 +1446,13 @@
     },
     {
       "id": "20f61a63-22ba-4b9a-991a-6f41a2d729c5",
-      "name": "10.20 Finalize platform-step decomposition plan",
+      "name": "Finalize platform-step decomposition plan",
       "details": "Document target APIs for InstallWindowsVsCodeStep, InstallMacVsCodeStep, and InstallLinuxVsCodeStep plus the orchestration wiring changes and testing expectations.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "7343e982-306c-4e44-b82d-277de36bd35b",
       "completed": false,
       "createdAt": "2025-10-28T01:18:37.050Z",
-      "updatedAt": "2025-10-28T01:18:37.050Z",
+      "updatedAt": "2025-10-28T16:13:51.883Z",
       "dependsOn": [
         "07a2d103-534b-4404-9795-fb4c85798a6a"
       ],
@@ -1766,13 +1468,13 @@
     },
     {
       "id": "d81622fc-29ec-4e0b-bc96-19385969073e",
-      "name": "20 Build",
-      "details": "Implement Iteration 13 refactor: create platform-specific VS Code steps, update DI, and remove legacy abstractions.",
+      "name": "20 Build & Document",
+      "details": "Implement Iteration 13 refactor: create platform-specific VS Code steps, update DI wiring, remove PlatformAwareStep, update orchestrators, and capture documentation/test updates.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "c4d056ef-db9e-4909-bfac-936a89bdb37d",
       "completed": false,
       "createdAt": "2025-10-28T01:18:41.285Z",
-      "updatedAt": "2025-10-28T01:18:41.285Z",
+      "updatedAt": "2025-10-28T16:02:59.205Z",
       "dependsOn": [
         "7343e982-306c-4e44-b82d-277de36bd35b"
       ],
@@ -1788,13 +1490,13 @@
     },
     {
       "id": "7951caad-d9c8-4da8-b916-078f46c29b41",
-      "name": "20.10 Implement InstallWindowsVsCodeStep",
+      "name": "Implement InstallWindowsVsCodeStep",
       "details": "Create Windows-specific VS Code installer step with winget logic and idempotent PATH checks; port tests from existing InstallVsCodeStep.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "d81622fc-29ec-4e0b-bc96-19385969073e",
       "completed": false,
       "createdAt": "2025-10-28T01:18:45.576Z",
-      "updatedAt": "2025-10-28T01:18:45.576Z",
+      "updatedAt": "2025-10-28T16:12:03.671Z",
       "dependsOn": [
         "20f61a63-22ba-4b9a-991a-6f41a2d729c5"
       ],
@@ -1811,13 +1513,13 @@
     },
     {
       "id": "82388e7c-b03e-44dc-99dd-563659da63f6",
-      "name": "20.20 Implement InstallMacVsCodeStep",
+      "name": "Implement InstallMacVsCodeStep",
       "details": "Create macOS-specific VS Code step using brew logic, covering PATH/app bundle detection and tests mirroring legacy behaviour.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "d81622fc-29ec-4e0b-bc96-19385969073e",
       "completed": false,
       "createdAt": "2025-10-28T01:18:50.321Z",
-      "updatedAt": "2025-10-28T01:18:50.321Z",
+      "updatedAt": "2025-10-28T16:12:10.874Z",
       "dependsOn": [
         "20f61a63-22ba-4b9a-991a-6f41a2d729c5"
       ],
@@ -1834,13 +1536,13 @@
     },
     {
       "id": "d387729d-9f9c-4205-be3b-a4377dd39b14",
-      "name": "20.30 Implement InstallLinuxVsCodeStep",
+      "name": "Implement InstallLinuxVsCodeStep",
       "details": "Create Linux-specific VS Code installation step with curl/apt flow and tests ensuring dry-run + idempotent detection preserve legacy behaviour.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "d81622fc-29ec-4e0b-bc96-19385969073e",
       "completed": false,
       "createdAt": "2025-10-28T01:18:56.015Z",
-      "updatedAt": "2025-10-28T01:18:56.015Z",
+      "updatedAt": "2025-10-28T16:12:30.543Z",
       "dependsOn": [
         "20f61a63-22ba-4b9a-991a-6f41a2d729c5"
       ],
@@ -1857,13 +1559,13 @@
     },
     {
       "id": "417d57c0-cf37-4b54-bf63-16863899251d",
-      "name": "20.40 Remove PlatformAwareStep abstraction",
+      "name": "Remove PlatformAwareStep abstraction",
       "details": "Delete PlatformAwareStep.cs and related utilities once all orchestrators reference the new platform-specific steps; clean up namespace references.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "d81622fc-29ec-4e0b-bc96-19385969073e",
       "completed": false,
       "createdAt": "2025-10-28T01:19:00.100Z",
-      "updatedAt": "2025-10-28T01:19:00.100Z",
+      "updatedAt": "2025-10-28T16:12:47.682Z",
       "dependsOn": [
         "7951caad-d9c8-4da8-b916-078f46c29b41",
         "82388e7c-b03e-44dc-99dd-563659da63f6",
@@ -1881,13 +1583,13 @@
     },
     {
       "id": "65496f8c-eb9d-4e7b-8cbe-8b0c63d142fb",
-      "name": "20.50 Update Program.cs dependency injection",
+      "name": "Update Program.cs dependency injection",
       "details": "Register new platform-specific VS Code steps in Program.cs and remove the old InstallVsCodeStep registration.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "d81622fc-29ec-4e0b-bc96-19385969073e",
       "completed": false,
       "createdAt": "2025-10-28T01:19:06.578Z",
-      "updatedAt": "2025-10-28T01:19:06.578Z",
+      "updatedAt": "2025-10-28T16:12:54.370Z",
       "dependsOn": [
         "7951caad-d9c8-4da8-b916-078f46c29b41",
         "82388e7c-b03e-44dc-99dd-563659da63f6",
@@ -1906,13 +1608,13 @@
     },
     {
       "id": "42c06e4f-bc43-4696-a51e-475f2f4fbbbd",
-      "name": "20.90 Implement changes for iter-13",
-      "details": "Finalize all code edits for the platform-aware refactor on iter-13 branch, ensuring solution builds locally.",
+      "name": "Integrate VS Code refactor",
+      "details": "Finalize Iteration 13 changes on branch iter-13, ensuring all new platform-specific installers compile together and the solution builds successfully.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "d81622fc-29ec-4e0b-bc96-19385969073e",
       "completed": false,
       "createdAt": "2025-10-28T01:19:16.849Z",
-      "updatedAt": "2025-10-28T01:19:16.849Z",
+      "updatedAt": "2025-10-28T16:13:00.981Z",
       "dependsOn": [
         "417d57c0-cf37-4b54-bf63-16863899251d",
         "65496f8c-eb9d-4e7b-8cbe-8b0c63d142fb"
@@ -1929,13 +1631,13 @@
     },
     {
       "id": "79669e4f-8360-4abe-8954-a9b60ec36ca2",
-      "name": "30 Integration",
-      "details": "Coordinate orchestrator updates, ensure tests and DI align after removing PlatformAwareStep, and prep PR for review.",
+      "name": "30 Local Validation",
+      "details": "Validate the refactored VS Code steps locally before opening the PR, covering automated suites and targeted manual checks.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "c4d056ef-db9e-4909-bfac-936a89bdb37d",
       "completed": false,
       "createdAt": "2025-10-28T01:19:22.134Z",
-      "updatedAt": "2025-10-28T01:19:22.134Z",
+      "updatedAt": "2025-10-28T16:03:05.906Z",
       "dependsOn": [
         "d81622fc-29ec-4e0b-bc96-19385969073e"
       ],
@@ -1951,13 +1653,13 @@
     },
     {
       "id": "18857a5e-e118-4f3b-a979-3dc7053ee9d3",
-      "name": "30.10 Open PR: iter-13",
+      "name": "Open PR: iter-13",
       "details": "Publish iter-13 PR with refactor notes and highlight removed PlatformAwareStep components.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "79669e4f-8360-4abe-8954-a9b60ec36ca2",
+      "parentId": "29ec8524-71f0-43c2-b338-94f8ece9ae65",
       "completed": false,
       "createdAt": "2025-10-28T01:19:29.322Z",
-      "updatedAt": "2025-10-28T01:19:29.322Z",
+      "updatedAt": "2025-10-28T16:10:39.709Z",
       "dependsOn": [
         "42c06e4f-bc43-4696-a51e-475f2f4fbbbd"
       ],
@@ -1966,67 +1668,21 @@
       "status": "pending",
       "tags": [
         "iter-13",
-        "integration",
+        "delivery",
         "pr"
       ],
       "estimatedHours": 0.25,
       "level": 2
     },
     {
-      "id": "dfbad3a1-5972-4cc0-b579-4cec80103376",
-      "name": "30.20 Verify CI checks",
-      "details": "Confirm iter-13 PR passes formatting, build, and test workflows with new platform-specific steps.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "79669e4f-8360-4abe-8954-a9b60ec36ca2",
-      "completed": false,
-      "createdAt": "2025-10-28T01:19:32.902Z",
-      "updatedAt": "2025-10-28T01:19:32.902Z",
-      "dependsOn": [
-        "18857a5e-e118-4f3b-a979-3dc7053ee9d3"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-13",
-        "integration",
-        "ci"
-      ],
-      "estimatedHours": 0.5,
-      "level": 2
-    },
-    {
-      "id": "e44582f1-34e7-411d-b74a-d28c609307df",
-      "name": "30.30 Resolve review feedback",
-      "details": "Address reviewer comments for iter-13, focusing on duplicated logic and test coverage parity.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "79669e4f-8360-4abe-8954-a9b60ec36ca2",
-      "completed": false,
-      "createdAt": "2025-10-28T01:19:42.663Z",
-      "updatedAt": "2025-10-28T01:19:42.663Z",
-      "dependsOn": [
-        "dfbad3a1-5972-4cc0-b579-4cec80103376"
-      ],
-      "priority": 5,
-      "complexity": 4,
-      "status": "pending",
-      "tags": [
-        "iter-13",
-        "integration",
-        "review"
-      ],
-      "estimatedHours": 0.75,
-      "level": 2
-    },
-    {
       "id": "79a9f646-1564-43ae-8b6a-4b25bd27b2f6",
-      "name": "30.40 Align orchestrators with new VS Code steps",
-      "details": "Update Windows, MacOs, Ubuntu, and WslGuest orchestrators to inject the appropriate platform-specific VS Code step and validate sequence order.",
+      "name": "Wire orchestrators to platform-specific VS Code steps",
+      "details": "Update Windows, MacOs, Ubuntu, and WslGuest orchestrators to inject the appropriate platform-specific VS Code step and validate sequence order as part of the build phase.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "79669e4f-8360-4abe-8954-a9b60ec36ca2",
+      "parentId": "d81622fc-29ec-4e0b-bc96-19385969073e",
       "completed": false,
       "createdAt": "2025-10-28T01:19:48.482Z",
-      "updatedAt": "2025-10-28T01:19:48.482Z",
+      "updatedAt": "2025-10-28T16:13:05.808Z",
       "dependsOn": [
         "65496f8c-eb9d-4e7b-8cbe-8b0c63d142fb"
       ],
@@ -2035,7 +1691,7 @@
       "status": "pending",
       "tags": [
         "iter-13",
-        "integration",
+        "build",
         "orchestrators"
       ],
       "estimatedHours": 0.75,
@@ -2043,13 +1699,13 @@
     },
     {
       "id": "29ec8524-71f0-43c2-b338-94f8ece9ae65",
-      "name": "40 Validation & Delivery",
-      "details": "Validate refactor through automated/unit coverage, regression tests, and release preparation before merge.",
+      "name": "40 Delivery & CI",
+      "details": "Prepare and push the iter-13 branch for review, ensuring CI remains green through PR validation.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "c4d056ef-db9e-4909-bfac-936a89bdb37d",
       "completed": false,
       "createdAt": "2025-10-28T01:19:54.276Z",
-      "updatedAt": "2025-10-28T01:19:54.276Z",
+      "updatedAt": "2025-10-28T16:03:49.312Z",
       "dependsOn": [
         "79669e4f-8360-4abe-8954-a9b60ec36ca2"
       ],
@@ -2065,13 +1721,13 @@
     },
     {
       "id": "3106b2b8-7072-4dde-b2c1-fc22fac6437f",
-      "name": "40.10 Local lint/test & dry-run",
+      "name": "Local full-suite lint/test & dry-run",
       "details": "Run dotnet format, dotnet build, dotnet test, and orchestrator dry-run to ensure new VS Code steps behave across modes.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "29ec8524-71f0-43c2-b338-94f8ece9ae65",
+      "parentId": "79669e4f-8360-4abe-8954-a9b60ec36ca2",
       "completed": false,
       "createdAt": "2025-10-28T01:19:58.357Z",
-      "updatedAt": "2025-10-28T01:19:58.357Z",
+      "updatedAt": "2025-10-28T16:10:11.896Z",
       "dependsOn": [
         "79a9f646-1564-43ae-8b6a-4b25bd27b2f6"
       ],
@@ -2088,22 +1744,19 @@
     },
     {
       "id": "e747062a-824a-4b1b-8bb5-38d885a581df",
-      "name": "40.20 Update VS Code step unit tests",
-      "details": "Create dedicated NUnit coverage for InstallWindowsVsCodeStep, InstallMacVsCodeStep, and InstallLinuxVsCodeStep; retire legacy shared tests.",
+      "name": "Implement/update unit tests",
+      "details": "Create dedicated NUnit coverage for InstallWindowsVsCodeStep, InstallMacVsCodeStep, and InstallLinuxVsCodeStep; retire the legacy shared tests to validate the new platform-specific installers.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "29ec8524-71f0-43c2-b338-94f8ece9ae65",
+      "parentId": "d81622fc-29ec-4e0b-bc96-19385969073e",
       "completed": false,
       "createdAt": "2025-10-28T01:20:06.367Z",
-      "updatedAt": "2025-10-28T01:20:06.367Z",
-      "dependsOn": [
-        "3106b2b8-7072-4dde-b2c1-fc22fac6437f"
-      ],
+      "updatedAt": "2025-10-28T16:10:54.649Z",
+      "dependsOn": [],
       "priority": 5,
       "complexity": 5,
       "status": "pending",
       "tags": [
         "iter-13",
-        "validation",
         "testing"
       ],
       "estimatedHours": 1,
@@ -2111,13 +1764,13 @@
     },
     {
       "id": "f91027cb-6888-4c84-adef-e821333fc4f4",
-      "name": "40.30 Regression sweep for orchestrators",
+      "name": "Regression sweep for orchestrators",
       "details": "Manually exercise each orchestrator to verify VS Code step substitution works and messaging remains consistent.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "29ec8524-71f0-43c2-b338-94f8ece9ae65",
+      "parentId": "79669e4f-8360-4abe-8954-a9b60ec36ca2",
       "completed": false,
       "createdAt": "2025-10-28T01:20:12.030Z",
-      "updatedAt": "2025-10-28T01:20:12.030Z",
+      "updatedAt": "2025-10-28T16:10:25.119Z",
       "dependsOn": [
         "e747062a-824a-4b1b-8bb5-38d885a581df"
       ],
@@ -2133,116 +1786,44 @@
       "level": 2
     },
     {
-      "id": "301857f0-d4fe-431f-8763-38fed058e4e5",
-      "name": "40.40 Squash/merge PR",
-      "details": "After approvals and validation, squash-merge iter-13 into main to ship the platform-aware refactor.",
+      "id": "73fc3d3d-9fc7-4f7a-88e9-412beae57374",
+      "name": "Update README with VS Code refactor details",
+      "details": "Document the new platform-specific VS Code installer steps in README/developer docs, replacing references to the removed PlatformAwareStep abstraction before opening the PR.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "29ec8524-71f0-43c2-b338-94f8ece9ae65",
+      "parentId": "d81622fc-29ec-4e0b-bc96-19385969073e",
       "completed": false,
-      "createdAt": "2025-10-28T01:20:20.175Z",
-      "updatedAt": "2025-10-28T01:20:20.175Z",
-      "dependsOn": [
-        "e44582f1-34e7-411d-b74a-d28c609307df",
-        "f91027cb-6888-4c84-adef-e821333fc4f4"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-13",
-        "validation",
-        "merge"
-      ],
-      "estimatedHours": 0.25,
-      "level": 2
-    },
-    {
-      "id": "87d4af89-4d59-4333-828f-d94f3897d066",
-      "name": "50 Docs & Comms",
-      "details": "Document refactor outcomes and broadcast step changes to teams relying on onboarding flows.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "c4d056ef-db9e-4909-bfac-936a89bdb37d",
-      "completed": false,
-      "createdAt": "2025-10-28T01:20:24.717Z",
-      "updatedAt": "2025-10-28T01:20:24.717Z",
-      "dependsOn": [
-        "29ec8524-71f0-43c2-b338-94f8ece9ae65"
-      ],
+      "createdAt": "2025-10-28T01:20:28.194Z",
+      "updatedAt": "2025-10-28T16:11:14.113Z",
+      "dependsOn": [],
       "priority": 5,
       "complexity": 3,
       "status": "pending",
       "tags": [
         "iter-13",
         "docs"
-      ],
-      "estimatedHours": 1,
-      "level": 1
-    },
-    {
-      "id": "73fc3d3d-9fc7-4f7a-88e9-412beae57374",
-      "name": "50.10 Post-merge validation + README updates",
-      "details": "Pull main after iter-13 merge, confirm builds/tests still green, and update README/developer docs to describe new VS Code step classes.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "87d4af89-4d59-4333-828f-d94f3897d066",
-      "completed": false,
-      "createdAt": "2025-10-28T01:20:28.194Z",
-      "updatedAt": "2025-10-28T01:20:28.194Z",
-      "dependsOn": [
-        "301857f0-d4fe-431f-8763-38fed058e4e5"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-13",
-        "docs",
-        "post-merge"
       ],
       "estimatedHours": 0.5,
       "level": 2
     },
     {
       "id": "11c4dd2a-0620-40bb-a417-d6d13aaffe96",
-      "name": "50.20 Update architecture notes for platform steps",
-      "details": "Refresh internal architecture/design documentation to reflect removal of PlatformAwareStep and rationale for platform-specific classes.",
+      "name": "Update architecture documentation",
+      "details": "Refresh internal architecture/design docs to capture the removal of PlatformAwareStep and how the new platform-specific VS Code installers are wired through orchestrators and DI.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "87d4af89-4d59-4333-828f-d94f3897d066",
+      "parentId": "d81622fc-29ec-4e0b-bc96-19385969073e",
       "completed": false,
       "createdAt": "2025-10-28T01:20:57.244Z",
-      "updatedAt": "2025-10-28T01:20:57.244Z",
-      "dependsOn": [
-        "73fc3d3d-9fc7-4f7a-88e9-412beae57374"
-      ],
+      "updatedAt": "2025-10-28T16:11:29.565Z",
+      "dependsOn": [],
       "priority": 5,
       "complexity": 3,
       "status": "pending",
       "tags": [
         "iter-13",
-        "docs"
+        "docs",
+        "architecture"
       ],
       "estimatedHours": 0.5,
-      "level": 2
-    },
-    {
-      "id": "4461c6d8-6d02-4ece-9d2c-bea801c6ffa0",
-      "name": "50.30 Share refactor summary",
-      "details": "Announce Iteration 13 completion to stakeholders with highlights on maintainability improvements and new testing strategy.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "87d4af89-4d59-4333-828f-d94f3897d066",
-      "completed": false,
-      "createdAt": "2025-10-28T01:21:03.330Z",
-      "updatedAt": "2025-10-28T01:21:03.330Z",
-      "dependsOn": [
-        "11c4dd2a-0620-40bb-a417-d6d13aaffe96"
-      ],
-      "priority": 5,
-      "complexity": 2,
-      "status": "pending",
-      "tags": [
-        "iter-13",
-        "comms"
-      ],
-      "estimatedHours": 0.25,
       "level": 2
     },
     {
@@ -2263,26 +1844,6 @@
       ],
       "estimatedHours": 5.5,
       "level": 0
-    },
-    {
-      "id": "3e144748-f8bb-4b3f-bbd7-3c7ed1ad9afa",
-      "name": "00 Pre-flight & Identity",
-      "details": "Inventory hard-coded configuration values in the codebase and capture stakeholder expectations for centralized configuration defaults.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "f6b77504-2290-4a5f-a3a0-9d798216135f",
-      "completed": false,
-      "createdAt": "2025-10-28T01:21:13.444Z",
-      "updatedAt": "2025-10-28T01:21:13.444Z",
-      "dependsOn": [],
-      "priority": 5,
-      "complexity": 4,
-      "status": "pending",
-      "tags": [
-        "iter-14",
-        "pre-flight"
-      ],
-      "estimatedHours": 1.25,
-      "level": 1
     },
     {
       "id": "2bd13815-317c-4b41-af7d-133ed9159ca9",
@@ -2353,13 +1914,13 @@
     },
     {
       "id": "955b4d97-5174-4cb1-934e-024f2742c86b",
-      "name": "20 Build",
+      "name": "20 Build & Document",
       "details": "Implement centralized configuration model, DI registration, and step updates for Iteration 14.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "f6b77504-2290-4a5f-a3a0-9d798216135f",
       "completed": false,
       "createdAt": "2025-10-28T01:21:30.675Z",
-      "updatedAt": "2025-10-28T01:21:30.675Z",
+      "updatedAt": "2025-10-28T16:16:08.211Z",
       "dependsOn": [
         "2bd13815-317c-4b41-af7d-133ed9159ca9"
       ],
@@ -2514,13 +2075,13 @@
     },
     {
       "id": "0f269ab2-bf6b-4f64-bac1-e2d5502e7ae9",
-      "name": "30 Integration",
-      "details": "Ensure configuration model is wired through orchestrators, prepare communication, and organize PR review flow for Iteration 14.",
+      "name": "30 Local Validation",
+      "details": "Execute local validation for Iteration 14: run automated suites, targeted configuration checks, and manual confirmation before publishing the PR.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "f6b77504-2290-4a5f-a3a0-9d798216135f",
       "completed": false,
       "createdAt": "2025-10-28T01:22:10.483Z",
-      "updatedAt": "2025-10-28T01:22:10.483Z",
+      "updatedAt": "2025-10-28T16:18:24.761Z",
       "dependsOn": [
         "955b4d97-5174-4cb1-934e-024f2742c86b"
       ],
@@ -2529,20 +2090,20 @@
       "status": "pending",
       "tags": [
         "iter-14",
-        "integration"
+        "validation"
       ],
       "estimatedHours": 1.5,
       "level": 1
     },
     {
       "id": "828aa0fa-185c-4694-9179-410c8ab1df3d",
-      "name": "30.10 Open PR: iter-14",
+      "name": "Open PR: iter-14",
       "details": "Open iter-14 PR summarizing centralized configuration changes and testing coverage.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "0f269ab2-bf6b-4f64-bac1-e2d5502e7ae9",
+      "parentId": "9d904a9a-b58f-42d9-bdb2-97daf593a9fd",
       "completed": false,
       "createdAt": "2025-10-28T01:22:15.988Z",
-      "updatedAt": "2025-10-28T01:22:15.988Z",
+      "updatedAt": "2025-10-28T16:17:26.190Z",
       "dependsOn": [
         "f51b45c7-2a5e-4d74-821d-d6330074375f"
       ],
@@ -2551,76 +2112,28 @@
       "status": "pending",
       "tags": [
         "iter-14",
-        "integration",
+        "delivery",
         "pr"
       ],
       "estimatedHours": 0.25,
       "level": 2
     },
     {
-      "id": "c7dafcb1-ca1a-42c1-9dcc-92f1c89b4c1c",
-      "name": "30.20 Verify CI checks",
-      "details": "Ensure iter-14 PR passes CI builds/tests and that configuration model is restored correctly in pipelines.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "0f269ab2-bf6b-4f64-bac1-e2d5502e7ae9",
-      "completed": false,
-      "createdAt": "2025-10-28T01:22:23.125Z",
-      "updatedAt": "2025-10-28T01:22:23.125Z",
-      "dependsOn": [
-        "828aa0fa-185c-4694-9179-410c8ab1df3d"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-14",
-        "integration",
-        "ci"
-      ],
-      "estimatedHours": 0.5,
-      "level": 2
-    },
-    {
-      "id": "6fa55377-a9d5-4514-9c07-cbce2b929108",
-      "name": "30.30 Resolve review feedback",
-      "details": "Respond to reviewer comments for iter-14, ensuring configuration defaults and DI patterns meet expectations.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "0f269ab2-bf6b-4f64-bac1-e2d5502e7ae9",
-      "completed": false,
-      "createdAt": "2025-10-28T01:22:28.762Z",
-      "updatedAt": "2025-10-28T01:22:28.762Z",
-      "dependsOn": [
-        "c7dafcb1-ca1a-42c1-9dcc-92f1c89b4c1c"
-      ],
-      "priority": 5,
-      "complexity": 4,
-      "status": "pending",
-      "tags": [
-        "iter-14",
-        "integration",
-        "review"
-      ],
-      "estimatedHours": 0.75,
-      "level": 2
-    },
-    {
       "id": "7007f0d3-4562-400f-a92f-392b4ba1f34b",
-      "name": "30.40 Verify configuration usage across orchestrators",
-      "details": "Run targeted checks to ensure orchestrators and steps consume OnboardingConfiguration without regressions, updating dependency injection as needed.",
+      "name": "Spot-check configuration usage across orchestrators",
+      "details": "Run targeted orchestrator executions to verify steps consume OnboardingConfiguration values and no hard-coded strings remain.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "0f269ab2-bf6b-4f64-bac1-e2d5502e7ae9",
       "completed": false,
       "createdAt": "2025-10-28T01:22:34.064Z",
-      "updatedAt": "2025-10-28T01:22:34.064Z",
-      "dependsOn": [
-        "6fa55377-a9d5-4514-9c07-cbce2b929108"
-      ],
+      "updatedAt": "2025-10-28T16:18:33.890Z",
+      "dependsOn": [],
       "priority": 5,
       "complexity": 4,
       "status": "pending",
       "tags": [
         "iter-14",
-        "integration",
+        "validation",
         "verification"
       ],
       "estimatedHours": 0.5,
@@ -2628,13 +2141,13 @@
     },
     {
       "id": "9d904a9a-b58f-42d9-bdb2-97daf593a9fd",
-      "name": "40 Validation & Delivery",
-      "details": "Validate centralized configuration via automated tests, manual smoke tests, and release readiness for Iteration 14.",
+      "name": "40 Delivery & CI",
+      "details": "Push Iteration 14 changes for review by opening the PR and monitoring CI until all checks succeed.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "f6b77504-2290-4a5f-a3a0-9d798216135f",
       "completed": false,
       "createdAt": "2025-10-28T01:22:42.334Z",
-      "updatedAt": "2025-10-28T01:22:42.334Z",
+      "updatedAt": "2025-10-28T16:26:54.026Z",
       "dependsOn": [
         "0f269ab2-bf6b-4f64-bac1-e2d5502e7ae9"
       ],
@@ -2643,20 +2156,20 @@
       "status": "pending",
       "tags": [
         "iter-14",
-        "validation"
+        "delivery"
       ],
       "estimatedHours": 1.75,
       "level": 1
     },
     {
       "id": "01161de1-1aa0-4d7a-aaba-ff87154b9d4a",
-      "name": "40.10 Local lint/test & dry-run",
+      "name": "Local full-suite lint/test & dry-run",
       "details": "Run dotnet format/build/test and dry-run orchestrator to ensure configuration injection paths are healthy.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "9d904a9a-b58f-42d9-bdb2-97daf593a9fd",
+      "parentId": "0f269ab2-bf6b-4f64-bac1-e2d5502e7ae9",
       "completed": false,
       "createdAt": "2025-10-28T01:22:46.384Z",
-      "updatedAt": "2025-10-28T01:22:46.384Z",
+      "updatedAt": "2025-10-28T16:17:43.358Z",
       "dependsOn": [
         "7007f0d3-4562-400f-a92f-392b4ba1f34b"
       ],
@@ -2673,16 +2186,14 @@
     },
     {
       "id": "2915f03e-2cdb-4576-82cd-cbf7d83cfa80",
-      "name": "40.20 Update unit tests for configuration consumers",
-      "details": "Add/adjust tests for EnableWslFeaturesStep and InstallDockerDesktopStep to verify usage of OnboardingConfiguration defaults.",
+      "name": "Implement/update unit tests",
+      "details": "Add or adjust unit tests to cover centralized configuration usage in EnableWslFeaturesStep and InstallDockerDesktopStep.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "9d904a9a-b58f-42d9-bdb2-97daf593a9fd",
+      "parentId": "955b4d97-5174-4cb1-934e-024f2742c86b",
       "completed": false,
       "createdAt": "2025-10-28T01:22:51.410Z",
-      "updatedAt": "2025-10-28T01:22:51.410Z",
-      "dependsOn": [
-        "01161de1-1aa0-4d7a-aaba-ff87154b9d4a"
-      ],
+      "updatedAt": "2025-10-28T16:17:04.843Z",
+      "dependsOn": [],
       "priority": 5,
       "complexity": 5,
       "status": "pending",
@@ -2696,13 +2207,13 @@
     },
     {
       "id": "1493b946-cdfd-419b-85a7-1d3946d00931",
-      "name": "40.30 Manual smoke test for configuration defaults",
+      "name": "Manual configuration smoke test",
       "details": "Run Onboard Pro on Windows host scenario to confirm configuration-driven values (e.g., WSL distro names) behave correctly.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "9d904a9a-b58f-42d9-bdb2-97daf593a9fd",
+      "parentId": "0f269ab2-bf6b-4f64-bac1-e2d5502e7ae9",
       "completed": false,
       "createdAt": "2025-10-28T01:22:59.951Z",
-      "updatedAt": "2025-10-28T01:22:59.951Z",
+      "updatedAt": "2025-10-28T16:17:51.354Z",
       "dependsOn": [
         "2915f03e-2cdb-4576-82cd-cbf7d83cfa80"
       ],
@@ -2718,86 +2229,15 @@
       "level": 2
     },
     {
-      "id": "95dedfb4-6f4c-48de-8025-c69adebd9845",
-      "name": "40.40 Squash/merge PR",
-      "details": "After validation and approvals, squash-merge iter-14 into main and tag the centralized configuration change.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "9d904a9a-b58f-42d9-bdb2-97daf593a9fd",
-      "completed": false,
-      "createdAt": "2025-10-28T01:23:03.584Z",
-      "updatedAt": "2025-10-28T01:23:03.584Z",
-      "dependsOn": [
-        "6fa55377-a9d5-4514-9c07-cbce2b929108",
-        "1493b946-cdfd-419b-85a7-1d3946d00931"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-14",
-        "validation",
-        "merge"
-      ],
-      "estimatedHours": 0.25,
-      "level": 2
-    },
-    {
-      "id": "38b439ec-6be0-4fbc-a903-e824d7a4ed2e",
-      "name": "50 Docs & Comms",
-      "details": "Document centralized configuration defaults, update troubleshooting docs, and announce Iteration 14 completion.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "f6b77504-2290-4a5f-a3a0-9d798216135f",
-      "completed": false,
-      "createdAt": "2025-10-28T01:23:08.448Z",
-      "updatedAt": "2025-10-28T01:23:08.448Z",
-      "dependsOn": [
-        "9d904a9a-b58f-42d9-bdb2-97daf593a9fd"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-14",
-        "docs"
-      ],
-      "estimatedHours": 1,
-      "level": 1
-    },
-    {
-      "id": "3c869419-2765-4862-9197-7a50bd1185af",
-      "name": "50.10 Post-merge validation + README updates",
-      "details": "After merging iter-14, pull main, re-run smoke tests, and update README/config docs with new OnboardingConfiguration defaults.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "38b439ec-6be0-4fbc-a903-e824d7a4ed2e",
-      "completed": false,
-      "createdAt": "2025-10-28T01:23:14.420Z",
-      "updatedAt": "2025-10-28T01:23:14.420Z",
-      "dependsOn": [
-        "95dedfb4-6f4c-48de-8025-c69adebd9845"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-14",
-        "docs",
-        "post-merge"
-      ],
-      "estimatedHours": 0.5,
-      "level": 2
-    },
-    {
       "id": "23675093-5dcd-4fb8-a695-bf21a5cd61f8",
-      "name": "50.20 Update troubleshooting docs for configuration",
-      "details": "Document how to adjust OnboardingConfiguration defaults and where to look when diagnosing WSL or Docker changes.",
+      "name": "Update architecture documentation",
+      "details": "Refresh architecture notes to describe OnboardingConfiguration defaults and how configuration values flow through Windows steps.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "38b439ec-6be0-4fbc-a903-e824d7a4ed2e",
+      "parentId": "955b4d97-5174-4cb1-934e-024f2742c86b",
       "completed": false,
       "createdAt": "2025-10-28T01:23:21.679Z",
-      "updatedAt": "2025-10-28T01:23:21.679Z",
-      "dependsOn": [
-        "3c869419-2765-4862-9197-7a50bd1185af"
-      ],
+      "updatedAt": "2025-10-28T16:16:56.533Z",
+      "dependsOn": [],
       "priority": 5,
       "complexity": 3,
       "status": "pending",
@@ -2806,28 +2246,6 @@
         "docs"
       ],
       "estimatedHours": 0.5,
-      "level": 2
-    },
-    {
-      "id": "48f3dbe9-f13f-4c42-8c54-8205d34c3569",
-      "name": "50.30 Share configuration rollout announcement",
-      "details": "Notify stakeholders of Iteration 14 completion, highlighting centralized configuration benefits and how to request adjustments.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "38b439ec-6be0-4fbc-a903-e824d7a4ed2e",
-      "completed": false,
-      "createdAt": "2025-10-28T01:23:27.003Z",
-      "updatedAt": "2025-10-28T01:23:27.003Z",
-      "dependsOn": [
-        "23675093-5dcd-4fb8-a695-bf21a5cd61f8"
-      ],
-      "priority": 5,
-      "complexity": 2,
-      "status": "pending",
-      "tags": [
-        "iter-14",
-        "comms"
-      ],
-      "estimatedHours": 0.25,
       "level": 2
     },
     {
@@ -2848,26 +2266,6 @@
       ],
       "estimatedHours": 6.5,
       "level": 0
-    },
-    {
-      "id": "19090d33-6b64-474a-a780-41979a29fc75",
-      "name": "00 Pre-flight & Identity",
-      "details": "Review current command-line options, IUserInteraction capabilities, and ProcessRunner diagnostics to baseline verbosity behaviour before Iteration 15.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "b7147a8a-2d5d-4244-94e9-09fe986b78ed",
-      "completed": false,
-      "createdAt": "2025-10-28T01:23:36.662Z",
-      "updatedAt": "2025-10-28T01:23:36.662Z",
-      "dependsOn": [],
-      "priority": 5,
-      "complexity": 4,
-      "status": "pending",
-      "tags": [
-        "iter-15",
-        "pre-flight"
-      ],
-      "estimatedHours": 1.5,
-      "level": 1
     },
     {
       "id": "752555a1-1836-4b15-99e8-c38073a3898e",
@@ -2938,13 +2336,13 @@
     },
     {
       "id": "3711b477-baa3-4694-a5d1-88fa90bea6cc",
-      "name": "20 Build",
+      "name": "20 Build & Document",
       "details": "Implement verbose mode flag, IUserInteraction debug output, ProcessRunner instrumentation, and SequentialOrchestrator dry-run updates for Iteration 15.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "b7147a8a-2d5d-4244-94e9-09fe986b78ed",
       "completed": false,
       "createdAt": "2025-10-28T01:23:52.726Z",
-      "updatedAt": "2025-10-28T01:23:52.726Z",
+      "updatedAt": "2025-10-28T16:18:59.985Z",
       "dependsOn": [
         "752555a1-1836-4b15-99e8-c38073a3898e"
       ],
@@ -3126,13 +2524,13 @@
     },
     {
       "id": "ae932e73-fe23-4cd1-aa6e-41c805844d9c",
-      "name": "30 Integration",
-      "details": "Integrate verbose-mode changes across orchestrators, prep PR, and coordinate review for Iteration 15.",
+      "name": "30 Local Validation",
+      "details": "Validate Iteration 15 verbose-mode changes locally through automated suites and hands-on checks before opening the PR.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "b7147a8a-2d5d-4244-94e9-09fe986b78ed",
       "completed": false,
       "createdAt": "2025-10-28T01:24:56.906Z",
-      "updatedAt": "2025-10-28T01:24:56.906Z",
+      "updatedAt": "2025-10-28T16:20:56.363Z",
       "dependsOn": [
         "3711b477-baa3-4694-a5d1-88fa90bea6cc"
       ],
@@ -3141,20 +2539,20 @@
       "status": "pending",
       "tags": [
         "iter-15",
-        "integration"
+        "validation"
       ],
       "estimatedHours": 1.5,
       "level": 1
     },
     {
       "id": "7f060e84-cb8a-440b-bd5e-684577c6ed48",
-      "name": "30.10 Open PR: iter-15",
+      "name": "Open PR: iter-15",
       "details": "Publish iter-15 PR summarizing verbose/debugging enhancements and UX impacts.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "ae932e73-fe23-4cd1-aa6e-41c805844d9c",
+      "parentId": "e516dc69-0861-4938-a094-015f7b4d8e0a",
       "completed": false,
       "createdAt": "2025-10-28T01:25:05.601Z",
-      "updatedAt": "2025-10-28T01:25:05.601Z",
+      "updatedAt": "2025-10-28T16:19:19.454Z",
       "dependsOn": [
         "465c7c0e-c9a4-443d-8336-13774182b44b"
       ],
@@ -3163,76 +2561,28 @@
       "status": "pending",
       "tags": [
         "iter-15",
-        "integration",
+        "delivery",
         "pr"
       ],
       "estimatedHours": 0.25,
       "level": 2
     },
     {
-      "id": "f88a17ad-c001-4038-b7e0-c53729a82288",
-      "name": "30.20 Verify CI checks",
-      "details": "Ensure iter-15 PR passes format/build/test workflows with verbose flag coverage.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "ae932e73-fe23-4cd1-aa6e-41c805844d9c",
-      "completed": false,
-      "createdAt": "2025-10-28T01:25:09.669Z",
-      "updatedAt": "2025-10-28T01:25:09.669Z",
-      "dependsOn": [
-        "7f060e84-cb8a-440b-bd5e-684577c6ed48"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-15",
-        "integration",
-        "ci"
-      ],
-      "estimatedHours": 0.5,
-      "level": 2
-    },
-    {
-      "id": "2ab23623-2178-4a95-87f6-7f8e3c858290",
-      "name": "30.30 Resolve review feedback",
-      "details": "Address reviewer feedback for iter-15 around verbose messaging and UX details.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "ae932e73-fe23-4cd1-aa6e-41c805844d9c",
-      "completed": false,
-      "createdAt": "2025-10-28T01:25:15.847Z",
-      "updatedAt": "2025-10-28T01:25:15.847Z",
-      "dependsOn": [
-        "f88a17ad-c001-4038-b7e0-c53729a82288"
-      ],
-      "priority": 5,
-      "complexity": 4,
-      "status": "pending",
-      "tags": [
-        "iter-15",
-        "integration",
-        "review"
-      ],
-      "estimatedHours": 0.75,
-      "level": 2
-    },
-    {
       "id": "3110ace7-69e2-4fcb-9850-a14a37b70d5d",
-      "name": "30.40 Validate verbose messaging integration",
-      "details": "Run targeted scenarios to confirm verbose and dry-run messaging alignment across orchestrators and update UX polish doc if gaps remain.",
+      "name": "Spot-check verbose messaging integration",
+      "details": "Exercise representative orchestrator flows to confirm verbose and dry-run messaging align with UX expectations before opening the PR.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "ae932e73-fe23-4cd1-aa6e-41c805844d9c",
       "completed": false,
       "createdAt": "2025-10-28T01:25:21.186Z",
-      "updatedAt": "2025-10-28T01:25:21.186Z",
-      "dependsOn": [
-        "2ab23623-2178-4a95-87f6-7f8e3c858290"
-      ],
+      "updatedAt": "2025-10-28T16:19:45.656Z",
+      "dependsOn": [],
       "priority": 5,
       "complexity": 4,
       "status": "pending",
       "tags": [
         "iter-15",
-        "integration",
+        "validation",
         "verification"
       ],
       "estimatedHours": 0.5,
@@ -3240,13 +2590,13 @@
     },
     {
       "id": "e516dc69-0861-4938-a094-015f7b4d8e0a",
-      "name": "40 Validation & Delivery",
-      "details": "Validate verbose/dry-run enhancements via automated coverage, manual smoke tests, and final merge rituals for Iteration 15.",
+      "name": "40 Delivery & CI",
+      "details": "Push Iteration 15 verbose-mode changes for review by opening the PR and keeping CI green.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "b7147a8a-2d5d-4244-94e9-09fe986b78ed",
       "completed": false,
       "createdAt": "2025-10-28T01:25:26.251Z",
-      "updatedAt": "2025-10-28T01:25:26.251Z",
+      "updatedAt": "2025-10-28T16:20:59.550Z",
       "dependsOn": [
         "ae932e73-fe23-4cd1-aa6e-41c805844d9c"
       ],
@@ -3255,20 +2605,20 @@
       "status": "pending",
       "tags": [
         "iter-15",
-        "validation"
+        "delivery"
       ],
       "estimatedHours": 1.75,
       "level": 1
     },
     {
       "id": "c22af3d8-a22e-4ed9-8057-5005d50ebe95",
-      "name": "40.10 Local lint/test & dry-run",
+      "name": "Local full-suite lint/test & dry-run",
       "details": "Execute dotnet format/build/test and run orchestrator dry-run with --verbose to validate output pipeline.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "e516dc69-0861-4938-a094-015f7b4d8e0a",
+      "parentId": "ae932e73-fe23-4cd1-aa6e-41c805844d9c",
       "completed": false,
       "createdAt": "2025-10-28T01:25:30.420Z",
-      "updatedAt": "2025-10-28T01:25:30.420Z",
+      "updatedAt": "2025-10-28T16:19:32.518Z",
       "dependsOn": [
         "3110ace7-69e2-4fcb-9850-a14a37b70d5d"
       ],
@@ -3285,22 +2635,19 @@
     },
     {
       "id": "f3bb34cf-2016-4366-859f-b17b3c9d4764",
-      "name": "40.20 Update unit tests for verbose behaviours",
-      "details": "Add coverage for CommandLineOptionsParser, ProcessRunner, and SequentialOrchestrator to assert verbose flag behaviour and dry-run transcripts.",
+      "name": "Implement/update unit tests",
+      "details": "Add coverage for CommandLineOptionsParser, ProcessRunner, and SequentialOrchestrator to exercise verbose flag behaviour and dry-run transcripts.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "e516dc69-0861-4938-a094-015f7b4d8e0a",
+      "parentId": "3711b477-baa3-4694-a5d1-88fa90bea6cc",
       "completed": false,
       "createdAt": "2025-10-28T01:25:36.942Z",
-      "updatedAt": "2025-10-28T01:25:36.942Z",
-      "dependsOn": [
-        "c22af3d8-a22e-4ed9-8057-5005d50ebe95"
-      ],
+      "updatedAt": "2025-10-28T16:19:54.774Z",
+      "dependsOn": [],
       "priority": 5,
       "complexity": 5,
       "status": "pending",
       "tags": [
         "iter-15",
-        "validation",
         "testing"
       ],
       "estimatedHours": 1,
@@ -3308,13 +2655,13 @@
     },
     {
       "id": "1a6a5c91-d018-47b2-8712-f8e70ef1eb35",
-      "name": "40.30 Manual verbose-mode smoke test",
+      "name": "Manual verbose-mode smoke test",
       "details": "Run Onboard Pro end-to-end with --verbose on multiple scenarios to ensure debug output is actionable and not overwhelming.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "e516dc69-0861-4938-a094-015f7b4d8e0a",
+      "parentId": "ae932e73-fe23-4cd1-aa6e-41c805844d9c",
       "completed": false,
       "createdAt": "2025-10-28T01:25:41.365Z",
-      "updatedAt": "2025-10-28T01:25:41.365Z",
+      "updatedAt": "2025-10-28T16:19:37.868Z",
       "dependsOn": [
         "f3bb34cf-2016-4366-859f-b17b3c9d4764"
       ],
@@ -3330,41 +2677,15 @@
       "level": 2
     },
     {
-      "id": "f6246a23-0c28-430a-8c0d-c31e67ee0fa9",
-      "name": "40.40 Squash/merge PR",
-      "details": "After approvals and validation, squash-merge iter-15 into main and capture verbose-mode notes.",
+      "id": "5490c047-d58a-49e9-bde2-8c0e49a54d29",
+      "name": "Update README & troubleshooting guidance",
+      "details": "Revise README and troubleshooting sections to explain the --verbose flag, expected debug output, and how verbose mode interacts with dry-run.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "e516dc69-0861-4938-a094-015f7b4d8e0a",
+      "parentId": "3711b477-baa3-4694-a5d1-88fa90bea6cc",
       "completed": false,
-      "createdAt": "2025-10-28T01:25:47.946Z",
-      "updatedAt": "2025-10-28T01:25:47.946Z",
-      "dependsOn": [
-        "2ab23623-2178-4a95-87f6-7f8e3c858290",
-        "1a6a5c91-d018-47b2-8712-f8e70ef1eb35"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-15",
-        "validation",
-        "merge"
-      ],
-      "estimatedHours": 0.25,
-      "level": 2
-    },
-    {
-      "id": "4eb9f9c5-c4a3-46bb-b070-530b73b8e1fb",
-      "name": "50 Docs & Comms",
-      "details": "Update documentation and communications to explain verbose mode usage and debugging workflows for Iteration 15.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "b7147a8a-2d5d-4244-94e9-09fe986b78ed",
-      "completed": false,
-      "createdAt": "2025-10-28T01:25:53.770Z",
-      "updatedAt": "2025-10-28T01:25:53.770Z",
-      "dependsOn": [
-        "e516dc69-0861-4938-a094-015f7b4d8e0a"
-      ],
+      "createdAt": "2025-10-28T01:25:58.023Z",
+      "updatedAt": "2025-10-28T16:20:22.439Z",
+      "dependsOn": [],
       "priority": 5,
       "complexity": 3,
       "status": "pending",
@@ -3372,75 +2693,27 @@
         "iter-15",
         "docs"
       ],
-      "estimatedHours": 1,
-      "level": 1
-    },
-    {
-      "id": "5490c047-d58a-49e9-bde2-8c0e49a54d29",
-      "name": "50.10 Post-merge validation + README updates",
-      "details": "After merging iter-15, pull main, verify --verbose behaviour on release build, and update README/debugging docs.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "4eb9f9c5-c4a3-46bb-b070-530b73b8e1fb",
-      "completed": false,
-      "createdAt": "2025-10-28T01:25:58.023Z",
-      "updatedAt": "2025-10-28T01:25:58.023Z",
-      "dependsOn": [
-        "f6246a23-0c28-430a-8c0d-c31e67ee0fa9"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-15",
-        "docs",
-        "post-merge"
-      ],
       "estimatedHours": 0.5,
       "level": 2
     },
     {
       "id": "5a1bf3c5-9e75-4afd-9d76-94af2a8e45c4",
-      "name": "50.20 Update troubleshooting & UX docs",
-      "details": "Document verbose flag usage, log locations, and recommended debugging workflow in README and ux_polish references.",
+      "name": "Update architecture documentation",
+      "details": "Revise architecture or ux_polish notes to document verbose mode outputs, debug color scheme, and dry-run messaging changes.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "4eb9f9c5-c4a3-46bb-b070-530b73b8e1fb",
+      "parentId": "3711b477-baa3-4694-a5d1-88fa90bea6cc",
       "completed": false,
       "createdAt": "2025-10-28T01:26:05.569Z",
-      "updatedAt": "2025-10-28T01:26:05.569Z",
-      "dependsOn": [
-        "5490c047-d58a-49e9-bde2-8c0e49a54d29"
-      ],
+      "updatedAt": "2025-10-28T16:20:14.907Z",
+      "dependsOn": [],
       "priority": 5,
       "complexity": 3,
       "status": "pending",
       "tags": [
         "iter-15",
-        "docs",
-        "ux"
+        "docs"
       ],
       "estimatedHours": 0.5,
-      "level": 2
-    },
-    {
-      "id": "5c6bba1a-ab8a-4439-8af2-3dba814885b5",
-      "name": "50.30 Share verbose-mode release notes",
-      "details": "Communicate Iteration 15 completion to stakeholders, emphasizing new debugging capabilities and how to enable verbose mode.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "4eb9f9c5-c4a3-46bb-b070-530b73b8e1fb",
-      "completed": false,
-      "createdAt": "2025-10-28T01:26:09.928Z",
-      "updatedAt": "2025-10-28T01:26:09.928Z",
-      "dependsOn": [
-        "5a1bf3c5-9e75-4afd-9d76-94af2a8e45c4"
-      ],
-      "priority": 5,
-      "complexity": 2,
-      "status": "pending",
-      "tags": [
-        "iter-15",
-        "comms"
-      ],
-      "estimatedHours": 0.25,
       "level": 2
     },
     {
@@ -3461,26 +2734,6 @@
       ],
       "estimatedHours": 7,
       "level": 0
-    },
-    {
-      "id": "f22586ce-fb6f-406d-be3a-cd032429f20e",
-      "name": "00 Pre-flight & Identity",
-      "details": "Review prds/iterations/iteration16.md, confirm ux_polish.md assumptions still apply, and inventory every call site of IUserInteraction and ConsoleUserInteraction. Capture notes on required API extensions, existing spinner usage gaps, and risks around moving console code into Onboard.Console before coding begins.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "8501a7e1-6e5a-44b8-88b6-7a17c9143f10",
-      "completed": false,
-      "createdAt": "2025-10-28T01:28:53.632Z",
-      "updatedAt": "2025-10-28T14:23:03.709Z",
-      "dependsOn": [],
-      "priority": 5,
-      "complexity": 4,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "pre-flight"
-      ],
-      "estimatedHours": 1.5,
-      "level": 1
     },
     {
       "id": "258d5609-d4a3-45a2-9267-5fae1049db89",
@@ -3551,13 +2804,13 @@
     },
     {
       "id": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "name": "20 Build",
+      "name": "20 Build & Document",
       "details": "Deliver the Iteration 16 Spectre presentation layer changes across Onboard.Core and Onboard.Console: expand abstractions, add StepResult models, implement SpectreUserInteraction plus status adapters, register dependencies, and keep the core library free of UI references.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "8501a7e1-6e5a-44b8-88b6-7a17c9143f10",
       "completed": false,
       "createdAt": "2025-10-28T01:30:53.717Z",
-      "updatedAt": "2025-10-28T14:31:32.810Z",
+      "updatedAt": "2025-10-28T16:21:10.469Z",
       "dependsOn": [
         "258d5609-d4a3-45a2-9267-5fae1049db89"
       ],
@@ -3760,13 +3013,13 @@
     },
     {
       "id": "1637469b-367d-4db5-8192-e72d62b48d90",
-      "name": "30 Integration",
-      "details": "Coordinate branch iter-16 integration work: update DI registration docs, prepare change log snippets, and stage screenshots/logs demonstrating the new Spectre presentation layer in isolation. Ensure Spectre dependencies restore cleanly across supported OSes before opening the PR.",
+      "name": "30 Local Validation",
+      "details": "Validate Iteration 16 Spectre presentation changes locally with automated suites and targeted Spectre runs before opening the PR.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "8501a7e1-6e5a-44b8-88b6-7a17c9143f10",
       "completed": false,
       "createdAt": "2025-10-28T01:31:49.811Z",
-      "updatedAt": "2025-10-28T14:24:14.183Z",
+      "updatedAt": "2025-10-28T16:23:22.691Z",
       "dependsOn": [
         "310a9786-1bb2-44a8-a0e6-ac9b07252209"
       ],
@@ -3775,20 +3028,20 @@
       "status": "pending",
       "tags": [
         "iter-16",
-        "integration"
+        "validation"
       ],
       "estimatedHours": 1.5,
       "level": 1
     },
     {
       "id": "796e7fcd-2a7f-440b-ad1f-3d0ee4843d32",
-      "name": "30.10 Open PR: iter-16",
+      "name": "Open PR: iter-16",
       "details": "Publish draft PR for Spectre.Console UX polish capturing UX demos, screenshots, and architecture notes.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "1637469b-367d-4db5-8192-e72d62b48d90",
+      "parentId": "d9b140ac-fd2c-4081-921e-60db125d1598",
       "completed": false,
       "createdAt": "2025-10-28T01:31:57.220Z",
-      "updatedAt": "2025-10-28T01:31:57.220Z",
+      "updatedAt": "2025-10-28T16:21:33.356Z",
       "dependsOn": [
         "90620fb1-695f-434a-bf12-4f0496616365"
       ],
@@ -3797,76 +3050,28 @@
       "status": "pending",
       "tags": [
         "iter-16",
-        "integration",
+        "delivery",
         "pr"
       ],
       "estimatedHours": 0.25,
       "level": 2
     },
     {
-      "id": "964edd47-9195-41c4-9400-b3ad9050411e",
-      "name": "30.20 Verify CI checks",
-      "details": "Verify the iter-16 branch passes dotnet restore/build/test in CI with the new Spectre.Console references, ensuring that package restores work on Windows, macOS, and Linux agents and that test shims compile.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "1637469b-367d-4db5-8192-e72d62b48d90",
-      "completed": false,
-      "createdAt": "2025-10-28T01:32:02.554Z",
-      "updatedAt": "2025-10-28T14:24:21.835Z",
-      "dependsOn": [
-        "796e7fcd-2a7f-440b-ad1f-3d0ee4843d32"
-      ],
-      "priority": 5,
-      "complexity": 2,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "integration",
-        "ci"
-      ],
-      "estimatedHours": 0.5,
-      "level": 2
-    },
-    {
-      "id": "c6c635c2-1ec5-4bce-b90f-d8ae95545bc8",
-      "name": "30.30 Resolve review feedback",
-      "details": "Address reviewer comments around the expanded IUserInteraction surface, IStatusContext design, StepResult model, and Spectre dependency wiring. Capture decisions about API naming or default behaviours for future iterations.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "1637469b-367d-4db5-8192-e72d62b48d90",
-      "completed": false,
-      "createdAt": "2025-10-28T01:32:07.221Z",
-      "updatedAt": "2025-10-28T14:24:28.439Z",
-      "dependsOn": [
-        "964edd47-9195-41c4-9400-b3ad9050411e"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "integration",
-        "review"
-      ],
-      "estimatedHours": 0.75,
-      "level": 2
-    },
-    {
       "id": "1f3a3bb7-2888-47ca-87e1-71425ddd350c",
-      "name": "30.40 Cross-platform runtime verification",
-      "details": "Smoke-run Onboard.Console on Windows, macOS, and Linux hosts (or equivalent containers) to confirm the SpectreUserInteraction boots correctly, the status adapter runs, and no Spectre types leak into Onboard.Core. Capture screenshots/logs for the PR description.",
+      "name": "Cross-platform Spectre runtime spot-check",
+      "details": "Run Onboard.Console on Windows, macOS, and Linux environments to confirm SpectreUserInteraction initializes, status adapter runs, and no Spectre types leak into Onboard.Core before publishing the PR.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "1637469b-367d-4db5-8192-e72d62b48d90",
       "completed": false,
       "createdAt": "2025-10-28T01:32:18.217Z",
-      "updatedAt": "2025-10-28T14:24:33.096Z",
-      "dependsOn": [
-        "964edd47-9195-41c4-9400-b3ad9050411e"
-      ],
+      "updatedAt": "2025-10-28T16:22:25.800Z",
+      "dependsOn": [],
       "priority": 5,
       "complexity": 3,
       "status": "pending",
       "tags": [
         "iter-16",
-        "integration",
+        "validation",
         "verification"
       ],
       "estimatedHours": 1,
@@ -3874,13 +3079,13 @@
     },
     {
       "id": "d9b140ac-fd2c-4081-921e-60db125d1598",
-      "name": "40 Validation & Delivery",
-      "details": "Execute automated validation, manual UX review, and release readiness checks for Spectre.Console integration.",
+      "name": "40 Delivery & CI",
+      "details": "Push Iteration 16 Spectre presentation changes for review and keep PR CI green.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "8501a7e1-6e5a-44b8-88b6-7a17c9143f10",
       "completed": false,
       "createdAt": "2025-10-28T01:32:22.150Z",
-      "updatedAt": "2025-10-28T01:32:22.150Z",
+      "updatedAt": "2025-10-28T16:23:17.827Z",
       "dependsOn": [
         "1637469b-367d-4db5-8192-e72d62b48d90"
       ],
@@ -3889,23 +3094,21 @@
       "status": "pending",
       "tags": [
         "iter-16",
-        "validation"
+        "delivery"
       ],
       "estimatedHours": 2,
       "level": 1
     },
     {
       "id": "e9504f11-d68d-4fe4-8727-c929466c5a37",
-      "name": "40.10 Local lint/test & dry-run",
+      "name": "Local full-suite lint/test & dry-run",
       "details": "Run dotnet format, dotnet build, and dotnet test on iter-16. Exercise Onboard.Console with the new SpectreUserInteraction in dry-run mode to ensure the presentation layer initializes without the sequential orchestration changes planned for Iteration 17.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "d9b140ac-fd2c-4081-921e-60db125d1598",
+      "parentId": "1637469b-367d-4db5-8192-e72d62b48d90",
       "completed": false,
       "createdAt": "2025-10-28T01:32:26.724Z",
-      "updatedAt": "2025-10-28T14:24:38.601Z",
-      "dependsOn": [
-        "1f3a3bb7-2888-47ca-87e1-71425ddd350c"
-      ],
+      "updatedAt": "2025-10-28T16:23:31.177Z",
+      "dependsOn": [],
       "priority": 5,
       "complexity": 2,
       "status": "pending",
@@ -3919,22 +3122,19 @@
     },
     {
       "id": "cdd23712-36a4-45d3-830e-0bcd76aa2ca6",
-      "name": "40.20 Validate interface & adapter coverage",
-      "details": "Update existing unit tests or add smoke coverage to confirm the expanded IUserInteraction contract, IStatusContext adapter, and Spectre dependency registration behave as expected. Document any gaps deferred to Iteration 17 before sign-off.",
+      "name": "Implement/update unit tests",
+      "details": "Update or add tests to cover the expanded IUserInteraction contract, Spectre status adapter, and DI wiring so the new presentation layer is exercised.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "d9b140ac-fd2c-4081-921e-60db125d1598",
+      "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
       "completed": false,
       "createdAt": "2025-10-28T01:32:31.246Z",
-      "updatedAt": "2025-10-28T14:24:45.291Z",
-      "dependsOn": [
-        "e9504f11-d68d-4fe4-8727-c929466c5a37"
-      ],
+      "updatedAt": "2025-10-28T16:22:09.177Z",
+      "dependsOn": [],
       "priority": 5,
       "complexity": 3,
       "status": "pending",
       "tags": [
         "iter-16",
-        "validation",
         "testing"
       ],
       "estimatedHours": 1,
@@ -3942,13 +3142,13 @@
     },
     {
       "id": "3a11bd06-793d-42b9-8834-6fb8af7c05e3",
-      "name": "40.30 Manual UX polish review",
-      "details": "Manually exercise SpectreUserInteraction via a small harness or Onboard.Console dry-run to confirm welcome banner, semantic colors, and status updates display as expected even before orchestrator integration lands in Iteration 17. Capture screenshots or transcripts for release notes.",
+      "name": "Manual Spectre UX smoke test",
+      "details": "Manually exercise SpectreUserInteraction via harness or dry-run to confirm welcome banner, semantic colors, and status updates behave before orchestrator integration lands in Iteration 17.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "d9b140ac-fd2c-4081-921e-60db125d1598",
+      "parentId": "1637469b-367d-4db5-8192-e72d62b48d90",
       "completed": false,
       "createdAt": "2025-10-28T01:32:39.009Z",
-      "updatedAt": "2025-10-28T14:24:50.640Z",
+      "updatedAt": "2025-10-28T16:22:13.872Z",
       "dependsOn": [
         "cdd23712-36a4-45d3-830e-0bcd76aa2ca6"
       ],
@@ -3964,41 +3164,15 @@
       "level": 2
     },
     {
-      "id": "a374132b-e020-435f-a7ef-67b1dd0e9fe8",
-      "name": "40.40 Squash/merge PR",
-      "details": "After approvals and validation, squash-merge iter-16 PR into main and capture release notes for Spectre UX.",
+      "id": "fa668889-9f94-4f71-b6a4-ef73ca6c65c8",
+      "name": "Update architecture documentation",
+      "details": "Document the Spectre presentation layer architecture, including IUserInteraction changes, IStatusContext, and the new separation between Onboard.Core and Onboard.Console.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "d9b140ac-fd2c-4081-921e-60db125d1598",
+      "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
       "completed": false,
-      "createdAt": "2025-10-28T01:32:43.497Z",
-      "updatedAt": "2025-10-28T01:32:43.497Z",
-      "dependsOn": [
-        "c6c635c2-1ec5-4bce-b90f-d8ae95545bc8",
-        "3a11bd06-793d-42b9-8834-6fb8af7c05e3"
-      ],
-      "priority": 5,
-      "complexity": 2,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "validation",
-        "merge"
-      ],
-      "estimatedHours": 0.25,
-      "level": 2
-    },
-    {
-      "id": "bd232afe-c807-4b80-b52f-afdb236f3607",
-      "name": "50 Docs & Comms",
-      "details": "Document SpectreUserInteraction availability, update architecture notes about the core/UI split, and queue communication assets (screenshots, release highlights) for the later orchestration work. Tee up README or docs edits that can publish once Iteration 17 lands.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "8501a7e1-6e5a-44b8-88b6-7a17c9143f10",
-      "completed": false,
-      "createdAt": "2025-10-28T01:32:48.074Z",
-      "updatedAt": "2025-10-28T14:24:55.483Z",
-      "dependsOn": [
-        "d9b140ac-fd2c-4081-921e-60db125d1598"
-      ],
+      "createdAt": "2025-10-28T01:32:52.631Z",
+      "updatedAt": "2025-10-28T16:22:43.024Z",
+      "dependsOn": [],
       "priority": 5,
       "complexity": 2,
       "status": "pending",
@@ -4006,41 +3180,18 @@
         "iter-16",
         "docs"
       ],
-      "estimatedHours": 1,
-      "level": 1
-    },
-    {
-      "id": "fa668889-9f94-4f71-b6a4-ef73ca6c65c8",
-      "name": "50.10 Post-merge validation + README updates",
-      "details": "After merging iter-16, pull main, run a quick smoke test, and create a README/architecture doc stub describing the new Spectre presentation layer with TODOs that will be finalized in Iteration 17 once orchestration changes ship.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "bd232afe-c807-4b80-b52f-afdb236f3607",
-      "completed": false,
-      "createdAt": "2025-10-28T01:32:52.631Z",
-      "updatedAt": "2025-10-28T14:25:00.258Z",
-      "dependsOn": [
-        "a374132b-e020-435f-a7ef-67b1dd0e9fe8"
-      ],
-      "priority": 5,
-      "complexity": 2,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "docs",
-        "post-merge"
-      ],
       "estimatedHours": 0.5,
       "level": 2
     },
     {
       "id": "90cacdb7-3d8f-4292-841f-f1d47566fba9",
-      "name": "50.20 Update UX documentation & troubleshooting",
-      "details": "Draft troubleshooting notes that explain how to enable verbose logging for the new Spectre presentation layer, list known gaps prior to Iteration 17 integration, and identify support artifacts (screenshots, transcripts) to collect.",
+      "name": "Update README & troubleshooting guidance",
+      "details": "Refresh README/troubleshooting content to explain the Spectre-based interaction layer, logging expectations, and any interim gaps before Iteration 17.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "bd232afe-c807-4b80-b52f-afdb236f3607",
+      "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
       "completed": false,
       "createdAt": "2025-10-28T01:32:57.562Z",
-      "updatedAt": "2025-10-28T14:25:53.708Z",
+      "updatedAt": "2025-10-28T16:22:50.016Z",
       "dependsOn": [
         "fa668889-9f94-4f71-b6a4-ef73ca6c65c8"
       ],
@@ -4049,33 +3200,9 @@
       "status": "pending",
       "tags": [
         "iter-16",
-        "docs",
-        "ux"
+        "docs"
       ],
       "estimatedHours": 0.5,
-      "level": 2
-    },
-    {
-      "id": "f2f19702-46bc-4473-b941-0715583c50ec",
-      "name": "50.30 Share Spectre UX rollout update",
-      "details": "Share a short update with stakeholders summarizing Iteration 16 deliverables (expanded IUserInteraction, SpectreUserInteraction availability, StepResult model) and set expectations that orchestration/summary integration will arrive in Iteration 17.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "bd232afe-c807-4b80-b52f-afdb236f3607",
-      "completed": false,
-      "createdAt": "2025-10-28T01:33:02.711Z",
-      "updatedAt": "2025-10-28T14:26:00.878Z",
-      "dependsOn": [
-        "90cacdb7-3d8f-4292-841f-f1d47566fba9"
-      ],
-      "priority": 5,
-      "complexity": 2,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "docs",
-        "comms"
-      ],
-      "estimatedHours": 0.25,
       "level": 2
     },
     {
@@ -4111,25 +3238,6 @@
       ],
       "estimatedHours": 7,
       "level": 0
-    },
-    {
-      "id": "d06400fe-db45-4add-b71c-1ce2dd27212b",
-      "name": "00 Pre-flight & Identity",
-      "details": "Review prds/iterations/iteration17.md and ux_polish.md updates, confirm Iteration 16 hand-off artifacts (SpectreUserInteraction, StepResult model, IStatusContext) are merged, and inventory orchestrator and Program.cs touch points that will consume the new APIs.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "e856eb9a-bc04-4b96-b81d-9ff0cd4825dd",
-      "completed": false,
-      "createdAt": "2025-10-28T14:27:40.115Z",
-      "updatedAt": "2025-10-28T14:27:40.115Z",
-      "dependsOn": [],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "pre-flight"
-      ],
-      "estimatedHours": 1.5,
-      "level": 1
     },
     {
       "id": "551871b6-8ea4-4c24-8bbe-8e22cd950f1f",
@@ -4197,13 +3305,13 @@
     },
     {
       "id": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "name": "20 Build",
+      "name": "20 Build & Document",
       "details": "Implement the Iteration 17 orchestration UX updates across SequentialOrchestrator, Program.cs, and platform-specific orchestrators.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "e856eb9a-bc04-4b96-b81d-9ff0cd4825dd",
       "completed": false,
       "createdAt": "2025-10-28T14:28:08.049Z",
-      "updatedAt": "2025-10-28T14:28:08.049Z",
+      "updatedAt": "2025-10-28T16:23:49.178Z",
       "dependsOn": [
         "551871b6-8ea4-4c24-8bbe-8e22cd950f1f"
       ],
@@ -4350,13 +3458,13 @@
     },
     {
       "id": "011a0a57-589a-4a2b-990f-800b1fe90a8c",
-      "name": "30 Integration",
-      "details": "Coordinate PR preparation, CI validation, and cross-platform smoke tests for the orchestrator UX updates.",
+      "name": "30 Local Validation",
+      "details": "Validate Iteration 17 orchestrator UX updates locally through automated suites and representative Spectre runs before opening the PR.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "e856eb9a-bc04-4b96-b81d-9ff0cd4825dd",
       "completed": false,
       "createdAt": "2025-10-28T14:29:08.145Z",
-      "updatedAt": "2025-10-28T14:29:08.145Z",
+      "updatedAt": "2025-10-28T16:25:36.074Z",
       "dependsOn": [
         "fe445a4e-112e-442c-a56f-fabdc0a1c996"
       ],
@@ -4364,20 +3472,20 @@
       "status": "pending",
       "tags": [
         "iter-17",
-        "integration"
+        "validation"
       ],
       "estimatedHours": 1.5,
       "level": 1
     },
     {
       "id": "8b2aeaed-dbcf-4bf7-9e4d-77a6082bc164",
-      "name": "30.10 Open PR: iter-17",
+      "name": "Open PR: iter-17",
       "details": "Open a draft PR for iter-17 showcasing the spinner workflow, welcome banner, and completion summary screenshots or recordings.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "011a0a57-589a-4a2b-990f-800b1fe90a8c",
+      "parentId": "0be2b500-02c8-4bd1-8b8a-3fc9d58ed35d",
       "completed": false,
       "createdAt": "2025-10-28T14:29:19.099Z",
-      "updatedAt": "2025-10-28T14:29:19.099Z",
+      "updatedAt": "2025-10-28T16:24:10.915Z",
       "dependsOn": [
         "6abbf1cd-4485-4023-bbd1-51d9d9f1537f"
       ],
@@ -4385,73 +3493,27 @@
       "status": "pending",
       "tags": [
         "iter-17",
-        "integration",
+        "delivery",
         "pr"
       ],
       "estimatedHours": 0.25,
       "level": 2
     },
     {
-      "id": "dd54fce5-a157-48dd-8cdc-f2de39095207",
-      "name": "30.20 Verify CI checks",
-      "details": "Confirm iter-17 passes all dotnet format/build/test workflows and that Spectre.Console snapshots render consistently across build agents.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "011a0a57-589a-4a2b-990f-800b1fe90a8c",
-      "completed": false,
-      "createdAt": "2025-10-28T14:29:23.572Z",
-      "updatedAt": "2025-10-28T14:29:23.572Z",
-      "dependsOn": [
-        "8b2aeaed-dbcf-4bf7-9e4d-77a6082bc164"
-      ],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "integration",
-        "ci"
-      ],
-      "estimatedHours": 0.5,
-      "level": 2
-    },
-    {
-      "id": "15bd1f31-7ca5-4c2e-af2c-6216d72c3c50",
-      "name": "30.30 Resolve review feedback",
-      "details": "Address reviewer comments on orchestrator UX changes, including markup tone, summary layout, skip reason wording, and dependency ergonomics.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "011a0a57-589a-4a2b-990f-800b1fe90a8c",
-      "completed": false,
-      "createdAt": "2025-10-28T14:29:28.290Z",
-      "updatedAt": "2025-10-28T14:29:28.290Z",
-      "dependsOn": [
-        "dd54fce5-a157-48dd-8cdc-f2de39095207"
-      ],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "integration",
-        "review"
-      ],
-      "estimatedHours": 0.75,
-      "level": 2
-    },
-    {
       "id": "e58bd3a8-1709-4b19-8469-ea652ae003da",
-      "name": "30.40 Validate spinner workflow across platforms",
-      "details": "Run Onboard.Console on Windows, macOS, and Linux (or containers) to verify the spinner flow, skip messaging, and completion summary behave consistently with real orchestrators.",
+      "name": "Cross-platform spinner workflow spot-check",
+      "details": "Run Onboard.Console on Windows, macOS, and Linux (or containers) to confirm spinner flow, skip messaging, and completion summary behave consistently with real orchestrators.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "011a0a57-589a-4a2b-990f-800b1fe90a8c",
       "completed": false,
       "createdAt": "2025-10-28T14:29:36.848Z",
-      "updatedAt": "2025-10-28T14:29:36.848Z",
-      "dependsOn": [
-        "dd54fce5-a157-48dd-8cdc-f2de39095207"
-      ],
+      "updatedAt": "2025-10-28T16:26:20.278Z",
+      "dependsOn": [],
       "priority": 5,
       "status": "pending",
       "tags": [
         "iter-17",
-        "integration",
+        "validation",
         "verification"
       ],
       "estimatedHours": 0.75,
@@ -4459,13 +3521,13 @@
     },
     {
       "id": "0be2b500-02c8-4bd1-8b8a-3fc9d58ed35d",
-      "name": "40 Validation & Delivery",
-      "details": "Validate orchestrator UX changes through automated tests, manual smoke tests, and release readiness tasks.",
+      "name": "40 Delivery & CI",
+      "details": "Push Iteration 17 orchestrator UX changes for review and keep PR CI runs green.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "e856eb9a-bc04-4b96-b81d-9ff0cd4825dd",
       "completed": false,
       "createdAt": "2025-10-28T14:29:45.430Z",
-      "updatedAt": "2025-10-28T14:29:45.430Z",
+      "updatedAt": "2025-10-28T16:25:40.956Z",
       "dependsOn": [
         "011a0a57-589a-4a2b-990f-800b1fe90a8c"
       ],
@@ -4473,23 +3535,21 @@
       "status": "pending",
       "tags": [
         "iter-17",
-        "validation"
+        "delivery"
       ],
       "estimatedHours": 2,
       "level": 1
     },
     {
       "id": "2df47d18-5216-4d41-b2ae-58ad6a808e31",
-      "name": "40.10 Local lint/test & dry-run",
+      "name": "Local full-suite lint/test & dry-run",
       "details": "Run dotnet format, dotnet build, and dotnet test on iter-17, then execute the onboarding flow in dry-run mode to validate spinner messaging and summary output end-to-end.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "0be2b500-02c8-4bd1-8b8a-3fc9d58ed35d",
+      "parentId": "011a0a57-589a-4a2b-990f-800b1fe90a8c",
       "completed": false,
       "createdAt": "2025-10-28T14:29:53.476Z",
-      "updatedAt": "2025-10-28T14:29:53.476Z",
-      "dependsOn": [
-        "e58bd3a8-1709-4b19-8469-ea652ae003da"
-      ],
+      "updatedAt": "2025-10-28T16:26:28.837Z",
+      "dependsOn": [],
       "priority": 5,
       "status": "pending",
       "tags": [
@@ -4502,21 +3562,18 @@
     },
     {
       "id": "b1309f3e-17cd-40a8-821b-a4e97521980d",
-      "name": "40.20 Update orchestrator unit tests",
-      "details": "Refresh existing tests to mock the expanded IUserInteraction contract (including RunStatusAsync and summary calls) and verify SequentialOrchestrator emits StepResult data correctly.",
+      "name": "Implement/update unit tests",
+      "details": "Refresh orchestrator and interaction tests to mock RunStatusAsync flows, verify StepResult collection, and cover new summary output paths.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "0be2b500-02c8-4bd1-8b8a-3fc9d58ed35d",
+      "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
       "completed": false,
       "createdAt": "2025-10-28T14:29:59.443Z",
-      "updatedAt": "2025-10-28T14:29:59.443Z",
-      "dependsOn": [
-        "2df47d18-5216-4d41-b2ae-58ad6a808e31"
-      ],
+      "updatedAt": "2025-10-28T16:24:35.044Z",
+      "dependsOn": [],
       "priority": 5,
       "status": "pending",
       "tags": [
         "iter-17",
-        "validation",
         "testing"
       ],
       "estimatedHours": 1,
@@ -4524,101 +3581,51 @@
     },
     {
       "id": "e83f17f9-c397-4cca-87a1-ea719b485fef",
-      "name": "40.30 Add SpectreUserInteraction tests",
-      "details": "Use Spectre.Console.Testing to create coverage validating SpectreUserInteraction output for success, skipped, and error states as well as summary formatting.",
+      "name": "Add SpectreUserInteraction tests",
+      "details": "Add Spectre.Console.Testing-based coverage to verify SpectreUserInteraction markup for success, skipped, and error cases plus summary rendering.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "0be2b500-02c8-4bd1-8b8a-3fc9d58ed35d",
+      "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
       "completed": false,
       "createdAt": "2025-10-28T14:30:09.884Z",
-      "updatedAt": "2025-10-28T14:30:09.884Z",
-      "dependsOn": [
-        "b1309f3e-17cd-40a8-821b-a4e97521980d"
-      ],
+      "updatedAt": "2025-10-28T16:24:56.177Z",
+      "dependsOn": [],
       "priority": 5,
       "status": "pending",
       "tags": [
         "iter-17",
-        "validation",
         "testing"
       ],
       "estimatedHours": 1,
       "level": 2
     },
     {
-      "id": "4d9be5cc-8d24-41f1-a4e5-c95d6d97e727",
-      "name": "40.40 Squash/merge PR",
-      "details": "After approvals and validation, squash-merge iter-17 into main and capture release notes for the new spinner workflow and completion summary.",
+      "id": "a7ea79b6-cdec-40e1-ab8d-066918a7a31b",
+      "name": "Update README & quick-start docs",
+      "details": "Update README and quick-start instructions to highlight the Spectre spinner workflow and completion summary experience.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "0be2b500-02c8-4bd1-8b8a-3fc9d58ed35d",
+      "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
       "completed": false,
-      "createdAt": "2025-10-28T14:30:16.150Z",
-      "updatedAt": "2025-10-28T14:30:16.150Z",
-      "dependsOn": [
-        "e83f17f9-c397-4cca-87a1-ea719b485fef",
-        "15bd1f31-7ca5-4c2e-af2c-6216d72c3c50"
-      ],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "validation",
-        "merge"
-      ],
-      "estimatedHours": 0.25,
-      "level": 2
-    },
-    {
-      "id": "443a0e85-f959-433e-9397-71d4049f018f",
-      "name": "50 Docs & Comms",
-      "details": "Publish documentation and communications capturing the new spinner workflow, completion summary, and Spectre UX integration.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "e856eb9a-bc04-4b96-b81d-9ff0cd4825dd",
-      "completed": false,
-      "createdAt": "2025-10-28T14:30:21.565Z",
-      "updatedAt": "2025-10-28T14:30:21.565Z",
-      "dependsOn": [
-        "0be2b500-02c8-4bd1-8b8a-3fc9d58ed35d"
-      ],
+      "createdAt": "2025-10-28T14:30:28.497Z",
+      "updatedAt": "2025-10-28T16:25:05.301Z",
+      "dependsOn": [],
       "priority": 5,
       "status": "pending",
       "tags": [
         "iter-17",
         "docs"
       ],
-      "estimatedHours": 1,
-      "level": 1
-    },
-    {
-      "id": "a7ea79b6-cdec-40e1-ab8d-066918a7a31b",
-      "name": "50.10 Post-merge validation + README updates",
-      "details": "After merging iter-17, pull main, run the onboarding flow to capture final screenshots, and update README/quick-start instructions to highlight the Spectre spinner workflow and summary output.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "443a0e85-f959-433e-9397-71d4049f018f",
-      "completed": false,
-      "createdAt": "2025-10-28T14:30:28.497Z",
-      "updatedAt": "2025-10-28T14:30:28.497Z",
-      "dependsOn": [
-        "4d9be5cc-8d24-41f1-a4e5-c95d6d97e727"
-      ],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "docs",
-        "post-merge"
-      ],
       "estimatedHours": 0.5,
       "level": 2
     },
     {
       "id": "8b84d298-cfbc-445c-802d-efd462961007",
-      "name": "50.20 Update UX & troubleshooting docs",
-      "details": "Revise ux_polish.md and troubleshooting guides with instructions for interpreting spinner output, summary tables, and skip reasons in the Spectre workflow.",
+      "name": "Update architecture documentation",
+      "details": "Revise architecture and UX references to explain SequentialOrchestrator status flow, StepResult summary output, and platform skip reasons.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "443a0e85-f959-433e-9397-71d4049f018f",
+      "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
       "completed": false,
       "createdAt": "2025-10-28T14:30:38.539Z",
-      "updatedAt": "2025-10-28T14:30:38.539Z",
+      "updatedAt": "2025-10-28T16:25:10.027Z",
       "dependsOn": [
         "a7ea79b6-cdec-40e1-ab8d-066918a7a31b"
       ],
@@ -4626,32 +3633,263 @@
       "status": "pending",
       "tags": [
         "iter-17",
-        "docs",
-        "ux"
+        "docs"
       ],
       "estimatedHours": 0.5,
       "level": 2
     },
     {
-      "id": "55d334c6-cf12-4888-b18d-1a26bde03d85",
-      "name": "50.30 Share orchestrator UX rollout update",
-      "details": "Publish a release note or stakeholder update summarizing the new Spectre spinner workflow, completion summary, and testing coverage.",
+      "id": "f27a611b-ff58-414e-9223-8970069650d0",
+      "name": "30 Local Validation",
+      "details": "Execute full local test suite and dry-run validation to ensure logging changes don't break existing functionality.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "443a0e85-f959-433e-9397-71d4049f018f",
-      "completed": false,
-      "createdAt": "2025-10-28T14:30:44.748Z",
-      "updatedAt": "2025-10-28T14:30:44.748Z",
-      "dependsOn": [
-        "8b84d298-cfbc-445c-802d-efd462961007"
-      ],
+      "parentId": "78f287da-1cbd-4517-a609-0272bde6274b",
+      "completed": true,
+      "createdAt": "2025-10-28T15:47:10.659Z",
+      "updatedAt": "2025-10-28T16:53:04.345Z",
+      "dependsOn": [],
       "priority": 5,
       "status": "pending",
       "tags": [
-        "iter-17",
-        "docs",
-        "comms"
+        "iter-12",
+        "validation"
       ],
-      "estimatedHours": 0.25,
+      "level": 1
+    },
+    {
+      "id": "57ac6eff-00a2-4a87-827b-45e5ded08fe8",
+      "name": "40 Delivery & CI",
+      "details": "Open PR for iter-12 and monitor CI until all checks pass.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "78f287da-1cbd-4517-a609-0272bde6274b",
+      "completed": false,
+      "createdAt": "2025-10-28T15:47:11.154Z",
+      "updatedAt": "2025-10-28T15:47:11.154Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [
+        "iter-12",
+        "delivery"
+      ],
+      "level": 1
+    },
+    {
+      "id": "db01e0ae-c84b-4284-8ba0-b0c6bd3c5a7a",
+      "name": "Implement/update unit tests",
+      "details": "Add/update unit tests for ProcessRunner Linux behavior, Serilog integration, command logging, and ConsoleUserInteraction transcript capture.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "dd7c72f6-450b-478a-9321-d3227f8070a6",
+      "completed": true,
+      "createdAt": "2025-10-28T15:47:34.922Z",
+      "updatedAt": "2025-10-28T16:51:30.576Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [
+        "iter-12",
+        "testing"
+      ],
+      "level": 2
+    },
+    {
+      "id": "302fcb8c-5a91-42ff-9a10-3df2e0e1a31b",
+      "name": "Update architecture documentation",
+      "details": "Update architecture documentation to reflect new logging capabilities, configuration locations, and diagnostics workflows.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "dd7c72f6-450b-478a-9321-d3227f8070a6",
+      "completed": true,
+      "createdAt": "2025-10-28T15:47:35.063Z",
+      "updatedAt": "2025-10-28T16:51:40.710Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [
+        "iter-12",
+        "documentation"
+      ],
+      "level": 2
+    },
+    {
+      "id": "06816cf9-b7db-4e77-a79c-3c5ee2599b60",
+      "name": "Local full-suite lint/test & dry-run",
+      "details": "Execute dotnet format, dotnet build, dotnet test, and orchestrator dry-run to verify ProcessRunner, Serilog, and logging changes work correctly.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "f27a611b-ff58-414e-9223-8970069650d0",
+      "completed": true,
+      "createdAt": "2025-10-28T15:47:47.891Z",
+      "updatedAt": "2025-10-28T16:52:59.411Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [
+        "iter-12",
+        "validation",
+        "testing"
+      ],
+      "level": 2
+    },
+    {
+      "id": "0d7852f9-5635-4308-91d0-a3edd6cabce2",
+      "name": "Open PR: iter-12",
+      "details": "Open pull request for iter-12 branch with summary of reliability and diagnostics enhancements.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "57ac6eff-00a2-4a87-827b-45e5ded08fe8",
+      "completed": false,
+      "createdAt": "2025-10-28T15:47:48.044Z",
+      "updatedAt": "2025-10-28T15:47:48.044Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [
+        "iter-12",
+        "delivery",
+        "pr"
+      ],
+      "level": 2
+    },
+    {
+      "id": "97c88f2b-6405-4e58-91b0-3c1e908b62f8",
+      "name": "Monitor CI & Resolve Failures",
+      "details": "Monitor CI workflows for iter-12 and resolve any build, lint, or test failures until all checks are green.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "57ac6eff-00a2-4a87-827b-45e5ded08fe8",
+      "completed": false,
+      "createdAt": "2025-10-28T15:47:48.302Z",
+      "updatedAt": "2025-10-28T16:09:38.278Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [
+        "iter-12",
+        "delivery",
+        "ci"
+      ],
+      "level": 2
+    },
+    {
+      "id": "a3539c83-c42c-4d3c-9e99-704885f91437",
+      "name": "Monitor CI & Resolve Failures",
+      "details": "Track iter-13 CI runs, investigate any failures, and push fixes until all checks are green.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "29ec8524-71f0-43c2-b338-94f8ece9ae65",
+      "completed": false,
+      "createdAt": "2025-10-28T16:13:38.680Z",
+      "updatedAt": "2025-10-28T16:13:38.680Z",
+      "dependsOn": [],
+      "priority": 5,
+      "complexity": 3,
+      "status": "pending",
+      "tags": [
+        "iter-13",
+        "delivery",
+        "ci"
+      ],
+      "estimatedHours": 0.5,
+      "level": 2
+    },
+    {
+      "id": "3ef855cf-529c-4a69-a6cf-7c96806799bf",
+      "name": "Monitor CI & Resolve Failures",
+      "details": "Watch iter-14 PR workflows and push fixes until all CI checks pass.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "9d904a9a-b58f-42d9-bdb2-97daf593a9fd",
+      "completed": false,
+      "createdAt": "2025-10-28T16:18:15.993Z",
+      "updatedAt": "2025-10-28T16:18:15.993Z",
+      "dependsOn": [],
+      "priority": 5,
+      "complexity": 3,
+      "status": "pending",
+      "tags": [
+        "iter-14",
+        "delivery",
+        "ci"
+      ],
+      "estimatedHours": 0.5,
+      "level": 2
+    },
+    {
+      "id": "8f173718-4022-49c4-919a-993f7554f5e4",
+      "name": "Monitor CI & Resolve Failures",
+      "details": "Watch iter-15 PR workflows and push fixes until all CI checks pass.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "e516dc69-0861-4938-a094-015f7b4d8e0a",
+      "completed": false,
+      "createdAt": "2025-10-28T16:20:44.210Z",
+      "updatedAt": "2025-10-28T16:20:44.210Z",
+      "dependsOn": [],
+      "priority": 5,
+      "complexity": 3,
+      "status": "pending",
+      "tags": [
+        "iter-15",
+        "delivery",
+        "ci"
+      ],
+      "estimatedHours": 0.5,
+      "level": 2
+    },
+    {
+      "id": "29666a20-6635-4fc0-83d1-e20b900c3770",
+      "name": "Monitor CI & Resolve Failures",
+      "details": "Watch iter-16 PR workflows and push fixes until all CI checks pass.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "d9b140ac-fd2c-4081-921e-60db125d1598",
+      "completed": false,
+      "createdAt": "2025-10-28T16:23:11.707Z",
+      "updatedAt": "2025-10-28T16:23:11.707Z",
+      "dependsOn": [],
+      "priority": 5,
+      "complexity": 3,
+      "status": "pending",
+      "tags": [
+        "iter-16",
+        "delivery",
+        "ci"
+      ],
+      "estimatedHours": 0.5,
+      "level": 2
+    },
+    {
+      "id": "d956656c-3fe8-4dcd-b9be-86487165a5d2",
+      "name": "Monitor CI & Resolve Failures",
+      "details": "Watch iter-17 PR workflows and push fixes until all CI checks pass.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "0be2b500-02c8-4bd1-8b8a-3fc9d58ed35d",
+      "completed": false,
+      "createdAt": "2025-10-28T16:25:27.988Z",
+      "updatedAt": "2025-10-28T16:25:27.988Z",
+      "dependsOn": [],
+      "priority": 5,
+      "complexity": 3,
+      "status": "pending",
+      "tags": [
+        "iter-17",
+        "delivery",
+        "ci"
+      ],
+      "estimatedHours": 0.5,
+      "level": 2
+    },
+    {
+      "id": "baaa242d-4f42-4d8f-85bb-0a139c27aba3",
+      "name": "Update README & troubleshooting guidance",
+      "details": "Update README and troubleshooting docs to describe centralized configuration defaults and how to adjust them.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "955b4d97-5174-4cb1-934e-024f2742c86b",
+      "completed": false,
+      "createdAt": "2025-10-28T16:26:42.645Z",
+      "updatedAt": "2025-10-28T16:26:42.645Z",
+      "dependsOn": [],
+      "priority": 5,
+      "complexity": 3,
+      "status": "pending",
+      "tags": [
+        "iter-14",
+        "docs"
+      ],
+      "estimatedHours": 0.5,
       "level": 2
     }
   ],

@@ -4,6 +4,8 @@
 
 namespace Onboard.Core.Services;
 
+using Microsoft.Extensions.Logging;
+
 using Onboard.Core.Abstractions;
 
 /// <summary>
@@ -11,8 +13,16 @@ using Onboard.Core.Abstractions;
 /// </summary>
 public class ConsoleUserInteraction : IUserInteraction
 {
+    private readonly ILogger<ConsoleUserInteraction> logger;
+
+    public ConsoleUserInteraction(ILogger<ConsoleUserInteraction> logger)
+    {
+        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
+
     public void WriteLine(string message)
     {
+        this.LogTranscript(LogLevel.Information, "INFO", message);
         Console.WriteLine(message);
     }
 
@@ -23,6 +33,7 @@ public class ConsoleUserInteraction : IUserInteraction
         Console.WriteLine($"═══ {message} ═══");
         Console.WriteLine();
         Console.ResetColor();
+        this.LogTranscript(LogLevel.Information, "HEADER", message);
     }
 
     public void WriteSuccess(string message)
@@ -30,6 +41,7 @@ public class ConsoleUserInteraction : IUserInteraction
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine($"✓ {message}");
         Console.ResetColor();
+        this.LogTranscript(LogLevel.Information, "SUCCESS", message);
     }
 
     public void WriteWarning(string message)
@@ -37,6 +49,7 @@ public class ConsoleUserInteraction : IUserInteraction
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine($"⚠ {message}");
         Console.ResetColor();
+        this.LogTranscript(LogLevel.Warning, "WARNING", message);
     }
 
     public void WriteError(string message)
@@ -44,11 +57,20 @@ public class ConsoleUserInteraction : IUserInteraction
         Console.ForegroundColor = ConsoleColor.Red;
         Console.WriteLine($"✗ {message}");
         Console.ResetColor();
+        this.LogTranscript(LogLevel.Error, "ERROR", message);
     }
 
     public string Prompt(string message)
     {
         Console.Write(message);
-        return Console.ReadLine() ?? string.Empty;
+        this.LogTranscript(LogLevel.Information, "PROMPT", message);
+        string response = Console.ReadLine() ?? string.Empty;
+        this.LogTranscript(LogLevel.Information, "PROMPT_RESPONSE", response);
+        return response;
+    }
+
+    private void LogTranscript(LogLevel level, string category, string message)
+    {
+        this.logger.Log(level, "{Category}: {Message}", category, message);
     }
 }

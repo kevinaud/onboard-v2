@@ -160,6 +160,13 @@ This is a documented, three-step procedure.
 
 Development will be done within a VS Code Dev Container. The .devcontainer/devcontainer.json file will be configured to use the mcr.microsoft.com/devcontainers/dotnet:1-9.0-bookworm image. This ensures a consistent and reproducible development environment with the .NET 9 SDK pre-installed.
 
+#### **3.4. Diagnostics & Logging**
+
+* **Persistent log pipeline** – The console host configures Serilog to write a single rolling log file to `Path.GetTempPath()/onboard-pro.log` with a one-second flush interval. This keeps diagnostics off the user's Desktop while remaining easy to discover across platforms.
+* **Command transcripts** – `ProcessRunner` receives `ILogger<ProcessRunner>` and records each external command at `Debug` level along with the exit code and the first 1024 characters of stdout/stderr. This is crucial for diagnosing package manager failures without rerunning the tool.
+* **User interaction mirroring** – `ConsoleUserInteraction` mirrors all user-facing output (headers, prompts, warnings, etc.) to the same logger so the log file forms a complete transcript of the session.
+* **Linux reliability hardening** – When running on Linux, `ProcessRunner` injects `DEBIAN_FRONTEND=noninteractive` into the child process environment if the variable is not already defined, eliminating blocking prompts from apt-based installers.
+
 ---
 
 ### **4\. Low-Level Class Design**

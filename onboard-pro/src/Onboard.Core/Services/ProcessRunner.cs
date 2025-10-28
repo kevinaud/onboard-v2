@@ -6,6 +6,9 @@ namespace Onboard.Core.Services;
 
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+
+using Microsoft.Extensions.Logging;
 
 using Onboard.Core.Abstractions;
 using Onboard.Core.Models;
@@ -15,10 +18,21 @@ using Onboard.Core.Models;
 /// </summary>
 public class ProcessRunner : IProcessRunner
 {
+    private const int MaxLoggedOutputLength = 1024;
+
+    private readonly ILogger<ProcessRunner> logger;
+
+    public ProcessRunner(ILogger<ProcessRunner> logger)
+    {
+        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
+
     public async Task<ProcessResult> RunAsync(string fileName, string arguments)
     {
         try
         {
+            this.logger.LogDebug("Executing command {Command} {Arguments}", fileName, arguments);
+
             var startInfo = new ProcessStartInfo
             {
                 FileName = fileName,
@@ -29,10 +43,17 @@ public class ProcessRunner : IProcessRunner
                 CreateNoWindow = true,
             };
 
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) &&
+                !startInfo.Environment.ContainsKey("DEBIAN_FRONTEND"))
+            {
+                startInfo.Environment["DEBIAN_FRONTEND"] = "noninteractive";
+            }
+
             using var process = new Process { StartInfo = startInfo };
 
             if (!process.Start())
             {
+                this.logger.LogWarning("Failed to start process {Command}", fileName);
                 return new ProcessResult(-1, string.Empty, $"Failed to start process '{fileName}'.");
             }
 
@@ -44,11 +65,40 @@ public class ProcessRunner : IProcessRunner
             string stdout = await outputTask.ConfigureAwait(false);
             string stderr = await errorTask.ConfigureAwait(false);
 
+            this.logger.LogDebug(
+                "Command {Command} exited with code {ExitCode}. StdOut: {Stdout} StdErr: {Stderr}",
+                fileName,
+                process.ExitCode,
+                TruncateForLog(stdout),
+                TruncateForLog(stderr));
+
             return new ProcessResult(process.ExitCode, stdout, stderr);
         }
         catch (Exception ex)
         {
+            this.logger.LogError(ex, "Unhandled exception while executing {Command} {Arguments}", fileName, arguments);
             return new ProcessResult(-1, string.Empty, ex.Message);
         }
+    }
+
+    private static string TruncateForLog(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return string.Empty;
+        }
+
+        if (value.Length <= MaxLoggedOutputLength)
+        {
+            return value;
+        }
+
+        return string.Create(MaxLoggedOutputLength + 3, value, static (span, source) =>
+        {
+            source.AsSpan(0, MaxLoggedOutputLength).CopyTo(span);
+            span[^3] = '.';
+            span[^2] = '.';
+            span[^1] = '.';
+        });
     }
 }
