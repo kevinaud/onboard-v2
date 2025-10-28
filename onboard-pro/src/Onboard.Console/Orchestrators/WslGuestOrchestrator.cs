@@ -5,6 +5,7 @@
 namespace Onboard.Console.Orchestrators;
 
 using Onboard.Core.Abstractions;
+using Onboard.Core.Models;
 using Onboard.Core.Steps.PlatformAware;
 using Onboard.Core.Steps.Shared;
 using Onboard.Core.Steps.WslGuest;
@@ -12,52 +13,30 @@ using Onboard.Core.Steps.WslGuest;
 /// <summary>
 /// Orchestrator for WSL guest onboarding.
 /// </summary>
-public class WslGuestOrchestrator : IPlatformOrchestrator
+public class WslGuestOrchestrator : SequentialOrchestrator
 {
-    private readonly IUserInteraction ui;
-    private readonly IEnumerable<IOnboardingStep> steps;
-
     public WslGuestOrchestrator(
         IUserInteraction ui,
+        ExecutionOptions executionOptions,
         AptUpdateStep aptUpdateStep,
         InstallWslPrerequisitesStep installWslPrerequisitesStep,
         InstallVsCodeStep installVsCodeStep,
         ConfigureWslGitCredentialHelperStep configureWslGitCredentialHelperStep,
         ConfigureGitUserStep configureGitUserStep,
         CloneProjectRepoStep cloneProjectRepoStep)
-    {
-        this.ui = ui;
-        this.steps = new IOnboardingStep[]
-        {
-            aptUpdateStep,
-            installWslPrerequisitesStep,
-            installVsCodeStep,
-            configureWslGitCredentialHelperStep,
-            configureGitUserStep,
-            cloneProjectRepoStep,
-        };
-    }
-
-    public async Task ExecuteAsync()
-    {
-        this.ui.WriteHeader("Starting WSL Guest Onboarding...");
-
-        foreach (var step in this.steps)
-        {
-            this.ui.WriteLine($"Checking: {step.Description}");
-
-            if (await step.ShouldExecuteAsync().ConfigureAwait(false))
+        : base(
+            ui,
+            executionOptions,
+            "WSL guest onboarding",
+            new IOnboardingStep[]
             {
-                this.ui.WriteLine($"Executing: {step.Description}");
-                await step.ExecuteAsync().ConfigureAwait(false);
-            }
-            else
-            {
-                this.ui.WriteSuccess($"Already configured: {step.Description}");
-            }
-        }
-
-        this.ui.WriteLine(string.Empty);
-        this.ui.WriteSuccess("WSL Guest onboarding complete!");
+                aptUpdateStep,
+                installWslPrerequisitesStep,
+                installVsCodeStep,
+                configureWslGitCredentialHelperStep,
+                configureGitUserStep,
+                cloneProjectRepoStep,
+            })
+    {
     }
 }

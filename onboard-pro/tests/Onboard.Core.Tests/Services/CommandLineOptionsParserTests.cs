@@ -6,54 +6,55 @@ using Onboard.Core.Services;
 public class CommandLineOptionsParserTests
 {
     [Test]
-    public void TryParseMode_WhenArgsIsNull_Throws()
+    public void TryParse_WhenArgsIsNull_Throws()
     {
-        Assert.Throws<ArgumentNullException>(() => CommandLineOptionsParser.TryParseMode(null!, out _, out _));
+        Assert.Throws<ArgumentNullException>(() => CommandLineOptionsParser.TryParse(null!, out _, out _));
     }
 
     [Test]
-    public void TryParseMode_WhenModeNotSpecified_ReturnsFalseMode()
+    public void TryParse_WhenNoOptionsSpecified_ReturnsDefaults()
     {
-        bool success = CommandLineOptionsParser.TryParseMode(Array.Empty<string>(), out bool isWslGuestMode, out string? error);
+        bool success = CommandLineOptionsParser.TryParse(Array.Empty<string>(), out var options, out string? error);
 
         Assert.Multiple(() =>
         {
             Assert.That(success, Is.True);
-            Assert.That(isWslGuestMode, Is.False);
+            Assert.That(options.IsWslGuestMode, Is.False);
+            Assert.That(options.IsDryRun, Is.False);
             Assert.That(error, Is.Null);
         });
     }
 
     [Test]
-    public void TryParseMode_WithSeparateArguments_SetsWslGuestMode()
+    public void TryParse_WithSeparateModeArguments_SetsWslGuestMode()
     {
-        bool success = CommandLineOptionsParser.TryParseMode(new[] { "--mode", "wsl-guest" }, out bool isWslGuestMode, out string? error);
+        bool success = CommandLineOptionsParser.TryParse(new[] { "--mode", "wsl-guest" }, out var options, out string? error);
 
         Assert.Multiple(() =>
         {
             Assert.That(success, Is.True);
-            Assert.That(isWslGuestMode, Is.True);
+            Assert.That(options.IsWslGuestMode, Is.True);
             Assert.That(error, Is.Null);
         });
     }
 
     [Test]
-    public void TryParseMode_WithEqualsSyntax_SetsWslGuestMode()
+    public void TryParse_WithEqualsSyntax_SetsWslGuestMode()
     {
-        bool success = CommandLineOptionsParser.TryParseMode(new[] { "--mode=wsl-guest" }, out bool isWslGuestMode, out string? error);
+        bool success = CommandLineOptionsParser.TryParse(new[] { "--mode=wsl-guest" }, out var options, out string? error);
 
         Assert.Multiple(() =>
         {
             Assert.That(success, Is.True);
-            Assert.That(isWslGuestMode, Is.True);
+            Assert.That(options.IsWslGuestMode, Is.True);
             Assert.That(error, Is.Null);
         });
     }
 
     [Test]
-    public void TryParseMode_WithMissingValue_ReturnsError()
+    public void TryParse_WithMissingModeValue_ReturnsError()
     {
-        bool success = CommandLineOptionsParser.TryParseMode(new[] { "--mode" }, out bool _, out string? error);
+        bool success = CommandLineOptionsParser.TryParse(new[] { "--mode" }, out _, out string? error);
 
         Assert.Multiple(() =>
         {
@@ -63,9 +64,9 @@ public class CommandLineOptionsParserTests
     }
 
     [Test]
-    public void TryParseMode_WithEmptyValue_ReturnsError()
+    public void TryParse_WithEmptyModeValue_ReturnsError()
     {
-        bool success = CommandLineOptionsParser.TryParseMode(new[] { "--mode=" }, out bool _, out string? error);
+        bool success = CommandLineOptionsParser.TryParse(new[] { "--mode=" }, out _, out string? error);
 
         Assert.Multiple(() =>
         {
@@ -75,9 +76,9 @@ public class CommandLineOptionsParserTests
     }
 
     [Test]
-    public void TryParseMode_WithInvalidValue_ReturnsError()
+    public void TryParse_WithInvalidModeValue_ReturnsError()
     {
-        bool success = CommandLineOptionsParser.TryParseMode(new[] { "--mode", "invalid" }, out bool _, out string? error);
+        bool success = CommandLineOptionsParser.TryParse(new[] { "--mode", "invalid" }, out _, out string? error);
 
         Assert.Multiple(() =>
         {
@@ -87,14 +88,64 @@ public class CommandLineOptionsParserTests
     }
 
     [Test]
-    public void TryParseMode_WithDuplicateOption_ReturnsError()
+    public void TryParse_WithDuplicateModeOption_ReturnsError()
     {
-        bool success = CommandLineOptionsParser.TryParseMode(new[] { "--mode=wsl-guest", "--mode=wsl-guest" }, out bool _, out string? error);
+        bool success = CommandLineOptionsParser.TryParse(new[] { "--mode=wsl-guest", "--mode=wsl-guest" }, out _, out string? error);
 
         Assert.Multiple(() =>
         {
             Assert.That(success, Is.False);
             Assert.That(error, Is.EqualTo("The --mode option can only be specified once."));
+        });
+    }
+
+    [Test]
+    public void TryParse_WithDryRunFlag_SetsDryRun()
+    {
+        bool success = CommandLineOptionsParser.TryParse(new[] { "--dry-run" }, out var options, out string? error);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(success, Is.True);
+            Assert.That(options.IsDryRun, Is.True);
+            Assert.That(error, Is.Null);
+        });
+    }
+
+    [Test]
+    public void TryParse_WithDryRunEqualsFalse_AcceptsValue()
+    {
+        bool success = CommandLineOptionsParser.TryParse(new[] { "--dry-run=false" }, out var options, out string? error);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(success, Is.True);
+            Assert.That(options.IsDryRun, Is.False);
+            Assert.That(error, Is.Null);
+        });
+    }
+
+    [Test]
+    public void TryParse_WithInvalidDryRunValue_ReturnsError()
+    {
+        bool success = CommandLineOptionsParser.TryParse(new[] { "--dry-run=maybe" }, out _, out string? error);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(success, Is.False);
+            Assert.That(error, Is.EqualTo("Unsupported --dry-run value 'maybe'. Expected 'true' or 'false'."));
+        });
+    }
+
+    [Test]
+    public void TryParse_WithDuplicateDryRunFlag_ReturnsError()
+    {
+        bool success = CommandLineOptionsParser.TryParse(new[] { "--dry-run", "--dry-run" }, out _, out string? error);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(success, Is.False);
+            Assert.That(error, Is.EqualTo("The --dry-run option can only be specified once."));
         });
     }
 }

@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using System;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -22,12 +24,14 @@ public static class Program
 {
     public static async Task Main(string[] args)
     {
-        // 1. Parse for our custom mode flag
-        if (!CommandLineOptionsParser.TryParseMode(args, out bool isWslGuestMode, out string? modeParseError))
+        // 1. Parse the supported command-line options
+        if (!CommandLineOptionsParser.TryParse(args, out var commandLineOptions, out string? parseError))
         {
-            new ConsoleUserInteraction().WriteError(modeParseError ?? "Invalid --mode argument.");
+            new ConsoleUserInteraction().WriteError(parseError ?? "Invalid command-line arguments.");
             return;
         }
+
+        var executionOptions = new ExecutionOptions(commandLineOptions.IsDryRun);
 
         var host = Host.CreateDefaultBuilder(args)
             .ConfigureServices((context, services) =>
@@ -37,6 +41,7 @@ public static class Program
                 services.AddSingleton<IUserInteraction, ConsoleUserInteraction>();
                 services.AddSingleton<IPlatformDetector, PlatformDetector>();
                 services.AddSingleton<IFileSystem, FileSystem>();
+                services.AddSingleton(executionOptions);
 
                 // Register PlatformFacts by invoking the detector once at startup
                 services.AddSingleton(provider =>
@@ -87,7 +92,7 @@ public static class Program
             {
                 orchestrator = host.Services.GetRequiredService<WindowsOrchestrator>();
             }
-            else if (platformFacts.OS == OS.Linux && platformFacts.IsWsl && isWslGuestMode)
+            else if (platformFacts.OS == OS.Linux && platformFacts.IsWsl && commandLineOptions.IsWslGuestMode)
             {
                 orchestrator = host.Services.GetRequiredService<WslGuestOrchestrator>();
             }
@@ -111,6 +116,19 @@ public static class Program
         }
 
         // 3. Execute the chosen orchestration
-        await orchestrator.ExecuteAsync().ConfigureAwait(false);
+        try
+        {
+            await orchestrator.ExecuteAsync().ConfigureAwait(false);
+        }
+        catch (OnboardingStepException ex)
+        {
+            ui.WriteError(ex.Message);
+            Environment.ExitCode = 1;
+        }
+        catch (Exception ex)
+        {
+            ui.WriteError($"Unexpected error: {ex.Message}");
+            Environment.ExitCode = 1;
+        }
     }
 }
