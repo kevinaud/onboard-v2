@@ -1824,13 +1824,13 @@
       "name": "Iteration 14: Centralized Configuration",
       "details": "Implement Iteration 14 from prds/iterations.md by introducing OnboardingConfiguration, registering it with DI, and updating steps to consume shared values instead of hard-coded strings.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:21:08.930Z",
-      "updatedAt": "2025-10-28T01:21:08.930Z",
+      "updatedAt": "2025-10-28T19:15:50.639Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 6,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iteration",
         "iter-14"
@@ -1844,9 +1844,9 @@
       "details": "Design the OnboardingConfiguration model and rollout plan, including DI registration and migration of existing step constants.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "f6b77504-2290-4a5f-a3a0-9d798216135f",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:21:17.844Z",
-      "updatedAt": "2025-10-28T01:21:17.844Z",
+      "updatedAt": "2025-10-28T18:58:50.964Z",
       "dependsOn": [
         "3e144748-f8bb-4b3f-bbd7-3c7ed1ad9afa"
       ],
@@ -1866,9 +1866,9 @@
       "details": "Branch iter-14 from main to encapsulate configuration centralization work.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "2bd13815-317c-4b41-af7d-133ed9159ca9",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:21:22.085Z",
-      "updatedAt": "2025-10-28T01:21:22.085Z",
+      "updatedAt": "2025-10-28T18:58:22.926Z",
       "dependsOn": [
         "3e144748-f8bb-4b3f-bbd7-3c7ed1ad9afa"
       ],
@@ -1889,9 +1889,9 @@
       "details": "Define property set for OnboardingConfiguration (WslDistroName, WslDistroImage, etc.), migration strategy, and testing checkpoints.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "2bd13815-317c-4b41-af7d-133ed9159ca9",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:21:25.640Z",
-      "updatedAt": "2025-10-28T01:21:25.640Z",
+      "updatedAt": "2025-10-28T18:58:31.322Z",
       "dependsOn": [
         "cc72d9f0-a76f-44fb-93b3-6616ad467201"
       ],
@@ -1911,9 +1911,9 @@
       "details": "Implement centralized configuration model, DI registration, and step updates for Iteration 14.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "f6b77504-2290-4a5f-a3a0-9d798216135f",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:21:30.675Z",
-      "updatedAt": "2025-10-28T16:16:08.211Z",
+      "updatedAt": "2025-10-28T19:10:15.534Z",
       "dependsOn": [
         "2bd13815-317c-4b41-af7d-133ed9159ca9"
       ],
@@ -1933,9 +1933,9 @@
       "details": "Add OnboardingConfiguration record with default values (e.g., WslDistroName/Image) in Onboard.Core.Models per iteration plan.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "955b4d97-5174-4cb1-934e-024f2742c86b",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:21:35.879Z",
-      "updatedAt": "2025-10-28T01:21:35.879Z",
+      "updatedAt": "2025-10-28T19:08:52.187Z",
       "dependsOn": [
         "39e61678-57b3-4cb4-bf3b-9939ad47b6d1"
       ],
@@ -1956,9 +1956,9 @@
       "details": "Add configuration singleton registration with default values and expose it via DI for steps needing shared constants.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "955b4d97-5174-4cb1-934e-024f2742c86b",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:21:40.027Z",
-      "updatedAt": "2025-10-28T01:21:40.027Z",
+      "updatedAt": "2025-10-28T19:08:57.418Z",
       "dependsOn": [
         "e93e16ea-4f8a-4c03-8667-bad64fdfa430"
       ],
@@ -1979,9 +1979,9 @@
       "details": "Inject OnboardingConfiguration into EnableWslFeaturesStep and replace hard-coded distro values with configuration properties.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "955b4d97-5174-4cb1-934e-024f2742c86b",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:21:43.999Z",
-      "updatedAt": "2025-10-28T01:21:43.999Z",
+      "updatedAt": "2025-10-28T19:09:18.342Z",
       "dependsOn": [
         "67cde17d-afbd-47ad-9a04-6aa91b9cfb6c"
       ],
@@ -2002,9 +2002,9 @@
       "details": "Inject OnboardingConfiguration into InstallDockerDesktopStep and replace hard-coded settings-store references with configuration-backed values.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "955b4d97-5174-4cb1-934e-024f2742c86b",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:21:49.824Z",
-      "updatedAt": "2025-10-28T01:21:49.824Z",
+      "updatedAt": "2025-10-28T19:09:27.185Z",
       "dependsOn": [
         "67cde17d-afbd-47ad-9a04-6aa91b9cfb6c"
       ],
@@ -2025,9 +2025,9 @@
       "details": "Review other steps for hard-coded values (e.g., repo URLs) and document follow-up opportunities or migrate simple cases now if low risk.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "955b4d97-5174-4cb1-934e-024f2742c86b",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:21:58.753Z",
-      "updatedAt": "2025-10-28T01:21:58.753Z",
+      "updatedAt": "2025-10-28T19:09:32.114Z",
       "dependsOn": [
         "67cde17d-afbd-47ad-9a04-6aa91b9cfb6c"
       ],
@@ -2048,9 +2048,9 @@
       "details": "Complete all coding changes for centralized configuration on iter-14 branch ensuring builds succeed locally.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "955b4d97-5174-4cb1-934e-024f2742c86b",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:22:05.298Z",
-      "updatedAt": "2025-10-28T01:22:05.298Z",
+      "updatedAt": "2025-10-28T19:09:38.555Z",
       "dependsOn": [
         "ad456082-cdf7-4941-b574-fef4a3445a4a",
         "253bbd89-5b91-44c0-ba25-041cd6c3fa2f",
@@ -2072,9 +2072,9 @@
       "details": "Execute local validation for Iteration 14: run automated suites, targeted configuration checks, and manual confirmation before publishing the PR.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "f6b77504-2290-4a5f-a3a0-9d798216135f",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:22:10.483Z",
-      "updatedAt": "2025-10-28T16:18:24.761Z",
+      "updatedAt": "2025-10-28T19:11:37.991Z",
       "dependsOn": [
         "955b4d97-5174-4cb1-934e-024f2742c86b"
       ],
@@ -2094,15 +2094,15 @@
       "details": "Open iter-14 PR summarizing centralized configuration changes and testing coverage.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "9d904a9a-b58f-42d9-bdb2-97daf593a9fd",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:22:15.988Z",
-      "updatedAt": "2025-10-28T16:17:26.190Z",
+      "updatedAt": "2025-10-28T19:15:35.561Z",
       "dependsOn": [
         "f51b45c7-2a5e-4d74-821d-d6330074375f"
       ],
       "priority": 5,
       "complexity": 2,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-14",
         "delivery",
@@ -2117,9 +2117,9 @@
       "details": "Run targeted orchestrator executions to verify steps consume OnboardingConfiguration values and no hard-coded strings remain.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "0f269ab2-bf6b-4f64-bac1-e2d5502e7ae9",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:22:34.064Z",
-      "updatedAt": "2025-10-28T16:18:33.890Z",
+      "updatedAt": "2025-10-28T19:11:12.526Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 4,
@@ -2138,15 +2138,15 @@
       "details": "Push Iteration 14 changes for review by opening the PR and monitoring CI until all checks succeed.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "f6b77504-2290-4a5f-a3a0-9d798216135f",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:22:42.334Z",
-      "updatedAt": "2025-10-28T16:26:54.026Z",
+      "updatedAt": "2025-10-28T19:15:42.142Z",
       "dependsOn": [
         "0f269ab2-bf6b-4f64-bac1-e2d5502e7ae9"
       ],
       "priority": 5,
       "complexity": 5,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-14",
         "delivery"
@@ -2160,9 +2160,9 @@
       "details": "Run dotnet format/build/test and dry-run orchestrator to ensure configuration injection paths are healthy.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "0f269ab2-bf6b-4f64-bac1-e2d5502e7ae9",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:22:46.384Z",
-      "updatedAt": "2025-10-28T16:17:43.358Z",
+      "updatedAt": "2025-10-28T19:11:24.338Z",
       "dependsOn": [
         "7007f0d3-4562-400f-a92f-392b4ba1f34b"
       ],
@@ -2183,9 +2183,9 @@
       "details": "Add or adjust unit tests to cover centralized configuration usage in EnableWslFeaturesStep and InstallDockerDesktopStep.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "955b4d97-5174-4cb1-934e-024f2742c86b",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:22:51.410Z",
-      "updatedAt": "2025-10-28T16:17:04.843Z",
+      "updatedAt": "2025-10-28T19:09:45.098Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 5,
@@ -2204,9 +2204,9 @@
       "details": "Run Onboard Pro on Windows host scenario to confirm configuration-driven values (e.g., WSL distro names) behave correctly.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "0f269ab2-bf6b-4f64-bac1-e2d5502e7ae9",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:22:59.951Z",
-      "updatedAt": "2025-10-28T16:17:51.354Z",
+      "updatedAt": "2025-10-28T19:11:35.335Z",
       "dependsOn": [
         "2915f03e-2cdb-4576-82cd-cbf7d83cfa80"
       ],
@@ -2227,9 +2227,9 @@
       "details": "Refresh architecture notes to describe OnboardingConfiguration defaults and how configuration values flow through Windows steps.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "955b4d97-5174-4cb1-934e-024f2742c86b",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:23:21.679Z",
-      "updatedAt": "2025-10-28T16:16:56.533Z",
+      "updatedAt": "2025-10-28T19:10:08.304Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 3,
@@ -3786,13 +3786,13 @@
       "details": "Watch iter-14 PR workflows and push fixes until all CI checks pass.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "9d904a9a-b58f-42d9-bdb2-97daf593a9fd",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T16:18:15.993Z",
-      "updatedAt": "2025-10-28T16:18:15.993Z",
+      "updatedAt": "2025-10-28T19:15:14.874Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 3,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-14",
         "delivery",
@@ -3870,9 +3870,9 @@
       "details": "Update README and troubleshooting docs to describe centralized configuration defaults and how to adjust them.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "955b4d97-5174-4cb1-934e-024f2742c86b",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T16:26:42.645Z",
-      "updatedAt": "2025-10-28T16:26:42.645Z",
+      "updatedAt": "2025-10-28T19:10:13.560Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 3,
