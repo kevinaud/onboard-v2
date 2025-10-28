@@ -7,6 +7,7 @@ namespace Onboard.Core.Services;
 using Microsoft.Extensions.Logging;
 
 using Onboard.Core.Abstractions;
+using Onboard.Core.Models;
 
 /// <summary>
 /// Concrete implementation of IUserInteraction using System.Console.
@@ -14,10 +15,12 @@ using Onboard.Core.Abstractions;
 public class ConsoleUserInteraction : IUserInteraction
 {
     private readonly ILogger<ConsoleUserInteraction> logger;
+    private readonly ExecutionOptions executionOptions;
 
-    public ConsoleUserInteraction(ILogger<ConsoleUserInteraction> logger)
+    public ConsoleUserInteraction(ILogger<ConsoleUserInteraction> logger, ExecutionOptions executionOptions)
     {
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        this.executionOptions = executionOptions ?? throw new ArgumentNullException(nameof(executionOptions));
     }
 
     public void WriteLine(string message)
@@ -67,6 +70,20 @@ public class ConsoleUserInteraction : IUserInteraction
         string response = Console.ReadLine() ?? string.Empty;
         this.LogTranscript(LogLevel.Information, "PROMPT_RESPONSE", response);
         return response;
+    }
+
+    public void WriteDebug(string message)
+    {
+        this.LogTranscript(LogLevel.Debug, "DEBUG", message);
+
+        if (!this.executionOptions.IsVerbose)
+        {
+            return;
+        }
+
+        Console.ForegroundColor = ConsoleColor.DarkGray;
+        Console.WriteLine($"[DEBUG] {message}");
+        Console.ResetColor();
     }
 
     private void LogTranscript(LogLevel level, string category, string message)

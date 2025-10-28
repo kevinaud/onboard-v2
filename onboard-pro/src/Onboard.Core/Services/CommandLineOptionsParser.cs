@@ -18,6 +18,9 @@ public static class CommandLineOptionsParser
     private const string ModeOptionWithEquals = "--mode=";
     private const string DryRunOption = "--dry-run";
     private const string DryRunOptionWithEquals = "--dry-run=";
+    private const string VerboseOption = "--verbose";
+    private const string VerboseOptionWithEquals = "--verbose=";
+    private const string VerboseAlias = "-v";
     private const string WslGuestValue = "wsl-guest";
 
     /// <summary>
@@ -36,6 +39,7 @@ public static class CommandLineOptionsParser
 
         bool isWslGuestMode = false;
         bool? isDryRun = null;
+        bool? isVerbose = null;
         bool expectingModeValue = false;
         bool modeSpecified = false;
 
@@ -112,13 +116,46 @@ public static class CommandLineOptionsParser
                 }
 
                 string value = arg[DryRunOptionWithEquals.Length..];
-                if (!TryParseDryRunValue(value, out bool parsedDryRun, out errorMessage))
+                if (!TryParseBooleanOption(DryRunOption, value, out bool parsedDryRun, out errorMessage))
                 {
                     options = default;
                     return false;
                 }
 
                 isDryRun = parsedDryRun;
+                continue;
+            }
+
+            if (string.Equals(arg, VerboseOption, StringComparison.Ordinal) || string.Equals(arg, VerboseAlias, StringComparison.Ordinal))
+            {
+                if (isVerbose.HasValue)
+                {
+                    errorMessage = "The --verbose option can only be specified once.";
+                    options = default;
+                    return false;
+                }
+
+                isVerbose = true;
+                continue;
+            }
+
+            if (arg.StartsWith(VerboseOptionWithEquals, StringComparison.Ordinal))
+            {
+                if (isVerbose.HasValue)
+                {
+                    errorMessage = "The --verbose option can only be specified once.";
+                    options = default;
+                    return false;
+                }
+
+                string value = arg[VerboseOptionWithEquals.Length..];
+                if (!TryParseBooleanOption(VerboseOption, value, out bool parsedVerbose, out errorMessage))
+                {
+                    options = default;
+                    return false;
+                }
+
+                isVerbose = parsedVerbose;
                 continue;
             }
         }
@@ -130,7 +167,7 @@ public static class CommandLineOptionsParser
             return false;
         }
 
-        options = new CommandLineOptions(isWslGuestMode, isDryRun ?? false);
+        options = new CommandLineOptions(isWslGuestMode, isDryRun ?? false, isVerbose ?? false);
         return true;
     }
 
@@ -153,31 +190,31 @@ public static class CommandLineOptionsParser
         return false;
     }
 
-    private static bool TryParseDryRunValue(string rawValue, out bool isDryRun, out string? errorMessage)
+    private static bool TryParseBooleanOption(string optionName, string rawValue, out bool parsedValue, out string? errorMessage)
     {
         if (string.IsNullOrWhiteSpace(rawValue))
         {
-            errorMessage = "Unsupported --dry-run value ''. Expected 'true' or 'false'.";
-            isDryRun = false;
+            errorMessage = $"Unsupported {optionName} value ''. Expected 'true' or 'false'.";
+            parsedValue = false;
             return false;
         }
 
         if (rawValue.Equals("true", StringComparison.OrdinalIgnoreCase) || rawValue.Equals("yes", StringComparison.OrdinalIgnoreCase) || rawValue.Equals("1", StringComparison.OrdinalIgnoreCase))
         {
-            isDryRun = true;
+            parsedValue = true;
             errorMessage = null;
             return true;
         }
 
         if (rawValue.Equals("false", StringComparison.OrdinalIgnoreCase) || rawValue.Equals("no", StringComparison.OrdinalIgnoreCase) || rawValue.Equals("0", StringComparison.OrdinalIgnoreCase))
         {
-            isDryRun = false;
+            parsedValue = false;
             errorMessage = null;
             return true;
         }
 
-        errorMessage = $"Unsupported --dry-run value '{rawValue}'. Expected 'true' or 'false'.";
-        isDryRun = false;
+        errorMessage = $"Unsupported {optionName} value '{rawValue}'. Expected 'true' or 'false'.";
+        parsedValue = false;
         return false;
     }
 }

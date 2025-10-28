@@ -5,6 +5,7 @@ using System.IO;
 
 using Microsoft.Extensions.Logging;
 
+using Onboard.Core.Models;
 using Onboard.Core.Services;
 using Onboard.Core.Tests.TestDoubles;
 
@@ -32,7 +33,7 @@ public class ConsoleUserInteractionTests
     public void WriteLine_LogsInfoCategory()
     {
         var logger = new InMemoryLogger<ConsoleUserInteraction>();
-        var interaction = new ConsoleUserInteraction(logger);
+        var interaction = new ConsoleUserInteraction(logger, new ExecutionOptions(IsDryRun: false, IsVerbose: false));
 
         using var writer = new StringWriter();
         Console.SetOut(writer);
@@ -48,7 +49,7 @@ public class ConsoleUserInteractionTests
     public void WriteWarning_LogsWarningLevel()
     {
         var logger = new InMemoryLogger<ConsoleUserInteraction>();
-        var interaction = new ConsoleUserInteraction(logger);
+        var interaction = new ConsoleUserInteraction(logger, new ExecutionOptions(IsDryRun: false, IsVerbose: false));
 
         using var writer = new StringWriter();
         Console.SetOut(writer);
@@ -64,7 +65,7 @@ public class ConsoleUserInteractionTests
     public void Prompt_LogsPromptAndResponse()
     {
         var logger = new InMemoryLogger<ConsoleUserInteraction>();
-        var interaction = new ConsoleUserInteraction(logger);
+        var interaction = new ConsoleUserInteraction(logger, new ExecutionOptions(IsDryRun: false, IsVerbose: false));
 
         using var writer = new StringWriter();
         Console.SetOut(writer);
@@ -76,5 +77,45 @@ public class ConsoleUserInteractionTests
         Assert.That(logger.Entries, Has.Count.EqualTo(2));
         Assert.That(logger.Entries[0].Message, Is.EqualTo("PROMPT: Proceed? "));
         Assert.That(logger.Entries[1].Message, Is.EqualTo("PROMPT_RESPONSE: yes"));
+    }
+
+    [Test]
+    public void WriteDebug_WhenVerboseDisabled_DoesNotWriteToConsole()
+    {
+        var logger = new InMemoryLogger<ConsoleUserInteraction>();
+        var interaction = new ConsoleUserInteraction(logger, new ExecutionOptions(IsDryRun: false, IsVerbose: false));
+
+        using var writer = new StringWriter();
+        Console.SetOut(writer);
+
+        interaction.WriteDebug("details");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(writer.ToString(), Is.EqualTo(string.Empty));
+            Assert.That(logger.Entries, Has.Count.EqualTo(1));
+            Assert.That(logger.Entries[0].Level, Is.EqualTo(LogLevel.Debug));
+            Assert.That(logger.Entries[0].Message, Is.EqualTo("DEBUG: details"));
+        });
+    }
+
+    [Test]
+    public void WriteDebug_WhenVerboseEnabled_WritesDecoratedMessage()
+    {
+        var logger = new InMemoryLogger<ConsoleUserInteraction>();
+        var interaction = new ConsoleUserInteraction(logger, new ExecutionOptions(IsDryRun: false, IsVerbose: true));
+
+        using var writer = new StringWriter();
+        Console.SetOut(writer);
+
+        interaction.WriteDebug("verbose info");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(writer.ToString(), Is.EqualTo("[DEBUG] verbose info" + Environment.NewLine));
+            Assert.That(logger.Entries, Has.Count.EqualTo(1));
+            Assert.That(logger.Entries[0].Level, Is.EqualTo(LogLevel.Debug));
+            Assert.That(logger.Entries[0].Message, Is.EqualTo("DEBUG: verbose info"));
+        });
     }
 }

@@ -6,4 +6,4 @@ using System.Runtime.InteropServices;
 /// Represents parsed command-line options.
 /// </summary>
 [StructLayout(LayoutKind.Auto)]
-public readonly record struct CommandLineOptions(bool IsWslGuestMode, bool IsDryRun);
+public readonly record struct CommandLineOptions(bool IsWslGuestMode, bool IsDryRun, bool IsVerbose);

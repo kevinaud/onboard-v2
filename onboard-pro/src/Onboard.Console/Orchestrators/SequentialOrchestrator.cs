@@ -30,18 +30,6 @@ public abstract class SequentialOrchestrator : IPlatformOrchestrator
     {
         userInteraction.WriteHeader(title);
 
-        if (executionOptions.IsDryRun)
-        {
-            foreach (var step in steps)
-            {
-                userInteraction.WriteLine($"Dry run: would execute {step.Description}.");
-            }
-
-            userInteraction.WriteLine(string.Empty);
-            userInteraction.WriteSuccess($"{title} dry run complete.");
-            return;
-        }
-
         foreach (var step in steps)
         {
             userInteraction.WriteLine($"Checking {step.Description}...");
@@ -62,6 +50,12 @@ public abstract class SequentialOrchestrator : IPlatformOrchestrator
                 continue;
             }
 
+            if (executionOptions.IsDryRun)
+            {
+                userInteraction.WriteLine($"Dry run: would execute {step.Description}.");
+                continue;
+            }
+
             userInteraction.WriteLine($"Running {step.Description}...");
 
             try
@@ -75,6 +69,6 @@ public abstract class SequentialOrchestrator : IPlatformOrchestrator
         }
 
         userInteraction.WriteLine(string.Empty);
-        userInteraction.WriteSuccess($"{title} complete.");
+        userInteraction.WriteSuccess(executionOptions.IsDryRun ? $"{title} dry run complete." : $"{title} complete.");
     }
 }

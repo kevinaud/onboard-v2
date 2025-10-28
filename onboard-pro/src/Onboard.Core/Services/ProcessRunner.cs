@@ -21,17 +21,40 @@ public class ProcessRunner : IProcessRunner
     private const int MaxLoggedOutputLength = 1024;
 
     private readonly ILogger<ProcessRunner> logger;
+    private readonly ExecutionOptions executionOptions;
+    private readonly IUserInteraction userInteraction;
 
-    public ProcessRunner(ILogger<ProcessRunner> logger)
+    public ProcessRunner(ILogger<ProcessRunner> logger, ExecutionOptions executionOptions, IUserInteraction userInteraction)
     {
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        this.executionOptions = executionOptions ?? throw new ArgumentNullException(nameof(executionOptions));
+        this.userInteraction = userInteraction ?? throw new ArgumentNullException(nameof(userInteraction));
     }
 
     public async Task<ProcessResult> RunAsync(string fileName, string arguments)
     {
         try
         {
-            this.logger.LogDebug("Executing command {Command} {Arguments}", fileName, arguments);
+            string commandLine = FormatCommandLine(fileName, arguments);
+
+            if (this.executionOptions.IsDryRun)
+            {
+                this.logger.LogDebug("Dry run enabled; skipping execution of {Command}", commandLine);
+
+                if (this.executionOptions.IsVerbose)
+                {
+                    this.userInteraction.WriteDebug($"[DRY-RUN] Would execute: {commandLine}");
+                }
+
+                return new ProcessResult(0, string.Empty, string.Empty);
+            }
+
+            this.logger.LogDebug("Executing command {Command}", commandLine);
+
+            if (this.executionOptions.IsVerbose)
+            {
+                this.userInteraction.WriteDebug($"Executing: {commandLine}");
+            }
 
             var startInfo = new ProcessStartInfo
             {
@@ -67,10 +90,25 @@ public class ProcessRunner : IProcessRunner
 
             this.logger.LogDebug(
                 "Command {Command} exited with code {ExitCode}. StdOut: {Stdout} StdErr: {Stderr}",
-                fileName,
+                commandLine,
                 process.ExitCode,
                 TruncateForLog(stdout),
                 TruncateForLog(stderr));
+
+            if (this.executionOptions.IsVerbose)
+            {
+                this.userInteraction.WriteDebug($"Completed with exit code {process.ExitCode}");
+
+                if (!string.IsNullOrWhiteSpace(stdout))
+                {
+                    this.userInteraction.WriteDebug($"stdout: {stdout.TrimEnd()}");
+                }
+
+                if (!string.IsNullOrWhiteSpace(stderr))
+                {
+                    this.userInteraction.WriteDebug($"stderr: {stderr.TrimEnd()}");
+                }
+            }
 
             return new ProcessResult(process.ExitCode, stdout, stderr);
         }
@@ -100,5 +138,15 @@ public class ProcessRunner : IProcessRunner
             span[^2] = '.';
             span[^1] = '.';
         });
+    }
+
+    private static string FormatCommandLine(string fileName, string arguments)
+    {
+        if (string.IsNullOrWhiteSpace(arguments))
+        {
+            return fileName;
+        }
+
+        return $"{fileName} {arguments}";
     }
 }

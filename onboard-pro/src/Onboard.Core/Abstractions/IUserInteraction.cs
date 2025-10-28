@@ -40,4 +40,9 @@ public interface IUserInteraction
     /// <param name="message">The prompt message to display.</param>
     /// <returns>The user's input string.</returns>
     string Prompt(string message);
+
+    /// <summary>
+    /// Writes a verbose/debug message to the console when enabled.
+    /// </summary>
+    void WriteDebug(string message);
 }

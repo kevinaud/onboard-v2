@@ -39,7 +39,7 @@ public class WindowsOrchestratorTests
 
         var orchestrator = new WindowsOrchestrator(
             ui.Object,
-            new ExecutionOptions(IsDryRun: false),
+            new ExecutionOptions(IsDryRun: false, IsVerbose: false),
             enableWslStep,
             installGitStep,
             installVsCodeStep,
@@ -85,7 +85,7 @@ public class WindowsOrchestratorTests
 
         var orchestrator = new WindowsOrchestrator(
             ui.Object,
-            new ExecutionOptions(IsDryRun: false),
+            new ExecutionOptions(IsDryRun: false, IsVerbose: false),
             enableWslStep,
             installGitStep,
             installVsCodeStep,
@@ -103,7 +103,16 @@ public class WindowsOrchestratorTests
     {
         var ui = new Mock<IUserInteraction>(MockBehavior.Loose);
 
-        var processRunner = new FakeProcessRunner(new Dictionary<(string, string), ProcessResult>());
+        var processRunner = new FakeProcessRunner(new Dictionary<(string, string), ProcessResult>
+        {
+            { ("wsl.exe", "--status"), new ProcessResult(1, string.Empty, "WSL not enabled") },
+            { ("wsl.exe", "-l -q"), new ProcessResult(1, string.Empty, "WSL not enabled") },
+            { ("where", "git.exe"), new ProcessResult(1, string.Empty, "git not found") },
+            { ("where", "code.cmd"), new ProcessResult(1, string.Empty, "code not found") },
+            { ("powershell", "-NoProfile -Command \"(Test-Path 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe') -or (Test-Path (Join-Path $env:LOCALAPPDATA 'Programs\\Docker\\Docker Desktop.exe'))\""), new ProcessResult(1, string.Empty, "Docker not installed") },
+            { ("git", "config --global user.name"), new ProcessResult(1, string.Empty, string.Empty) },
+            { ("git", "config --global user.email"), new ProcessResult(1, string.Empty, string.Empty) },
+        });
 
         var configuration = new OnboardingConfiguration();
         var enableWslStep = new EnableWslFeaturesStep(processRunner, ui.Object, configuration);
@@ -114,7 +123,7 @@ public class WindowsOrchestratorTests
 
         var orchestrator = new WindowsOrchestrator(
             ui.Object,
-            new ExecutionOptions(IsDryRun: true),
+            new ExecutionOptions(IsDryRun: true, IsVerbose: false),
             enableWslStep,
             installGitStep,
             installVsCodeStep,
@@ -124,9 +133,9 @@ public class WindowsOrchestratorTests
         await orchestrator.ExecuteAsync().ConfigureAwait(false);
 
         ui.Verify(x => x.WriteHeader("Windows host onboarding"), Times.Once);
+        ui.Verify(x => x.WriteLine(It.Is<string>(s => s.StartsWith("Checking", StringComparison.Ordinal))), Times.AtLeastOnce);
         ui.Verify(x => x.WriteLine(It.Is<string>(s => s.StartsWith("Dry run: would execute", StringComparison.Ordinal))), Times.AtLeastOnce);
         ui.Verify(x => x.WriteSuccess("Windows host onboarding dry run complete."), Times.Once);
-        ui.Verify(x => x.WriteLine(It.Is<string>(s => s.StartsWith("Checking", StringComparison.Ordinal))), Times.Never);
         ui.Verify(x => x.WriteLine(It.Is<string>(s => s.StartsWith("Running", StringComparison.Ordinal))), Times.Never);
     }
 

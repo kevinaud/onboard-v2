@@ -41,14 +41,16 @@ The compiled onboarding binary auto-detects the host platform. When running insi
 
 Add `--dry-run` to preview the ordered steps without running any external commands. The flag stacks with other arguments, for example `Onboard --mode wsl-guest --dry-run` inside a WSL distribution.
 
+Enable verbose diagnostics with `--verbose` (or the `-v` alias) to mirror every external command the orchestrators would launch. Verbose mode prints debug-prefixed messages that show the exact command line, exit code, and captured stdout/stderr. Combine it with `--dry-run` to see `[DRY-RUN]` entries for each command without actually executing them.
+
 All other platforms (Windows host, native macOS, native Ubuntu) are selected automatically.
 
 ## Diagnostics & Troubleshooting
 
 - Every run writes a detailed transcript to `Path.GetTempPath()/onboard-pro.log`. On Windows this resolves to `%TEMP%\onboard-pro.log`; on macOS and Linux it resolves to `/tmp/onboard-pro.log`.
-- The log captures all user-facing console output plus every external command invocation (command line, exit code, and the first 1024 characters of stdout/stderr) to simplify support escalation.
+- The log captures all user-facing console output plus every external command invocation (command line, exit code, and the first 1024 characters of stdout/stderr) to simplify support escalation. When you pass `--verbose`, the on-screen debug output mirrors what the log records so you can follow along in real time.
 - Retention is deliberately simple: the most recent run overwrites the previous file. Copy the log somewhere safe before starting a new attempt if you need to keep historical output.
-- When reporting issues, attach the log file together with the command-line arguments you used (for example `--mode wsl-guest --dry-run`). Dry-run mode still records the console transcript but skips external command execution, so the absence of process entries is expected in that scenario.
+- When reporting issues, attach the log file together with the command-line arguments you used (for example `--mode wsl-guest --dry-run --verbose`). Dry-run mode still records the console transcript but skips external command execution, so the absence of process entries is expected in that scenario unless verbose mode was also enabled (in which case you'll see `[DRY-RUN]` entries for each skipped command).
 
 ## Architecture overview
 
