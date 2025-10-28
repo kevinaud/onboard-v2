@@ -15,3 +15,22 @@
 
 3.  [x] **Remove Legacy Abstraction:**
     *   [x] Delete `src/Onboard.Core/Steps/PlatformAware/PlatformAwareStep.cs` once it is no longer used.
+
+## Baseline Review
+
+- `PlatformAwareStep` previously multiplexed per-OS installers for Visual Studio Code and added hidden state to the constructor.
+- Orchestrators on every platform consumed the shared `InstallVsCodeStep`; a change for one OS risked side-effects on the others.
+- Unit tests for the original step mocked platform facts rather than the real command invocations required on each operating system.
+
+## Decomposition Plan
+
+- Promote discrete `Install<Platform>VsCodeStep` classes so each step expresses the native package manager and idempotency check explicitly.
+- Update dependency injection to register the new concrete types and remove the obsolete shared installer.
+- Keep orchestrator ordering identical while swapping in the correct VS Code installer for each runtime target.
+- Port the NUnit coverage from the shared step into targeted suites that validate success, skip, and failure cases per platform.
+
+## Delivered Outcome
+
+- Onboard.Core now provides `InstallWindowsVsCodeStep`, `InstallMacVsCodeStep`, and `InstallLinuxVsCodeStep` alongside focused unit tests in the matching folders.
+- `Program.cs` registers each installer explicitly and the orchestrators consume the correct type through constructor injection.
+- The deprecated `PlatformAwareStep` abstraction and its dependencies have been removed from the codebase.

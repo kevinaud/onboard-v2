@@ -135,13 +135,25 @@ This is a documented, three-step procedure.
 │   │   │   └── ConsoleUserInteraction.cs \# Concrete implementation  
 │   │   ├── Steps/  
 │   │   │   ├── Shared/  
+│   │   │   │   ├── CloneProjectRepoStep.cs  
 │   │   │   │   └── ConfigureGitUserStep.cs  
-│   │   │   ├── PlatformAware/  
-│   │   │   │   └── InstallVsCodeStep.cs  
 │   │   │   ├── Windows/  
-│   │   │   │   └── InstallGitForWindowsStep.cs  
+│   │   │   │   ├── EnableWslFeaturesStep.cs  
+│   │   │   │   ├── InstallGitForWindowsStep.cs  
+│   │   │   │   ├── InstallWindowsVsCodeStep.cs  
+│   │   │   │   └── InstallDockerDesktopStep.cs  
+│   │   │   ├── MacOs/  
+│   │   │   │   ├── InstallHomebrewStep.cs  
+│   │   │   │   ├── InstallBrewPackagesStep.cs  
+│   │   │   │   └── InstallMacVsCodeStep.cs  
+│   │   │   ├── Linux/  
+│   │   │   │   └── InstallLinuxVsCodeStep.cs  
+│   │   │   ├── Ubuntu/  
+│   │   │   │   └── InstallAptPackagesStep.cs  
 │   │   │   └── WslGuest/  
-│   │   │       └── InstallBuildEssentialStep.cs  
+│   │   │       ├── AptUpdateStep.cs  
+│   │   │       ├── InstallWslPrerequisitesStep.cs  
+│   │   │       └── ConfigureWslGitCredentialHelperStep.cs  
 │   │   └── Onboard.Core.csproj  
 │   └── Onboard.sln  
 └── tests/  
@@ -251,53 +263,42 @@ These interfaces are the key to testability. No class (outside of their concrete
       Task ExecuteAsync();  
   }
 
-* Onboard.Core/Steps/PlatformAware/PlatformAwareStep.cs (Strategy Pattern)  
-  This abstract class allows a single step (like InstallVsCodeStep) to have different implementations for each OS.  
-  C\#  
-  public abstract class PlatformAwareStep : IOnboardingStep  
+* Platform-specific installer steps (e.g., `InstallWindowsVsCodeStep`, `InstallMacVsCodeStep`, `InstallLinuxVsCodeStep`) now implement `IOnboardingStep` directly. Each class encapsulates the native package manager commands, defines its own idempotency check, and surfaces clear failure messages.  
+  C#  
+  public sealed class InstallWindowsVsCodeStep : IOnboardingStep  
   {  
-      protected readonly PlatformFacts \_platformFacts;  
-      protected readonly IProcessRunner \_processRunner;
-
-      // Define delegates for the strategies  
-      protected delegate Task\<bool\> ShouldExecuteDelegate();  
-      protected delegate Task ExecuteDelegate();
-
-      private readonly Dictionary\<OperatingSystem, ShouldExecuteDelegate\> \_shouldExecuteStrategies \= new();  
-      private readonly Dictionary\<OperatingSystem, ExecuteDelegate\> \_executeStrategies \= new();
-
-      public abstract string Description { get; }
-
-      protected PlatformAwareStep(PlatformFacts platformFacts, IProcessRunner processRunner)  
+      private readonly IProcessRunner _processRunner;  
+      private readonly IUserInteraction _ui;  
+  
+      public InstallWindowsVsCodeStep(IProcessRunner processRunner, IUserInteraction ui)  
       {  
-          \_platformFacts \= platformFacts;  
-          \_processRunner \= processRunner;  
-          Configure(); // Virtual method call in constructor  
-      }
-
-      // Child classes MUST implement this to populate the strategy dictionaries.  
-      protected abstract void Configure();
-
-      protected void AddStrategy(OperatingSystem os, ShouldExecuteDelegate shouldExecute, ExecuteDelegate execute)  
-      {  
-          \_shouldExecuteStrategies\[os\] \= shouldExecute;  
-          \_executeStrategies\[os\] \= execute;  
-      }
-
-      public Task\<bool\> ShouldExecuteAsync()  
-      {  
-          if (\_shouldExecuteStrategies.TryGetValue(\_platformFacts.OS, out var strategy))  
-              return strategy();  
-          return Task.FromResult(false); // Default to "do nothing" if not supported  
-      }
-
-      public Task ExecuteAsync()  
-      {  
-          if (\_executeStrategies.TryGetValue(\_platformFacts.OS, out var strategy))  
-              return strategy();  
-          return Task.CompletedTask;  
+          _processRunner = processRunner;  
+          _ui = ui;  
       }  
-  }
+  
+      public string Description => "Install Visual Studio Code";  
+  
+      public async Task<bool> ShouldExecuteAsync()  
+      {  
+          var result = await _processRunner.RunAsync("where", "code.cmd").ConfigureAwait(false);  
+          return result.IsSuccess && !string.IsNullOrWhiteSpace(result.StandardOutput) ? false : true;  
+      }  
+  
+      public async Task ExecuteAsync()  
+      {  
+          var result = await _processRunner.RunAsync("winget", "install --id Microsoft.VisualStudioCode -e --source winget").ConfigureAwait(false);  
+          if (!result.IsSuccess)  
+          {  
+              throw new InvalidOperationException(string.IsNullOrWhiteSpace(result.StandardError)  
+                  ? "Failed to install Visual Studio Code via winget."  
+                  : result.StandardError.Trim());  
+          }  
+  
+          _ui.WriteSuccess("Visual Studio Code installed via winget.");  
+      }  
+  }  
+  
+  The macOS and Linux variants follow the same structure, swapping in the appropriate `brew` and `apt` commands. This keeps each installer focused on a single operating system and eliminates the need for a shared strategy layer.
 
 #### **4.4. Orchestration**
 
@@ -309,36 +310,36 @@ These interfaces are the key to testability. No class (outside of their concrete
   }
 
 * Orchestrator Implementations (e.g., WindowsOrchestrator.cs)  
-  These classes define the step sequence by requesting specific IOnboardingStep implementations via constructor DI.  
-  C\#  
-  public class WindowsOrchestrator : IPlatformOrchestrator  
+  These classes now derive from `SequentialOrchestrator`, pass the ordered steps through the base constructor, and reuse the shared execution loop.  
+  C#  
+  public sealed class WindowsOrchestrator : SequentialOrchestrator  
   {  
-      private readonly IEnumerable\<IOnboardingStep\> \_steps;  
-      private readonly IUserInteraction \_ui;
-
-      public WindowsOrchestrator(  
-          IUserInteraction ui,  
-          InstallGitForWindowsStep installGit, // Step 1  
-          InstallVsCodeStep installVsCode,     // Step 2  
-          ConfigureGitUserStep configureGit)  // Step 3  
-      {  
-          \_ui \= ui;  
-          // The order is explicitly defined here  
-          \_steps \= new IOnboardingStep\[\] { installGit, installVsCode, configureGit };  
-      }
-
-      public async Task ExecuteAsync()  
-      {  
-          \_ui.WriteHeader("Starting Windows Host Onboarding...");  
-          foreach (var step in \_steps)  
-          {  
-              // General orchestration logic (log, check, execute, handle errors)  
-              // ...  
-          }  
-      }  
+    public WindowsOrchestrator(  
+      IUserInteraction ui,  
+      ExecutionOptions executionOptions,  
+      EnableWslFeaturesStep enableWslFeaturesStep,  
+      InstallGitForWindowsStep installGitForWindowsStep,  
+      InstallWindowsVsCodeStep installWindowsVsCodeStep,  
+      InstallDockerDesktopStep installDockerDesktopStep,  
+      ConfigureGitUserStep configureGitUserStep)  
+      : base(  
+        ui,  
+                services.AddTransient<CloneProjectRepoStep>();  
+        executionOptions,  
+        "Windows host onboarding",  
+        new IOnboardingStep[]  
+        {  
+          enableWslFeaturesStep,  
+          installGitForWindowsStep,  
+          installWindowsVsCodeStep,  
+          installDockerDesktopStep,  
+          configureGitUserStep,  
+        })  
+    {  
+    }  
   }
 
-  The WslGuestOrchestrator will be structured identically but will request different steps (e.g., InstallBuildEssentialStep, ConfigureShellStep).
+  The other orchestrators follow the same pattern, each injecting the platform-specific VS Code installer introduced in this iteration.
 
 #### **4.5. The Composition Root (Onboard.Console/Program.cs)**
 
@@ -381,13 +382,22 @@ public static class Program
                 // Register all Onboarding Steps  
                 // Shared  
                 services.AddTransient\<ConfigureGitUserStep\>();  
-                // Platform-Aware  
-                services.AddTransient\<InstallVsCodeStep\>();  
-                // Windows-Specific  
-                services.AddTransient\<InstallGitForWindowsStep\>();  
-                // WSL-Specific  
-                services.AddTransient\<InstallBuildEssentialStep\>();  
-                // ... register all other steps ...  
+                // Windows  
+                services.AddTransient<EnableWslFeaturesStep>();  
+                services.AddTransient<InstallGitForWindowsStep>();  
+                services.AddTransient<InstallWindowsVsCodeStep>();  
+                services.AddTransient<InstallDockerDesktopStep>();  
+                // macOS  
+                services.AddTransient<InstallHomebrewStep>();  
+                services.AddTransient<InstallBrewPackagesStep>();  
+                services.AddTransient<InstallMacVsCodeStep>();  
+                // Linux / Ubuntu  
+                services.AddTransient<AptUpdateStep>();  
+                services.AddTransient<InstallAptPackagesStep>();  
+                services.AddTransient<InstallLinuxVsCodeStep>();  
+                // WSL guest  
+                services.AddTransient<InstallWslPrerequisitesStep>();  
+                services.AddTransient<ConfigureWslGitCredentialHelperStep>();  
             })  
             .Build();
 
