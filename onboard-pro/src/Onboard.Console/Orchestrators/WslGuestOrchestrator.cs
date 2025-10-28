@@ -6,7 +6,7 @@ namespace Onboard.Console.Orchestrators;
 
 using Onboard.Core.Abstractions;
 using Onboard.Core.Models;
-using Onboard.Core.Steps.PlatformAware;
+using Onboard.Core.Steps.Linux;
 using Onboard.Core.Steps.Shared;
 using Onboard.Core.Steps.WslGuest;
 
@@ -20,7 +20,7 @@ public class WslGuestOrchestrator : SequentialOrchestrator
         ExecutionOptions executionOptions,
         AptUpdateStep aptUpdateStep,
         InstallWslPrerequisitesStep installWslPrerequisitesStep,
-        InstallVsCodeStep installVsCodeStep,
+        InstallLinuxVsCodeStep installLinuxVsCodeStep,
         ConfigureWslGitCredentialHelperStep configureWslGitCredentialHelperStep,
         ConfigureGitUserStep configureGitUserStep,
         CloneProjectRepoStep cloneProjectRepoStep)
@@ -32,7 +32,7 @@ public class WslGuestOrchestrator : SequentialOrchestrator
             {
                 aptUpdateStep,
                 installWslPrerequisitesStep,
-                installVsCodeStep,
+                installLinuxVsCodeStep,
                 configureWslGitCredentialHelperStep,
                 configureGitUserStep,
                 cloneProjectRepoStep,

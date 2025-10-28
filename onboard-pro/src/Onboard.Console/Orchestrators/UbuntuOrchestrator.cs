@@ -6,7 +6,7 @@ namespace Onboard.Console.Orchestrators;
 
 using Onboard.Core.Abstractions;
 using Onboard.Core.Models;
-using Onboard.Core.Steps.PlatformAware;
+using Onboard.Core.Steps.Linux;
 using Onboard.Core.Steps.Shared;
 using Onboard.Core.Steps.Ubuntu;
 using Onboard.Core.Steps.WslGuest;
@@ -21,7 +21,7 @@ public class UbuntuOrchestrator : SequentialOrchestrator
         ExecutionOptions executionOptions,
         AptUpdateStep aptUpdateStep,
         InstallAptPackagesStep installAptPackagesStep,
-        InstallVsCodeStep installVsCodeStep,
+        InstallLinuxVsCodeStep installLinuxVsCodeStep,
         ConfigureGitUserStep configureGitUserStep,
         CloneProjectRepoStep cloneProjectRepoStep)
         : base(
@@ -32,7 +32,7 @@ public class UbuntuOrchestrator : SequentialOrchestrator
             {
                 aptUpdateStep,
                 installAptPackagesStep,
-                installVsCodeStep,
+                installLinuxVsCodeStep,
                 configureGitUserStep,
                 cloneProjectRepoStep,
             })
