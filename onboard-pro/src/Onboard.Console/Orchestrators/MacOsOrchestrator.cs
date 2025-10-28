@@ -7,7 +7,6 @@ namespace Onboard.Console.Orchestrators;
 using Onboard.Core.Abstractions;
 using Onboard.Core.Models;
 using Onboard.Core.Steps.MacOs;
-using Onboard.Core.Steps.PlatformAware;
 using Onboard.Core.Steps.Shared;
 
 /// <summary>
@@ -20,7 +19,7 @@ public class MacOsOrchestrator : SequentialOrchestrator
         ExecutionOptions executionOptions,
         InstallHomebrewStep installHomebrewStep,
         InstallBrewPackagesStep installBrewPackagesStep,
-        InstallVsCodeStep installVsCodeStep,
+        InstallMacVsCodeStep installMacVsCodeStep,
         ConfigureGitUserStep configureGitUserStep,
         CloneProjectRepoStep cloneProjectRepoStep)
         : base(
@@ -31,7 +30,7 @@ public class MacOsOrchestrator : SequentialOrchestrator
             {
                 installHomebrewStep,
                 installBrewPackagesStep,
-                installVsCodeStep,
+                installMacVsCodeStep,
                 configureGitUserStep,
                 cloneProjectRepoStep,
             })

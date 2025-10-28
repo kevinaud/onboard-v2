@@ -14,8 +14,8 @@ using Onboard.Console.Orchestrators;
 using Onboard.Core.Abstractions;
 using Onboard.Core.Models;
 using Onboard.Core.Services;
+using Onboard.Core.Steps.Linux;
 using Onboard.Core.Steps.MacOs;
-using Onboard.Core.Steps.PlatformAware;
 using Onboard.Core.Steps.Shared;
 using Onboard.Core.Steps.Ubuntu;
 using Onboard.Core.Steps.Windows;
@@ -81,7 +81,9 @@ public static class Program
                 services.AddTransient<CloneProjectRepoStep>();
 
                 // Platform-Aware
-                services.AddTransient<InstallVsCodeStep>();
+                services.AddTransient<InstallWindowsVsCodeStep>();
+                services.AddTransient<InstallMacVsCodeStep>();
+                services.AddTransient<InstallLinuxVsCodeStep>();
 
                 // Windows-Specific
                 services.AddTransient<EnableWslFeaturesStep>();

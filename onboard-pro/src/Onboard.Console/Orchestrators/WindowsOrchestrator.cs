@@ -6,7 +6,6 @@ namespace Onboard.Console.Orchestrators;
 
 using Onboard.Core.Abstractions;
 using Onboard.Core.Models;
-using Onboard.Core.Steps.PlatformAware;
 using Onboard.Core.Steps.Shared;
 using Onboard.Core.Steps.Windows;
 
@@ -20,7 +19,7 @@ public class WindowsOrchestrator : SequentialOrchestrator
         ExecutionOptions executionOptions,
         EnableWslFeaturesStep enableWslFeaturesStep,
         InstallGitForWindowsStep installGitForWindowsStep,
-        InstallVsCodeStep installVsCodeStep,
+        InstallWindowsVsCodeStep installWindowsVsCodeStep,
         InstallDockerDesktopStep installDockerDesktopStep,
         ConfigureGitUserStep configureGitUserStep)
         : base(
@@ -31,7 +30,7 @@ public class WindowsOrchestrator : SequentialOrchestrator
             {
                 enableWslFeaturesStep,
                 installGitForWindowsStep,
-                installVsCodeStep,
+                installWindowsVsCodeStep,
                 installDockerDesktopStep,
                 configureGitUserStep,
             })

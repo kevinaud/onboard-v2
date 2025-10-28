@@ -1385,13 +1385,13 @@
       "details": "Audit current PlatformAwareStep usage, verify InstallVsCodeStep coverage, and capture orchestrator wiring notes before planning refactor work.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "7343e982-306c-4e44-b82d-277de36bd35b",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:18:22.956Z",
-      "updatedAt": "2025-10-28T16:02:53.816Z",
+      "updatedAt": "2025-10-28T18:46:20.950Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 4,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-13",
         "pre-flight"
@@ -1405,15 +1405,15 @@
       "details": "Define the refactor plan for decomposing InstallVsCodeStep, sequencing orchestrator updates, and coordinating unit test changes.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "c4d056ef-db9e-4909-bfac-936a89bdb37d",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:18:26.792Z",
-      "updatedAt": "2025-10-28T01:18:26.792Z",
+      "updatedAt": "2025-10-28T18:46:39.596Z",
       "dependsOn": [
         "115abe61-03bf-4349-96b6-4c4126828321"
       ],
       "priority": 5,
       "complexity": 4,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-13",
         "planning"
@@ -1427,15 +1427,15 @@
       "details": "Branch from main to iter-13 for the platform-aware refactor to preserve mainline stability.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "7343e982-306c-4e44-b82d-277de36bd35b",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:18:32.791Z",
-      "updatedAt": "2025-10-28T16:13:47.521Z",
+      "updatedAt": "2025-10-28T18:46:27.270Z",
       "dependsOn": [
         "115abe61-03bf-4349-96b6-4c4126828321"
       ],
       "priority": 5,
       "complexity": 2,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-13",
         "planning",
@@ -1450,15 +1450,15 @@
       "details": "Document target APIs for InstallWindowsVsCodeStep, InstallMacVsCodeStep, and InstallLinuxVsCodeStep plus the orchestration wiring changes and testing expectations.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "7343e982-306c-4e44-b82d-277de36bd35b",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:18:37.050Z",
-      "updatedAt": "2025-10-28T16:13:51.883Z",
+      "updatedAt": "2025-10-28T18:46:31.591Z",
       "dependsOn": [
         "07a2d103-534b-4404-9795-fb4c85798a6a"
       ],
       "priority": 5,
       "complexity": 3,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-13",
         "planning"
@@ -1472,15 +1472,15 @@
       "details": "Implement Iteration 13 refactor: create platform-specific VS Code steps, update DI wiring, remove PlatformAwareStep, update orchestrators, and capture documentation/test updates.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "c4d056ef-db9e-4909-bfac-936a89bdb37d",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:18:41.285Z",
-      "updatedAt": "2025-10-28T16:02:59.205Z",
+      "updatedAt": "2025-10-28T18:47:57.585Z",
       "dependsOn": [
         "7343e982-306c-4e44-b82d-277de36bd35b"
       ],
       "priority": 5,
       "complexity": 6,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-13",
         "build"
@@ -1494,15 +1494,15 @@
       "details": "Create Windows-specific VS Code installer step with winget logic and idempotent PATH checks; port tests from existing InstallVsCodeStep.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "d81622fc-29ec-4e0b-bc96-19385969073e",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:18:45.576Z",
-      "updatedAt": "2025-10-28T16:12:03.671Z",
+      "updatedAt": "2025-10-28T18:46:45.131Z",
       "dependsOn": [
         "20f61a63-22ba-4b9a-991a-6f41a2d729c5"
       ],
       "priority": 5,
       "complexity": 5,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-13",
         "build",
@@ -1517,15 +1517,15 @@
       "details": "Create macOS-specific VS Code step using brew logic, covering PATH/app bundle detection and tests mirroring legacy behaviour.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "d81622fc-29ec-4e0b-bc96-19385969073e",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:18:50.321Z",
-      "updatedAt": "2025-10-28T16:12:10.874Z",
+      "updatedAt": "2025-10-28T18:46:50.544Z",
       "dependsOn": [
         "20f61a63-22ba-4b9a-991a-6f41a2d729c5"
       ],
       "priority": 5,
       "complexity": 5,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-13",
         "build",
@@ -1540,15 +1540,15 @@
       "details": "Create Linux-specific VS Code installation step with curl/apt flow and tests ensuring dry-run + idempotent detection preserve legacy behaviour.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "d81622fc-29ec-4e0b-bc96-19385969073e",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:18:56.015Z",
-      "updatedAt": "2025-10-28T16:12:30.543Z",
+      "updatedAt": "2025-10-28T18:46:54.743Z",
       "dependsOn": [
         "20f61a63-22ba-4b9a-991a-6f41a2d729c5"
       ],
       "priority": 5,
       "complexity": 5,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-13",
         "build",
@@ -1563,9 +1563,9 @@
       "details": "Delete PlatformAwareStep.cs and related utilities once all orchestrators reference the new platform-specific steps; clean up namespace references.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "d81622fc-29ec-4e0b-bc96-19385969073e",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:19:00.100Z",
-      "updatedAt": "2025-10-28T16:12:47.682Z",
+      "updatedAt": "2025-10-28T18:47:04.132Z",
       "dependsOn": [
         "7951caad-d9c8-4da8-b916-078f46c29b41",
         "82388e7c-b03e-44dc-99dd-563659da63f6",
@@ -1573,7 +1573,7 @@
       ],
       "priority": 5,
       "complexity": 5,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-13",
         "build"
@@ -1587,9 +1587,9 @@
       "details": "Register new platform-specific VS Code steps in Program.cs and remove the old InstallVsCodeStep registration.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "d81622fc-29ec-4e0b-bc96-19385969073e",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:19:06.578Z",
-      "updatedAt": "2025-10-28T16:12:54.370Z",
+      "updatedAt": "2025-10-28T18:47:10.814Z",
       "dependsOn": [
         "7951caad-d9c8-4da8-b916-078f46c29b41",
         "82388e7c-b03e-44dc-99dd-563659da63f6",
@@ -1597,7 +1597,7 @@
       ],
       "priority": 5,
       "complexity": 5,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-13",
         "build",
@@ -1612,16 +1612,16 @@
       "details": "Finalize Iteration 13 changes on branch iter-13, ensuring all new platform-specific installers compile together and the solution builds successfully.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "d81622fc-29ec-4e0b-bc96-19385969073e",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:19:16.849Z",
-      "updatedAt": "2025-10-28T16:13:00.981Z",
+      "updatedAt": "2025-10-28T18:47:27.235Z",
       "dependsOn": [
         "417d57c0-cf37-4b54-bf63-16863899251d",
         "65496f8c-eb9d-4e7b-8cbe-8b0c63d142fb"
       ],
       "priority": 5,
       "complexity": 5,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-13",
         "build"
@@ -1635,15 +1635,15 @@
       "details": "Validate the refactored VS Code steps locally before opening the PR, covering automated suites and targeted manual checks.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "c4d056ef-db9e-4909-bfac-936a89bdb37d",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:19:22.134Z",
-      "updatedAt": "2025-10-28T16:03:05.906Z",
+      "updatedAt": "2025-10-28T18:48:51.843Z",
       "dependsOn": [
         "d81622fc-29ec-4e0b-bc96-19385969073e"
       ],
       "priority": 5,
       "complexity": 5,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-13",
         "integration"
@@ -1680,15 +1680,15 @@
       "details": "Update Windows, MacOs, Ubuntu, and WslGuest orchestrators to inject the appropriate platform-specific VS Code step and validate sequence order as part of the build phase.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "d81622fc-29ec-4e0b-bc96-19385969073e",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:19:48.482Z",
-      "updatedAt": "2025-10-28T16:13:05.808Z",
+      "updatedAt": "2025-10-28T18:47:15.003Z",
       "dependsOn": [
         "65496f8c-eb9d-4e7b-8cbe-8b0c63d142fb"
       ],
       "priority": 5,
       "complexity": 5,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-13",
         "build",
@@ -1725,15 +1725,15 @@
       "details": "Run dotnet format, dotnet build, dotnet test, and orchestrator dry-run to ensure new VS Code steps behave across modes.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "79669e4f-8360-4abe-8954-a9b60ec36ca2",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:19:58.357Z",
-      "updatedAt": "2025-10-28T16:10:11.896Z",
+      "updatedAt": "2025-10-28T18:48:02.595Z",
       "dependsOn": [
         "79a9f646-1564-43ae-8b6a-4b25bd27b2f6"
       ],
       "priority": 5,
       "complexity": 4,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-13",
         "validation",
@@ -1748,13 +1748,13 @@
       "details": "Create dedicated NUnit coverage for InstallWindowsVsCodeStep, InstallMacVsCodeStep, and InstallLinuxVsCodeStep; retire the legacy shared tests to validate the new platform-specific installers.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "d81622fc-29ec-4e0b-bc96-19385969073e",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:20:06.367Z",
-      "updatedAt": "2025-10-28T16:10:54.649Z",
+      "updatedAt": "2025-10-28T18:47:22.788Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 5,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-13",
         "testing"
@@ -1768,15 +1768,15 @@
       "details": "Manually exercise each orchestrator to verify VS Code step substitution works and messaging remains consistent.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "79669e4f-8360-4abe-8954-a9b60ec36ca2",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:20:12.030Z",
-      "updatedAt": "2025-10-28T16:10:25.119Z",
+      "updatedAt": "2025-10-28T18:48:45.814Z",
       "dependsOn": [
         "e747062a-824a-4b1b-8bb5-38d885a581df"
       ],
       "priority": 5,
       "complexity": 4,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-13",
         "validation",
@@ -1791,13 +1791,13 @@
       "details": "Document the new platform-specific VS Code installer steps in README/developer docs, replacing references to the removed PlatformAwareStep abstraction before opening the PR.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "d81622fc-29ec-4e0b-bc96-19385969073e",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:20:28.194Z",
-      "updatedAt": "2025-10-28T16:11:14.113Z",
+      "updatedAt": "2025-10-28T18:47:35.162Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 3,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-13",
         "docs"
@@ -1811,13 +1811,13 @@
       "details": "Refresh internal architecture/design docs to capture the removal of PlatformAwareStep and how the new platform-specific VS Code installers are wired through orchestrators and DI.",
       "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
       "parentId": "d81622fc-29ec-4e0b-bc96-19385969073e",
-      "completed": false,
+      "completed": true,
       "createdAt": "2025-10-28T01:20:57.244Z",
-      "updatedAt": "2025-10-28T16:11:29.565Z",
+      "updatedAt": "2025-10-28T18:47:55.804Z",
       "dependsOn": [],
       "priority": 5,
       "complexity": 3,
-      "status": "pending",
+      "status": "done",
       "tags": [
         "iter-13",
         "docs",

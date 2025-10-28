@@ -9,11 +9,8 @@ using Moq;
 using Onboard.Console.Orchestrators;
 using Onboard.Core.Abstractions;
 using Onboard.Core.Models;
-using Onboard.Core.Steps.PlatformAware;
 using Onboard.Core.Steps.Shared;
 using Onboard.Core.Steps.Windows;
-
-using CoreOperatingSystem = Onboard.Core.Models.OperatingSystem;
 
 [TestFixture]
 public class WindowsOrchestratorTests
@@ -33,11 +30,9 @@ public class WindowsOrchestratorTests
             { ("git", "config --global user.email"), new ProcessResult(0, "test@example.com", string.Empty) },
         });
 
-        var platformFacts = new PlatformFacts(CoreOperatingSystem.Windows, Architecture.X64, false, "C:/Users/test");
-
         var enableWslStep = new EnableWslFeaturesStep(processRunner, ui.Object);
         var installGitStep = new InstallGitForWindowsStep(processRunner, ui.Object);
-        var installVsCodeStep = new InstallVsCodeStep(platformFacts, processRunner, ui.Object);
+        var installVsCodeStep = new InstallWindowsVsCodeStep(processRunner, ui.Object);
         var installDockerStep = new InstallDockerDesktopStep(processRunner, ui.Object);
         var configureGitStep = new ConfigureGitUserStep(processRunner, ui.Object);
 
@@ -80,11 +75,9 @@ public class WindowsOrchestratorTests
             { ("git", "config --global user.email"), new ProcessResult(0, "test@example.com", string.Empty) },
         });
 
-        var platformFacts = new PlatformFacts(CoreOperatingSystem.Windows, Architecture.X64, false, "C:/Users/test");
-
         var enableWslStep = new EnableWslFeaturesStep(processRunner, ui.Object);
         var installGitStep = new InstallGitForWindowsStep(processRunner, ui.Object);
-        var installVsCodeStep = new InstallVsCodeStep(platformFacts, processRunner, ui.Object);
+        var installVsCodeStep = new InstallWindowsVsCodeStep(processRunner, ui.Object);
         var installDockerStep = new InstallDockerDesktopStep(processRunner, ui.Object);
         var configureGitStep = new ConfigureGitUserStep(processRunner, ui.Object);
 
@@ -110,11 +103,9 @@ public class WindowsOrchestratorTests
 
         var processRunner = new FakeProcessRunner(new Dictionary<(string, string), ProcessResult>());
 
-        var platformFacts = new PlatformFacts(CoreOperatingSystem.Windows, Architecture.X64, false, "C:/Users/test");
-
         var enableWslStep = new EnableWslFeaturesStep(processRunner, ui.Object);
         var installGitStep = new InstallGitForWindowsStep(processRunner, ui.Object);
-        var installVsCodeStep = new InstallVsCodeStep(platformFacts, processRunner, ui.Object);
+        var installVsCodeStep = new InstallWindowsVsCodeStep(processRunner, ui.Object);
         var installDockerStep = new InstallDockerDesktopStep(processRunner, ui.Object);
         var configureGitStep = new ConfigureGitUserStep(processRunner, ui.Object);
 
