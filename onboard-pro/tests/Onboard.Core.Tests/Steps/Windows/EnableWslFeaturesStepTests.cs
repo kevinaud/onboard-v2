@@ -32,7 +32,7 @@ public class EnableWslFeaturesStepTests
     public async Task ShouldExecuteAsync_WhenWslListFails_ReturnsTrue()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("wsl.exe", "-l -v", false))
+            .Setup(runner => runner.RunAsync("wsl.exe", "-l -q", false))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "WSL not installed"));
 
         var step = CreateStep();
@@ -45,9 +45,9 @@ public class EnableWslFeaturesStepTests
     [Test]
     public async Task ShouldExecuteAsync_WhenUbuntuDistributionMissing_ReturnsTrue()
     {
-        string listOutput = "  NAME            STATE           VERSION\r\n* docker-desktop   Running         2\r\n  Ubuntu-20.04     Stopped         2\r\n";
+        string listOutput = "docker-desktop\r\nUbuntu-20.04\r\n";
         processRunner
-            .Setup(runner => runner.RunAsync("wsl.exe", "-l -v", false))
+            .Setup(runner => runner.RunAsync("wsl.exe", "-l -q", false))
             .ReturnsAsync(new ProcessResult(0, listOutput, string.Empty));
         processRunner
             .Setup(runner => runner.RunAsync("wsl.exe", "-d docker-desktop -- cat /etc/os-release", false))
@@ -66,9 +66,9 @@ public class EnableWslFeaturesStepTests
     [Test]
     public async Task ShouldExecuteAsync_WhenWslReady_ReturnsFalse()
     {
-        string listOutput = "\ufeff  NAME            STATE           VERSION\r\n* \u2009Ubuntu-22.04 (Default)    Stopped         2\r\n";
+        string listOutput = "\ufeffUbuntu-22.04\r\n";
         processRunner
-            .Setup(runner => runner.RunAsync("wsl.exe", "-l -v", false))
+            .Setup(runner => runner.RunAsync("wsl.exe", "-l -q", false))
             .ReturnsAsync(new ProcessResult(0, listOutput, string.Empty));
         processRunner
             .Setup(runner => runner.RunAsync("wsl.exe", "-d Ubuntu-22.04 -- cat /etc/os-release", false))
@@ -85,7 +85,7 @@ public class EnableWslFeaturesStepTests
     public async Task ExecuteAsync_WhenWslNotReady_PrintsGuidance()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("wsl.exe", "-l -v", false))
+            .Setup(runner => runner.RunAsync("wsl.exe", "-l -q", false))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "WSL not installed"));
 
         var messages = new List<string>();
@@ -112,10 +112,10 @@ public class EnableWslFeaturesStepTests
     public async Task ShouldExecuteAsync_WhenDistributionNameContainsSpaces_ReturnsFalse()
     {
         string aliasName = "Dev Ubuntu 22.04";
-        string listOutput = "  NAME            STATE           VERSION\r\n* " + aliasName + "    Running         2\r\n";
+        string listOutput = aliasName + "\r\n";
 
         processRunner
-            .Setup(runner => runner.RunAsync("wsl.exe", "-l -v", false))
+            .Setup(runner => runner.RunAsync("wsl.exe", "-l -q", false))
             .ReturnsAsync(new ProcessResult(0, listOutput, string.Empty));
         processRunner
             .Setup(runner => runner.RunAsync("wsl.exe", "-d \"" + aliasName + "\" -- cat /etc/os-release", false))

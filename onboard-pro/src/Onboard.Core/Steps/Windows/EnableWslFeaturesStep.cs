@@ -13,7 +13,7 @@ using Onboard.Core.Models;
 /// </summary>
 public class EnableWslFeaturesStep : IOnboardingStep
 {
-    private const string WslListDistributionsCommand = "-l -v";
+    private const string WslListDistributionsCommand = "-l -q";
     private const string OsReleaseCommand = "cat /etc/os-release";
 
     private readonly IProcessRunner processRunner;
@@ -82,18 +82,10 @@ public class EnableWslFeaturesStep : IOnboardingStep
     /// <summary>
     /// Exposed for testing purposes only.
     /// </summary>
-    /// <param name="commandOutput">The raw output from wsl.exe -l -v.</param>
+    /// <param name="commandOutput">The raw output from wsl.exe -l -q.</param>
     /// <returns>Collection of distribution names extracted from the output.</returns>
     internal static IReadOnlyCollection<string> ParseDistributionNamesForTesting(string commandOutput) =>
         ParseDistributionNames(commandOutput);
-
-    /// <summary>
-    /// Internal test helper to expose TryExtractDistributionName for unit testing.
-    /// </summary>
-    /// <param name="rawLine">A single line from wsl.exe -l -v output.</param>
-    /// <returns>The extracted distribution name, or null if the line doesn't contain a valid distribution.</returns>
-    internal static string? TryExtractDistributionNameForTesting(string rawLine) =>
-        TryExtractDistributionName(rawLine);
 
     private static string BuildOsReleaseArguments(string distributionName)
     {
@@ -108,8 +100,9 @@ public class EnableWslFeaturesStep : IOnboardingStep
 
         foreach (string rawLine in commandOutput.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
         {
-            string? candidateName = TryExtractDistributionName(rawLine);
-            if (string.IsNullOrEmpty(candidateName))
+            string candidateName = rawLine.Trim().TrimStart('\ufeff');
+
+            if (string.IsNullOrWhiteSpace(candidateName))
             {
                 continue;
             }
@@ -121,77 +114,6 @@ public class EnableWslFeaturesStep : IOnboardingStep
         }
 
         return names;
-    }
-
-    private static string? TryExtractDistributionName(string rawLine)
-    {
-        if (string.IsNullOrWhiteSpace(rawLine))
-        {
-            return null;
-        }
-
-        string line = rawLine.Trim();
-        if (line.Length == 0)
-        {
-            return null;
-        }
-
-        line = line.TrimStart('\ufeff');
-
-        if (line.StartsWith("Windows Subsystem", StringComparison.OrdinalIgnoreCase) ||
-            line.StartsWith("The following", StringComparison.OrdinalIgnoreCase) ||
-            line.StartsWith("Distributions", StringComparison.OrdinalIgnoreCase))
-        {
-            return null;
-        }
-
-        if (line[0] == '*')
-        {
-            line = line[1..].TrimStart();
-        }
-
-        line = line.TrimStart();
-        if (line.Length == 0)
-        {
-            return null;
-        }
-
-        if (line.StartsWith("NAME", StringComparison.OrdinalIgnoreCase))
-        {
-            return null;
-        }
-
-        int columnBreak = FindColumnBreak(line);
-        string candidateName = columnBreak >= 0 ? line[..columnBreak] : line;
-        candidateName = candidateName.Trim().Trim('\ufeff');
-
-        if (candidateName.EndsWith("(Default)", StringComparison.OrdinalIgnoreCase))
-        {
-            candidateName = candidateName[..^"(Default)".Length].TrimEnd();
-        }
-
-        if (string.IsNullOrWhiteSpace(candidateName) || string.Equals(candidateName, "*", StringComparison.Ordinal))
-        {
-            return null;
-        }
-
-        return candidateName;
-    }
-
-    private static int FindColumnBreak(string line)
-    {
-        for (int index = 0; index < line.Length - 1; index++)
-        {
-            char current = line[index];
-            char next = line[index + 1];
-
-            if (current == '\t' || (current == ' ' && next == ' '))
-            {
-                return index;
-            }
-        }
-
-        return -1;
     }
 
     private static string CombineOutputs(string standardOutput, string standardError)
@@ -251,15 +173,6 @@ public class EnableWslFeaturesStep : IOnboardingStep
         var distributionNames = ParseDistributionNames(listResult.StandardOutput);
         foreach (string distroName in distributionNames)
         {
-            // Paranoid validation: skip obviously invalid distribution names that might indicate a parser bug
-            if (distroName.Contains("STATE", StringComparison.OrdinalIgnoreCase) ||
-                distroName.Contains("VERSION", StringComparison.OrdinalIgnoreCase) ||
-                distroName.StartsWith("*", StringComparison.Ordinal) ||
-                distroName.Length > 100)
-            {
-                continue;
-            }
-
             var distroResult = await processRunner.RunAsync("wsl.exe", BuildOsReleaseArguments(distroName)).ConfigureAwait(false);
             if (!distroResult.IsSuccess && string.IsNullOrWhiteSpace(distroResult.StandardOutput) && string.IsNullOrWhiteSpace(distroResult.StandardError))
             {
