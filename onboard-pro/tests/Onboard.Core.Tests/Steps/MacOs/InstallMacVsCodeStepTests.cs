@@ -28,7 +28,7 @@ public class InstallMacVsCodeStepTests
     public async Task ShouldExecuteAsync_WhenCodeCliExists_ReturnsFalse()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("which", "code", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("which", "code"))
             .ReturnsAsync(new ProcessResult(0, "/usr/local/bin/code", string.Empty));
 
         var step = CreateStep();
@@ -43,7 +43,7 @@ public class InstallMacVsCodeStepTests
     public async Task ShouldExecuteAsync_WhenAppBundleExists_ReturnsFalse()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("which", "code", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("which", "code"))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "not found"));
         fileSystem
             .Setup(fs => fs.DirectoryExists("/Applications/Visual Studio Code.app"))
@@ -61,7 +61,7 @@ public class InstallMacVsCodeStepTests
     public async Task ShouldExecuteAsync_WhenAppBundleMissing_ReturnsTrue()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("which", "code", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("which", "code"))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "not found"));
         fileSystem
             .Setup(fs => fs.DirectoryExists("/Applications/Visual Studio Code.app"))
@@ -79,7 +79,7 @@ public class InstallMacVsCodeStepTests
     public async Task ExecuteAsync_WhenBrewSucceeds_WritesSuccess()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("brew", "install --cask visual-studio-code", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("brew", "install --cask visual-studio-code"))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
         userInteraction.Setup(ui => ui.WriteSuccess("Visual Studio Code installed via Homebrew."));
 
@@ -94,7 +94,7 @@ public class InstallMacVsCodeStepTests
     public void ExecuteAsync_WhenBrewFails_ThrowsInvalidOperationException()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("brew", "install --cask visual-studio-code", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("brew", "install --cask visual-studio-code"))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "brew error"));
 
         var step = CreateStep();

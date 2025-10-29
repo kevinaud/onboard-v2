@@ -23,7 +23,7 @@ public class InstallAptPackagesStepTests
     public async Task ShouldExecuteAsync_WhenBuildEssentialMissing_ReturnsTrue()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("dpkg", "-s build-essential", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("dpkg", "-s build-essential"))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "not installed"));
 
         var step = CreateStep();
@@ -37,7 +37,7 @@ public class InstallAptPackagesStepTests
     public async Task ShouldExecuteAsync_WhenBuildEssentialInstalled_ReturnsFalse()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("dpkg", "-s build-essential", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("dpkg", "-s build-essential"))
             .ReturnsAsync(new ProcessResult(0, "Status: install ok installed", string.Empty));
 
         var step = CreateStep();
@@ -51,7 +51,7 @@ public class InstallAptPackagesStepTests
     public async Task ExecuteAsync_WhenInstallSucceeds_WritesSuccess()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("sudo", "apt-get install -y git gh curl chezmoi python3 build-essential", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("sudo", "apt-get install -y git gh curl chezmoi python3 build-essential"))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
 
         userInteraction.Setup(ui => ui.WriteSuccess("Apt packages installed."));
@@ -67,7 +67,7 @@ public class InstallAptPackagesStepTests
     public void ExecuteAsync_WhenInstallFails_Throws()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("sudo", "apt-get install -y git gh curl chezmoi python3 build-essential", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("sudo", "apt-get install -y git gh curl chezmoi python3 build-essential"))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "error"));
 
         var step = CreateStep();

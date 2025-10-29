@@ -28,7 +28,7 @@ public class InstallGitForWindowsStepTests
     public async Task ShouldExecuteAsync_WhenGitExecutableFound_ReturnsFalse()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("where", "git.exe", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("where", "git.exe"))
             .ReturnsAsync(new ProcessResult(0, "C:/Program Files/Git/bin/git.exe", string.Empty));
 
         var step = CreateStep();
@@ -42,7 +42,7 @@ public class InstallGitForWindowsStepTests
     public async Task ShouldExecuteAsync_WhenGitExecutableMissing_ReturnsTrue()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("where", "git.exe", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("where", "git.exe"))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "INFO: Could not find files"));
 
         var step = CreateStep();
@@ -56,7 +56,7 @@ public class InstallGitForWindowsStepTests
     public async Task ExecuteAsync_WhenWingetSucceeds_PrintsSuccess()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("winget", "install --id Git.Git -e --source winget --accept-package-agreements --accept-source-agreements --disable-interactivity", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("winget", "install --id Git.Git -e --source winget --accept-package-agreements --accept-source-agreements --disable-interactivity"))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
         userInteraction.Setup(ui => ui.WriteSuccess("Git for Windows installed via winget."));
 
@@ -71,7 +71,7 @@ public class InstallGitForWindowsStepTests
     public void ExecuteAsync_WhenWingetFails_Throws()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("winget", "install --id Git.Git -e --source winget --accept-package-agreements --accept-source-agreements --disable-interactivity", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("winget", "install --id Git.Git -e --source winget --accept-package-agreements --accept-source-agreements --disable-interactivity"))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "winget error"));
 
         var step = CreateStep();

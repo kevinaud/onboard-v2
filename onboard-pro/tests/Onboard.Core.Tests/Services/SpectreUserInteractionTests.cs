@@ -21,7 +21,10 @@ public class SpectreUserInteractionTests
     public void ShowWelcomeBanner_WritesPlatformInformation()
     {
         var console = new TestConsole();
-        var interaction = new SpectreUserInteraction(console, NullLogger<SpectreUserInteraction>.Instance, new ExecutionOptions(false, false));
+        var interaction = new SpectreUserInteraction(
+            console,
+            NullLogger<SpectreUserInteraction>.Instance,
+            new ExecutionOptions(IsDryRun: false, IsVerbose: false));
         var platformFacts = new PlatformFacts(OS.Windows, CPU.X64, IsWsl: false, HomeDirectory: "C:/Users/test");
 
         interaction.ShowWelcomeBanner(platformFacts);
@@ -37,7 +40,10 @@ public class SpectreUserInteractionTests
     public void WriteSuccess_RendersCheckmarkWithMessage()
     {
         var console = new TestConsole();
-        var interaction = new SpectreUserInteraction(console, NullLogger<SpectreUserInteraction>.Instance, new ExecutionOptions(false, false));
+        var interaction = new SpectreUserInteraction(
+            console,
+            NullLogger<SpectreUserInteraction>.Instance,
+            new ExecutionOptions(IsDryRun: false, IsVerbose: false));
 
         interaction.WriteSuccess("All good");
 
@@ -50,7 +56,10 @@ public class SpectreUserInteractionTests
     public void WriteWarning_RendersWarningIndicator()
     {
         var console = new TestConsole();
-        var interaction = new SpectreUserInteraction(console, NullLogger<SpectreUserInteraction>.Instance, new ExecutionOptions(false, false));
+        var interaction = new SpectreUserInteraction(
+            console,
+            NullLogger<SpectreUserInteraction>.Instance,
+            new ExecutionOptions(IsDryRun: false, IsVerbose: false));
 
         interaction.WriteWarning("Heads up");
 
@@ -63,7 +72,10 @@ public class SpectreUserInteractionTests
     public void WriteError_RendersCrossWithMessage()
     {
         var console = new TestConsole();
-        var interaction = new SpectreUserInteraction(console, NullLogger<SpectreUserInteraction>.Instance, new ExecutionOptions(false, false));
+        var interaction = new SpectreUserInteraction(
+            console,
+            NullLogger<SpectreUserInteraction>.Instance,
+            new ExecutionOptions(IsDryRun: false, IsVerbose: false));
 
         interaction.WriteError("Something failed");
 
@@ -76,7 +88,10 @@ public class SpectreUserInteractionTests
     public void WriteDebug_WhenVerbose_PrintsLiteralDebugTag()
     {
         var console = new TestConsole();
-        var interaction = new SpectreUserInteraction(console, NullLogger<SpectreUserInteraction>.Instance, new ExecutionOptions(false, true));
+        var interaction = new SpectreUserInteraction(
+            console,
+            NullLogger<SpectreUserInteraction>.Instance,
+            new ExecutionOptions(IsDryRun: false, IsVerbose: true));
 
         interaction.WriteDebug("command details");
 
@@ -89,7 +104,10 @@ public class SpectreUserInteractionTests
     public void ShowSummary_RendersStatusTable()
     {
         var console = new TestConsole();
-        var interaction = new SpectreUserInteraction(console, NullLogger<SpectreUserInteraction>.Instance, new ExecutionOptions(false, false));
+        var interaction = new SpectreUserInteraction(
+            console,
+            NullLogger<SpectreUserInteraction>.Instance,
+            new ExecutionOptions(IsDryRun: false, IsVerbose: false));
         var results = new[]
         {
             new StepResult("Step A", StepStatus.Executed),
@@ -116,7 +134,10 @@ public class SpectreUserInteractionTests
     public async Task RunStatusAsync_ExecutesActionWithinStatusContext()
     {
         var console = new TestConsole();
-        var interaction = new SpectreUserInteraction(console, NullLogger<SpectreUserInteraction>.Instance, new ExecutionOptions(false, false));
+        var interaction = new SpectreUserInteraction(
+            console,
+            NullLogger<SpectreUserInteraction>.Instance,
+            new ExecutionOptions(IsDryRun: false, IsVerbose: false));
 
         await interaction.RunStatusAsync(
             "Checking Step",

@@ -33,7 +33,7 @@ public class AptUpdateStepTests
     public async Task ExecuteAsync_WhenAptUpdateSucceeds_WritesSuccessMessage()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("sudo", "apt-get update", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("sudo", "apt-get update"))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
 
         userInteraction.Setup(ui => ui.WriteSuccess("APT package lists updated."));
@@ -49,7 +49,7 @@ public class AptUpdateStepTests
     public void ExecuteAsync_WhenAptUpdateFails_Throws()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("sudo", "apt-get update", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("sudo", "apt-get update"))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "error"));
 
         var step = CreateStep();

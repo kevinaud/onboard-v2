@@ -25,7 +25,7 @@ public class ConfigureWslGitCredentialHelperStepTests
     public async Task ShouldExecuteAsync_WhenHelperNotConfigured_ReturnsTrue()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("git", "config --global credential.helper", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("git", "config --global credential.helper"))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "not set"));
 
         var step = CreateStep();
@@ -39,7 +39,7 @@ public class ConfigureWslGitCredentialHelperStepTests
     public async Task ShouldExecuteAsync_WhenHelperDiffers_ReturnsTrue()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("git", "config --global credential.helper", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("git", "config --global credential.helper"))
             .ReturnsAsync(new ProcessResult(0, "/usr/bin/cache", string.Empty));
 
         var step = CreateStep();
@@ -53,7 +53,7 @@ public class ConfigureWslGitCredentialHelperStepTests
     public async Task ShouldExecuteAsync_WhenHelperMatches_ReturnsFalse()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("git", "config --global credential.helper", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("git", "config --global credential.helper"))
             .ReturnsAsync(new ProcessResult(0, HelperPath + "\n", string.Empty));
 
         var step = CreateStep();
@@ -67,7 +67,7 @@ public class ConfigureWslGitCredentialHelperStepTests
     public async Task ExecuteAsync_WhenConfigurationSucceeds_WritesSuccessMessage()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("git", $"config --global credential.helper \"{HelperPath}\"", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("git", $"config --global credential.helper \"{HelperPath}\""))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
 
         userInteraction.Setup(ui => ui.WriteSuccess("Configured Git credential helper for Windows GCM."));
@@ -83,7 +83,7 @@ public class ConfigureWslGitCredentialHelperStepTests
     public void ExecuteAsync_WhenConfigurationFails_Throws()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("git", $"config --global credential.helper \"{HelperPath}\"", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("git", $"config --global credential.helper \"{HelperPath}\""))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "error"));
 
         var step = CreateStep();

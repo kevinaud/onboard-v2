@@ -33,7 +33,7 @@ public class EnableWslFeaturesStepTests
     public async Task ShouldExecuteAsync_WhenWslListFails_ReturnsTrue()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("wsl.exe", "-l -q", false))
+            .Setup(runner => runner.RunAsync("wsl.exe", "-l -q"))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "WSL not installed"));
 
         var step = CreateStep();
@@ -48,14 +48,22 @@ public class EnableWslFeaturesStepTests
     {
         string listOutput = "docker-desktop\r\nUbuntu-20.04\r\n";
         processRunner
-            .Setup(runner => runner.RunAsync("wsl.exe", "-l -q", false))
+            .Setup(runner => runner.RunAsync("wsl.exe", "-l -q"))
             .ReturnsAsync(new ProcessResult(0, listOutput, string.Empty));
         processRunner
-            .Setup(runner => runner.RunAsync("wsl.exe", "-d \"docker-desktop\" -- cat /etc/os-release", false))
-            .ReturnsAsync(new ProcessResult(0, "ID=alpine\nVERSION_ID=3.17", string.Empty));
+            .Setup(runner => runner.RunAsync(
+                "wsl.exe",
+                "-d \"docker-desktop\" -- sh -c \"grep -qx 'ID=ubuntu' /etc/os-release && grep -qx 'VERSION_ID=\\\"22.04\\\"' /etc/os-release\"",
+                false,
+                true))
+            .ReturnsAsync(new ProcessResult(1, string.Empty, string.Empty));
         processRunner
-            .Setup(runner => runner.RunAsync("wsl.exe", "-d \"Ubuntu-20.04\" -- cat /etc/os-release", false))
-            .ReturnsAsync(new ProcessResult(0, "ID=ubuntu\nVERSION_ID=\"20.04\"", string.Empty));
+            .Setup(runner => runner.RunAsync(
+                "wsl.exe",
+                "-d \"Ubuntu-20.04\" -- sh -c \"grep -qx 'ID=ubuntu' /etc/os-release && grep -qx 'VERSION_ID=\\\"22.04\\\"' /etc/os-release\"",
+                false,
+                true))
+            .ReturnsAsync(new ProcessResult(1, string.Empty, string.Empty));
 
         var step = CreateStep();
         bool result = await step.ShouldExecuteAsync().ConfigureAwait(false);
@@ -69,11 +77,15 @@ public class EnableWslFeaturesStepTests
     {
         string listOutput = "\ufeffUbuntu-22.04\r\n";
         processRunner
-            .Setup(runner => runner.RunAsync("wsl.exe", "-l -q", false))
+            .Setup(runner => runner.RunAsync("wsl.exe", "-l -q"))
             .ReturnsAsync(new ProcessResult(0, listOutput, string.Empty));
         processRunner
-            .Setup(runner => runner.RunAsync("wsl.exe", "-d \"Ubuntu-22.04\" -- cat /etc/os-release", false))
-            .ReturnsAsync(new ProcessResult(0, "ID=ubuntu\nVERSION_ID=\"22.04\"", string.Empty));
+            .Setup(runner => runner.RunAsync(
+                "wsl.exe",
+                "-d \"Ubuntu-22.04\" -- sh -c \"grep -qx 'ID=ubuntu' /etc/os-release && grep -qx 'VERSION_ID=\\\"22.04\\\"' /etc/os-release\"",
+                false,
+                true))
+            .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
 
         var step = CreateStep();
         bool result = await step.ShouldExecuteAsync().ConfigureAwait(false);
@@ -86,7 +98,7 @@ public class EnableWslFeaturesStepTests
     public async Task ExecuteAsync_WhenWslNotReady_PrintsGuidance()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("wsl.exe", "-l -q", false))
+            .Setup(runner => runner.RunAsync("wsl.exe", "-l -q"))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "WSL not installed"));
 
         var messages = new List<string>();
@@ -115,11 +127,15 @@ public class EnableWslFeaturesStepTests
         string listOutput = aliasName + "\r\n";
 
         processRunner
-            .Setup(runner => runner.RunAsync("wsl.exe", "-l -q", false))
+            .Setup(runner => runner.RunAsync("wsl.exe", "-l -q"))
             .ReturnsAsync(new ProcessResult(0, listOutput, string.Empty));
         processRunner
-            .Setup(runner => runner.RunAsync("wsl.exe", "-d \"" + aliasName + "\" -- cat /etc/os-release", false))
-            .ReturnsAsync(new ProcessResult(0, "ID=ubuntu\nVERSION_ID=\"22.04\"", string.Empty));
+            .Setup(runner => runner.RunAsync(
+                "wsl.exe",
+                "-d \"" + aliasName + "\" -- sh -c \"grep -qx 'ID=ubuntu' /etc/os-release && grep -qx 'VERSION_ID=\\\"22.04\\\"' /etc/os-release\"",
+                false,
+                true))
+            .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
 
         var step = CreateStep();
         bool result = await step.ShouldExecuteAsync().ConfigureAwait(false);

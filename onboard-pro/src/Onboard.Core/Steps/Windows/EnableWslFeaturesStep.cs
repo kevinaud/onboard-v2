@@ -14,7 +14,6 @@ using Onboard.Core.Models;
 public class EnableWslFeaturesStep : IOnboardingStep
 {
     private const string WslListDistributionsCommand = "-l -q";
-    private const string OsReleaseCommand = "cat /etc/os-release";
 
     private readonly IProcessRunner processRunner;
     private readonly IUserInteraction userInteraction;
@@ -86,18 +85,6 @@ public class EnableWslFeaturesStep : IOnboardingStep
     /// <returns>Collection of distribution names extracted from the output.</returns>
     internal static IReadOnlyCollection<string> ParseDistributionNamesForTesting(string commandOutput) =>
         ParseDistributionNames(commandOutput);
-
-    private static string BuildOsReleaseArguments(string distributionName)
-    {
-        string trimmedName = distributionName.Trim();
-        if (trimmedName.Length == 0)
-        {
-            return $"-d  -- {OsReleaseCommand}";
-        }
-
-        string escapedName = trimmedName.Replace("\"", "\\\"");
-        return $"-d \"{escapedName}\" -- {OsReleaseCommand}";
-    }
 
     private static IReadOnlyCollection<string> ParseDistributionNames(string commandOutput)
     {
@@ -225,6 +212,35 @@ public class EnableWslFeaturesStep : IOnboardingStep
         return builder.ToString();
     }
 
+    private string BuildOsReleaseArguments(string distributionName)
+    {
+        string trimmedName = distributionName.Trim();
+        string script = BuildValidationScript();
+        string escapedScript = script.Replace("\"", "\\\"", StringComparison.Ordinal);
+
+        if (trimmedName.Length == 0)
+        {
+            return $"-d  -- sh -c \"{escapedScript}\"";
+        }
+
+        string escapedName = trimmedName.Replace("\"", "\\\"", StringComparison.Ordinal);
+        return $"-d \"{escapedName}\" -- sh -c \"{escapedScript}\"";
+    }
+
+    private string BuildValidationScript()
+    {
+        var builder = new System.Text.StringBuilder("grep -qx 'ID=ubuntu' /etc/os-release");
+
+        if (!string.IsNullOrEmpty(expectedUbuntuVersionId))
+        {
+            builder.Append(" && grep -qx 'VERSION_ID=\"");
+            builder.Append(expectedUbuntuVersionId);
+            builder.Append("\"' /etc/os-release");
+        }
+
+        return builder.ToString();
+    }
+
     private async Task<WslReadiness> EvaluateReadinessAsync()
     {
         var listResult = await processRunner.RunAsync("wsl.exe", WslListDistributionsCommand).ConfigureAwait(false);
@@ -243,8 +259,14 @@ public class EnableWslFeaturesStep : IOnboardingStep
 
             userInteraction.WriteDebug($"Inspecting WSL distribution candidate '{DescribeForDebug(distroName)}'");
 
-            var distroResult = await processRunner.RunAsync("wsl.exe", BuildOsReleaseArguments(distroName)).ConfigureAwait(false);
-            if (!distroResult.IsSuccess && string.IsNullOrWhiteSpace(distroResult.StandardOutput) && string.IsNullOrWhiteSpace(distroResult.StandardError))
+            var distroResult = await processRunner.RunAsync("wsl.exe", BuildOsReleaseArguments(distroName), requestElevation: false, useShellExecute: true).ConfigureAwait(false);
+
+            if (distroResult.IsSuccess)
+            {
+                return WslReadiness.Create(true, true, distroName);
+            }
+
+            if (string.IsNullOrWhiteSpace(distroResult.StandardOutput) && string.IsNullOrWhiteSpace(distroResult.StandardError))
             {
                 continue;
             }

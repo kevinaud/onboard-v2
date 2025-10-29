@@ -34,14 +34,29 @@ public class ProcessRunner : IProcessRunner
         this.userInteraction = userInteraction ?? throw new ArgumentNullException(nameof(userInteraction));
     }
 
-    public async Task<ProcessResult> RunAsync(string fileName, string arguments, bool requestElevation = false)
+    public Task<ProcessResult> RunAsync(string fileName, string arguments)
+    {
+        return this.RunAsync(fileName, arguments, requestElevation: false, useShellExecute: false);
+    }
+
+    public Task<ProcessResult> RunAsync(string fileName, string arguments, bool requestElevation)
+    {
+        return this.RunAsync(fileName, arguments, requestElevation, useShellExecute: false);
+    }
+
+    public async Task<ProcessResult> RunAsync(string fileName, string arguments, bool requestElevation, bool useShellExecute)
     {
         if (requestElevation)
         {
+            if (useShellExecute)
+            {
+                this.logger.LogWarning("useShellExecute is ignored when requestElevation is true for command {Command}", FormatCommandLine(fileName, arguments));
+            }
+
             return await this.RunElevatedWindowsAsync(fileName, arguments).ConfigureAwait(false);
         }
 
-        return await this.RunStandardAsync(fileName, arguments).ConfigureAwait(false);
+        return await this.RunStandardAsync(fileName, arguments, useShellExecute).ConfigureAwait(false);
     }
 
     private static string TruncateForLog(string value)
@@ -103,7 +118,7 @@ public class ProcessRunner : IProcessRunner
         return builder.ToString();
     }
 
-    private async Task<ProcessResult> RunStandardAsync(string fileName, string arguments)
+    private async Task<ProcessResult> RunStandardAsync(string fileName, string arguments, bool useShellExecute)
     {
         string commandLine = FormatCommandLine(fileName, arguments);
 
@@ -128,14 +143,16 @@ public class ProcessRunner : IProcessRunner
                 this.userInteraction.WriteDebug($"Executing: {commandLine}");
             }
 
+            bool redirect = !useShellExecute;
+
             var startInfo = new ProcessStartInfo
             {
                 FileName = fileName,
                 Arguments = arguments,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true,
+                RedirectStandardOutput = redirect,
+                RedirectStandardError = redirect,
+                UseShellExecute = useShellExecute,
+                CreateNoWindow = redirect,
             };
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) &&
@@ -152,8 +169,8 @@ public class ProcessRunner : IProcessRunner
                 return new ProcessResult(-1, string.Empty, $"Failed to start process '{fileName}'.");
             }
 
-            var outputTask = process.StandardOutput.ReadToEndAsync();
-            var errorTask = process.StandardError.ReadToEndAsync();
+            Task<string> outputTask = redirect ? process.StandardOutput.ReadToEndAsync() : Task.FromResult(string.Empty);
+            Task<string> errorTask = redirect ? process.StandardError.ReadToEndAsync() : Task.FromResult(string.Empty);
 
             await process.WaitForExitAsync().ConfigureAwait(false);
 
@@ -198,7 +215,7 @@ public class ProcessRunner : IProcessRunner
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             this.logger.LogWarning("Elevation requested for {Command} on non-Windows platform; falling back to standard execution.", commandLine);
-            return await this.RunStandardAsync(fileName, arguments).ConfigureAwait(false);
+            return await this.RunStandardAsync(fileName, arguments, useShellExecute: false).ConfigureAwait(false);
         }
 
         if (this.executionOptions.IsDryRun)

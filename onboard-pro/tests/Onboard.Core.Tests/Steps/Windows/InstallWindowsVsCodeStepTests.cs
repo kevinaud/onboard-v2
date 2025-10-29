@@ -26,7 +26,7 @@ public class InstallWindowsVsCodeStepTests
     public async Task ShouldExecuteAsync_WhenCodeCmdExists_ReturnsFalse()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("where", "code.cmd", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("where", "code.cmd"))
             .ReturnsAsync(new ProcessResult(0, "C:/Program Files/Microsoft VS Code/bin/code.cmd", string.Empty));
 
         var step = CreateStep();
@@ -40,7 +40,7 @@ public class InstallWindowsVsCodeStepTests
     public async Task ShouldExecuteAsync_WhenCodeCmdMissing_ReturnsTrue()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("where", "code.cmd", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("where", "code.cmd"))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "not found"));
 
         var step = CreateStep();
@@ -54,7 +54,7 @@ public class InstallWindowsVsCodeStepTests
     public async Task ExecuteAsync_WhenWingetSucceeds_WritesSuccess()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("winget", "install --id Microsoft.VisualStudioCode -e --source winget", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("winget", "install --id Microsoft.VisualStudioCode -e --source winget"))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
         userInteraction.Setup(ui => ui.WriteSuccess("Visual Studio Code installed via winget."));
 
@@ -69,7 +69,7 @@ public class InstallWindowsVsCodeStepTests
     public void ExecuteAsync_WhenWingetFails_ThrowsInvalidOperationException()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("winget", "install --id Microsoft.VisualStudioCode -e --source winget", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("winget", "install --id Microsoft.VisualStudioCode -e --source winget"))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "winget error"));
 
         var step = CreateStep();

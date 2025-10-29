@@ -23,7 +23,7 @@ public class InstallHomebrewStepTests
     public async Task ShouldExecuteAsync_WhenHomebrewIsInstalled_ReturnsFalse()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("which", "brew", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("which", "brew"))
             .ReturnsAsync(new ProcessResult(0, "/opt/homebrew/bin/brew", string.Empty));
 
         var step = CreateStep();
@@ -37,7 +37,7 @@ public class InstallHomebrewStepTests
     public async Task ShouldExecuteAsync_WhenHomebrewMissing_ReturnsTrue()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("which", "brew", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("which", "brew"))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "not found"));
 
         var step = CreateStep();
@@ -51,7 +51,7 @@ public class InstallHomebrewStepTests
     public async Task ExecuteAsync_WhenInstallerSucceeds_WritesSuccess()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("/bin/bash", "-c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("/bin/bash", "-c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
 
         userInteraction.Setup(ui => ui.WriteSuccess("Homebrew installed."));
@@ -67,7 +67,7 @@ public class InstallHomebrewStepTests
     public void ExecuteAsync_WhenInstallerFails_Throws()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("/bin/bash", "-c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"", It.IsAny<bool>()))
+            .Setup(runner => runner.RunAsync("/bin/bash", "-c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "error"));
 
         var step = CreateStep();
