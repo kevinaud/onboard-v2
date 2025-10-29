@@ -89,8 +89,14 @@ public class EnableWslFeaturesStep : IOnboardingStep
 
     private static string BuildOsReleaseArguments(string distributionName)
     {
-        string formattedName = distributionName.Any(char.IsWhiteSpace) ? $"\"{distributionName}\"" : distributionName;
-        return $"-d {formattedName} -- {OsReleaseCommand}";
+        string trimmedName = distributionName.Trim();
+        if (trimmedName.Length == 0)
+        {
+            return $"-d  -- {OsReleaseCommand}";
+        }
+
+        string escapedName = trimmedName.Replace("\"", "\\\"");
+        return $"-d \"{escapedName}\" -- {OsReleaseCommand}";
     }
 
     private static IReadOnlyCollection<string> ParseDistributionNames(string commandOutput)
@@ -173,6 +179,11 @@ public class EnableWslFeaturesStep : IOnboardingStep
         var distributionNames = ParseDistributionNames(listResult.StandardOutput);
         foreach (string distroName in distributionNames)
         {
+            if (string.IsNullOrWhiteSpace(distroName))
+            {
+                continue;
+            }
+
             var distroResult = await processRunner.RunAsync("wsl.exe", BuildOsReleaseArguments(distroName)).ConfigureAwait(false);
             if (!distroResult.IsSuccess && string.IsNullOrWhiteSpace(distroResult.StandardOutput) && string.IsNullOrWhiteSpace(distroResult.StandardError))
             {
