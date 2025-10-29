@@ -79,6 +79,22 @@ public class EnableWslFeaturesStep : IOnboardingStep
         throw new InvalidOperationException($"{issueSummary}. Complete the manual steps above and rerun the onboarding tool.");
     }
 
+    /// <summary>
+    /// Exposed for testing purposes only.
+    /// </summary>
+    /// <param name="commandOutput">The raw output from wsl.exe -l -v.</param>
+    /// <returns>Collection of distribution names extracted from the output.</returns>
+    internal static IReadOnlyCollection<string> ParseDistributionNamesForTesting(string commandOutput) =>
+        ParseDistributionNames(commandOutput);
+
+    /// <summary>
+    /// Internal test helper to expose TryExtractDistributionName for unit testing.
+    /// </summary>
+    /// <param name="rawLine">A single line from wsl.exe -l -v output.</param>
+    /// <returns>The extracted distribution name, or null if the line doesn't contain a valid distribution.</returns>
+    internal static string? TryExtractDistributionNameForTesting(string rawLine) =>
+        TryExtractDistributionName(rawLine);
+
     private static string BuildOsReleaseArguments(string distributionName)
     {
         string formattedName = distributionName.Any(char.IsWhiteSpace) ? $"\"{distributionName}\"" : distributionName;
@@ -235,6 +251,15 @@ public class EnableWslFeaturesStep : IOnboardingStep
         var distributionNames = ParseDistributionNames(listResult.StandardOutput);
         foreach (string distroName in distributionNames)
         {
+            // Paranoid validation: skip obviously invalid distribution names that might indicate a parser bug
+            if (distroName.Contains("STATE", StringComparison.OrdinalIgnoreCase) ||
+                distroName.Contains("VERSION", StringComparison.OrdinalIgnoreCase) ||
+                distroName.StartsWith("*", StringComparison.Ordinal) ||
+                distroName.Length > 100)
+            {
+                continue;
+            }
+
             var distroResult = await processRunner.RunAsync("wsl.exe", BuildOsReleaseArguments(distroName)).ConfigureAwait(false);
             if (!distroResult.IsSuccess && string.IsNullOrWhiteSpace(distroResult.StandardOutput) && string.IsNullOrWhiteSpace(distroResult.StandardError))
             {
