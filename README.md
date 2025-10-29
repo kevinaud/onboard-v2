@@ -98,6 +98,17 @@ Tagging a commit with `v*.*.*` (for example `v0.2.0`) triggers `.github/workflow
 
 You can also trigger the release workflow manually through the **Run workflow** button in GitHub Actions and optionally supply a `version` input.
 
+To cut a new tagged release from the latest `main`, run the following in bash (replace `v0.3.1` with the desired semantic version tag):
+
+```bash
+set -euo pipefail
+VERSION=v0.3.1
+git switch main
+git pull --ff-only
+git tag -a "$VERSION" -m "$VERSION"
+git push origin "$VERSION"
+```
+
 ## Local development
 
 ### Prerequisites
