@@ -14,12 +14,10 @@ using Onboard.Core.Models;
 public class EnableWslFeaturesStep : IOnboardingStep
 {
     private const string WslListDistributionsCommand = "-l -q";
-    private const string OsReleaseCommand = "cat /etc/os-release";
 
     private readonly IProcessRunner processRunner;
     private readonly IUserInteraction userInteraction;
     private readonly OnboardingConfiguration configuration;
-    private readonly string? expectedUbuntuVersionId;
 
     private WslReadiness readiness = WslReadiness.Uninitialized;
 
@@ -31,7 +29,6 @@ public class EnableWslFeaturesStep : IOnboardingStep
         this.processRunner = processRunner;
         this.userInteraction = userInteraction;
         this.configuration = configuration;
-        this.expectedUbuntuVersionId = ExtractVersionFromImage(configuration.WslDistroImage);
     }
 
     public string Description => "Verify Windows Subsystem for Linux prerequisites";
@@ -39,7 +36,7 @@ public class EnableWslFeaturesStep : IOnboardingStep
     public async Task<bool> ShouldExecuteAsync()
     {
         readiness = await EvaluateReadinessAsync().ConfigureAwait(false);
-        return !readiness.CanQueryDistributions || !readiness.HasUbuntuDistribution;
+        return !readiness.CanQueryDistributions || !readiness.HasTargetDistribution;
     }
 
     public async Task ExecuteAsync()
@@ -49,41 +46,20 @@ public class EnableWslFeaturesStep : IOnboardingStep
             readiness = await EvaluateReadinessAsync().ConfigureAwait(false);
         }
 
-        if (readiness.CanQueryDistributions && readiness.HasUbuntuDistribution)
+        if (!readiness.CanQueryDistributions)
+        {
+            PromptForManualInstall();
+            throw new InvalidOperationException("WSL could not enumerate distributions. Install the required distro and rerun the onboarding tool.");
+        }
+
+        if (readiness.HasTargetDistribution)
         {
             return;
         }
 
-        var issues = new List<string>();
-
-        this.userInteraction.WriteWarning("Manual WSL setup required");
-
-        if (!readiness.CanQueryDistributions)
-        {
-            this.userInteraction.WriteWarning("WSL command not available. Unable to list installed distributions.");
-            issues.Add("WSL command unavailable");
-        }
-
-        if (!readiness.HasUbuntuDistribution)
-        {
-            this.userInteraction.WriteWarning($"{this.configuration.WslDistroName} is not installed in WSL.");
-            issues.Add($"{this.configuration.WslDistroName} distribution is missing");
-        }
-
-        this.userInteraction.WriteNormal("Follow these steps in an administrator PowerShell window:");
-        this.userInteraction.WriteNormal($"  1. Run: wsl --install -d {this.configuration.WslDistroImage}");
-        this.userInteraction.WriteNormal("  2. Restart Windows if prompted to complete the installation.");
-        this.userInteraction.WriteNormal($"  3. Launch {this.configuration.WslDistroName} once so the user account is created, then rerun this onboarding tool.");
-
-        string issueSummary = issues.Count == 0 ? "WSL prerequisites are missing" : $"WSL prerequisites are missing: {string.Join(", ", issues)}";
-        throw new InvalidOperationException($"{issueSummary}. Complete the manual steps above and rerun the onboarding tool.");
+        HandleMissingDistribution(readiness.DetectedDistributions);
     }
 
-    /// <summary>
-    /// Exposed for testing purposes only.
-    /// </summary>
-    /// <param name="commandOutput">The raw output from wsl.exe -l -q.</param>
-    /// <returns>Collection of distribution names extracted from the output.</returns>
     internal static IReadOnlyCollection<string> ParseDistributionNamesForTesting(string commandOutput) =>
         ParseDistributionNames(commandOutput);
 
@@ -94,16 +70,15 @@ public class EnableWslFeaturesStep : IOnboardingStep
 
         foreach (string rawLine in commandOutput.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
         {
-            string? candidateName = SanitizeDistributionName(rawLine);
-
-            if (string.IsNullOrEmpty(candidateName))
+            string? candidate = SanitizeDistributionName(rawLine);
+            if (string.IsNullOrEmpty(candidate))
             {
                 continue;
             }
 
-            if (seen.Add(candidateName))
+            if (seen.Add(candidate))
             {
-                names.Add(candidateName);
+                names.Add(candidate);
             }
         }
 
@@ -140,89 +115,7 @@ public class EnableWslFeaturesStep : IOnboardingStep
 
         string sanitized = new(buffer[..index]);
         sanitized = sanitized.Trim();
-
         return sanitized.Length == 0 ? null : sanitized;
-    }
-
-    private static string CombineOutputs(string standardOutput, string standardError)
-    {
-        if (string.IsNullOrWhiteSpace(standardError))
-        {
-            return standardOutput;
-        }
-
-        if (string.IsNullOrWhiteSpace(standardOutput))
-        {
-            return standardError;
-        }
-
-        return standardOutput + Environment.NewLine + standardError;
-    }
-
-    private static string? ExtractOsReleaseValue(IEnumerable<string> lines, string key)
-    {
-        string prefix = key + "=";
-        foreach (string line in lines)
-        {
-            if (line.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
-            {
-                string value = line[prefix.Length..].Trim().Trim('"');
-                return value;
-            }
-        }
-
-        return null;
-    }
-
-    private static string? ExtractVersionFromImage(string distroImage)
-    {
-        if (string.IsNullOrWhiteSpace(distroImage))
-        {
-            return null;
-        }
-
-        int lastDash = distroImage.LastIndexOf('-');
-        if (lastDash < 0 || lastDash == distroImage.Length - 1)
-        {
-            return null;
-        }
-
-        return distroImage[(lastDash + 1)..];
-    }
-
-    private static string DescribeForDebug(string value)
-    {
-        var builder = new System.Text.StringBuilder();
-        builder.Append(value);
-        builder.Append(" (length=");
-        builder.Append(value.Length);
-        builder.Append(", codepoints=[");
-
-        for (int i = 0; i < value.Length; i++)
-        {
-            if (i > 0)
-            {
-                builder.Append(' ');
-            }
-
-            builder.Append("U+");
-            builder.Append(((int)value[i]).ToString("X4", System.Globalization.CultureInfo.InvariantCulture));
-        }
-
-        builder.Append("])");
-        return builder.ToString();
-    }
-
-    private static string BuildOsReleaseArguments(string distributionName)
-    {
-        string trimmedName = distributionName.Trim();
-        if (trimmedName.Length == 0)
-        {
-            return $"-d  -- {OsReleaseCommand}";
-        }
-
-        string escapedName = trimmedName.Replace("\"", "\\\"");
-        return $"-d \"{escapedName}\" -- {OsReleaseCommand}";
     }
 
     private async Task<WslReadiness> EvaluateReadinessAsync()
@@ -230,87 +123,106 @@ public class EnableWslFeaturesStep : IOnboardingStep
         var listResult = await processRunner.RunAsync("wsl.exe", WslListDistributionsCommand).ConfigureAwait(false);
         if (!listResult.IsSuccess)
         {
-            return WslReadiness.Create(false, false, null);
+            return WslReadiness.Create(false, false, Array.Empty<string>());
         }
 
         var distributionNames = ParseDistributionNames(listResult.StandardOutput);
-        foreach (string distroName in distributionNames)
-        {
-            if (string.IsNullOrWhiteSpace(distroName))
-            {
-                continue;
-            }
-
-            userInteraction.WriteDebug($"Inspecting WSL distribution candidate '{DescribeForDebug(distroName)}'");
-
-            var distroResult = await processRunner.RunAsync("wsl.exe", BuildOsReleaseArguments(distroName), requestElevation: false, useShellExecute: true).ConfigureAwait(false);
-
-            if (distroResult.IsSuccess)
-            {
-                return WslReadiness.Create(true, true, distroName);
-            }
-
-            if (string.IsNullOrWhiteSpace(distroResult.StandardOutput) && string.IsNullOrWhiteSpace(distroResult.StandardError))
-            {
-                continue;
-            }
-
-            string combinedOutput = CombineOutputs(distroResult.StandardOutput, distroResult.StandardError);
-            if (IsTargetUbuntuDistribution(combinedOutput))
-            {
-                return WslReadiness.Create(true, true, distroName);
-            }
-        }
-
-        return WslReadiness.Create(true, false, null);
+        bool hasTarget = distributionNames.Any(name => string.Equals(name, this.configuration.WslDistroName, StringComparison.OrdinalIgnoreCase));
+        return WslReadiness.Create(true, hasTarget, distributionNames);
     }
 
-    private bool IsTargetUbuntuDistribution(string osReleaseOutput)
+    private void HandleMissingDistribution(IReadOnlyCollection<string> detectedDistributions)
     {
-        if (string.IsNullOrWhiteSpace(osReleaseOutput))
+        string targetName = this.configuration.WslDistroName;
+
+        this.userInteraction.WriteWarning($"WSL distribution '{targetName}' was not found.");
+
+        if (detectedDistributions.Count == 0)
         {
-            return false;
+            this.userInteraction.WriteWarning("No WSL distributions are currently registered.");
+            PromptForManualInstall();
+            throw new InvalidOperationException($"Install '{this.configuration.WslDistroImage}' and rerun the onboarding tool.");
         }
 
-        var lines = osReleaseOutput
-            .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-            .Select(line => line.Trim());
-
-        string? idValue = ExtractOsReleaseValue(lines, "ID");
-        if (!string.Equals(idValue, "ubuntu", StringComparison.OrdinalIgnoreCase))
+        this.userInteraction.WriteNormal("Detected WSL distributions:");
+        foreach (string name in detectedDistributions)
         {
-            return false;
+            this.userInteraction.WriteNormal($"  • {name}");
         }
 
-        string? versionId = ExtractOsReleaseValue(lines, "VERSION_ID");
-        if (!string.IsNullOrEmpty(expectedUbuntuVersionId) && !string.Equals(versionId, expectedUbuntuVersionId, StringComparison.OrdinalIgnoreCase))
+        this.userInteraction.WriteNormal("Run this command to confirm the distro version:");
+        this.userInteraction.WriteNormal("  wsl.exe -d <distro> sh -c \"grep -w 'VERSION_ID' /etc/os-release\"");
+
+        string? selection = PromptForDistributionSelection(detectedDistributions);
+
+        if (selection is null)
         {
-            return false;
+            PromptForManualInstall();
+            throw new InvalidOperationException($"Install '{this.configuration.WslDistroImage}' and rerun the onboarding tool.");
         }
 
-        return true;
+        this.userInteraction.WriteNormal($"You selected '{selection}' as your Ubuntu 22.04 environment.");
+        this.userInteraction.WriteNormal($"Rename it so future runs detect it: wsl.exe --rename \"{selection}\" \"{targetName}\"");
+        this.userInteraction.WriteNormal($"Alternatively install the official image: wsl.exe --install -d {this.configuration.WslDistroImage}");
+
+        throw new InvalidOperationException($"Rename the selected distribution to '{targetName}' (or install it) and rerun the onboarding tool.");
+    }
+
+    private void PromptForManualInstall()
+    {
+        this.userInteraction.WriteWarning("Manual WSL setup required");
+        this.userInteraction.WriteNormal("Follow these steps in an administrator PowerShell window:");
+        this.userInteraction.WriteNormal($"  1. Run: wsl --install -d {this.configuration.WslDistroImage}");
+        this.userInteraction.WriteNormal("  2. Restart Windows if prompted to complete the installation.");
+        this.userInteraction.WriteNormal($"  3. Launch {this.configuration.WslDistroName} once so the user account is created, then rerun this onboarding tool.");
+    }
+
+    private string? PromptForDistributionSelection(IReadOnlyCollection<string> detectedDistributions)
+    {
+        if (detectedDistributions.Count == 0)
+        {
+            return null;
+        }
+
+        while (true)
+        {
+            string response = this.userInteraction.Ask("Enter the name of the Ubuntu 22.04 distribution from the list above (or type NONE):", "NONE");
+            if (string.IsNullOrWhiteSpace(response) || string.Equals(response, "NONE", StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+
+            string trimmed = response.Trim();
+            string? match = detectedDistributions.FirstOrDefault(name => string.Equals(name, trimmed, StringComparison.OrdinalIgnoreCase));
+            if (match is not null)
+            {
+                return match;
+            }
+
+            this.userInteraction.WriteWarning($"'{response}' did not match any detected distribution. Try again or type NONE.");
+        }
     }
 
     private sealed class WslReadiness
     {
-        private WslReadiness(bool canQueryDistributions, bool hasUbuntuDistribution, string? matchingDistributionName, bool isInitialized)
+        private WslReadiness(bool canQueryDistributions, bool hasTargetDistribution, IReadOnlyCollection<string> detectedDistributions, bool isInitialized)
         {
             CanQueryDistributions = canQueryDistributions;
-            HasUbuntuDistribution = hasUbuntuDistribution;
-            MatchingDistributionName = matchingDistributionName;
+            HasTargetDistribution = hasTargetDistribution;
+            DetectedDistributions = detectedDistributions;
             IsInitialized = isInitialized;
         }
 
-        public static WslReadiness Uninitialized { get; } = new(false, false, null, false);
+        public static WslReadiness Uninitialized { get; } = new(false, false, Array.Empty<string>(), false);
 
-        public static WslReadiness Create(bool canQueryDistributions, bool hasUbuntuDistribution, string? matchingDistributionName) =>
-            new(canQueryDistributions, hasUbuntuDistribution, matchingDistributionName, true);
+        public static WslReadiness Create(bool canQueryDistributions, bool hasTargetDistribution, IReadOnlyCollection<string> detectedDistributions) =>
+            new(canQueryDistributions, hasTargetDistribution, detectedDistributions, true);
 
         public bool CanQueryDistributions { get; }
 
-        public bool HasUbuntuDistribution { get; }
+        public bool HasTargetDistribution { get; }
 
-        public string? MatchingDistributionName { get; }
+        public IReadOnlyCollection<string> DetectedDistributions { get; }
 
         public bool IsInitialized { get; }
     }
