@@ -101,12 +101,7 @@ You can also trigger the release workflow manually through the **Run workflow** 
 To cut a new tagged release from the latest `main`, run the following in bash (replace `v0.3.1` with the desired semantic version tag):
 
 ```bash
-set -euo pipefail
-VERSION=v0.3.1
-git switch main
-git pull --ff-only
-git tag -a "$VERSION" -m "$VERSION"
-git push origin "$VERSION"
+./release-tag.sh --version vX.Y.Z
 ```
 
 ## Local development
