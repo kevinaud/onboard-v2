@@ -65,4 +65,15 @@ public class ParseDistributionNamesTests
 
         Assert.That(result, Is.Empty);
     }
+
+    [Test]
+    public void ParseDistributionNames_WithControlCharacters_StripsThem()
+    {
+        string output = "Ubuntu-22.04\0\r\n";
+
+        var result = EnableWslFeaturesStep.ParseDistributionNamesForTesting(output);
+
+        Assert.That(result, Has.Count.EqualTo(1));
+        Assert.That(result.First(), Is.EqualTo("Ubuntu-22.04"));
+    }
 }

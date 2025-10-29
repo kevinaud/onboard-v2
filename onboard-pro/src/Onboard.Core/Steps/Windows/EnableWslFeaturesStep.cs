@@ -106,9 +106,9 @@ public class EnableWslFeaturesStep : IOnboardingStep
 
         foreach (string rawLine in commandOutput.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
         {
-            string candidateName = rawLine.Trim().TrimStart('\ufeff');
+            string? candidateName = SanitizeDistributionName(rawLine);
 
-            if (string.IsNullOrWhiteSpace(candidateName))
+            if (string.IsNullOrEmpty(candidateName))
             {
                 continue;
             }
@@ -120,6 +120,40 @@ public class EnableWslFeaturesStep : IOnboardingStep
         }
 
         return names;
+    }
+
+    private static string? SanitizeDistributionName(string rawLine)
+    {
+        if (string.IsNullOrWhiteSpace(rawLine))
+        {
+            return null;
+        }
+
+        string trimmed = rawLine.Trim().Trim('\ufeff');
+        if (trimmed.Length == 0)
+        {
+            return null;
+        }
+
+        Span<char> buffer = stackalloc char[trimmed.Length];
+        int index = 0;
+        foreach (char character in trimmed)
+        {
+            if (!char.IsControl(character) || character == '\t' || character == '\n' || character == '\r')
+            {
+                buffer[index++] = character;
+            }
+        }
+
+        if (index == 0)
+        {
+            return null;
+        }
+
+        string sanitized = new(buffer[..index]);
+        sanitized = sanitized.Trim();
+
+        return sanitized.Length == 0 ? null : sanitized;
     }
 
     private static string CombineOutputs(string standardOutput, string standardError)
@@ -168,6 +202,29 @@ public class EnableWslFeaturesStep : IOnboardingStep
         return distroImage[(lastDash + 1)..];
     }
 
+    private static string DescribeForDebug(string value)
+    {
+        var builder = new System.Text.StringBuilder();
+        builder.Append(value);
+        builder.Append(" (length=");
+        builder.Append(value.Length);
+        builder.Append(", codepoints=[");
+
+        for (int i = 0; i < value.Length; i++)
+        {
+            if (i > 0)
+            {
+                builder.Append(' ');
+            }
+
+            builder.Append("U+");
+            builder.Append(((int)value[i]).ToString("X4", System.Globalization.CultureInfo.InvariantCulture));
+        }
+
+        builder.Append("])");
+        return builder.ToString();
+    }
+
     private async Task<WslReadiness> EvaluateReadinessAsync()
     {
         var listResult = await processRunner.RunAsync("wsl.exe", WslListDistributionsCommand).ConfigureAwait(false);
@@ -183,6 +240,8 @@ public class EnableWslFeaturesStep : IOnboardingStep
             {
                 continue;
             }
+
+            userInteraction.WriteDebug($"Inspecting WSL distribution candidate '{DescribeForDebug(distroName)}'");
 
             var distroResult = await processRunner.RunAsync("wsl.exe", BuildOsReleaseArguments(distroName)).ConfigureAwait(false);
             if (!distroResult.IsSuccess && string.IsNullOrWhiteSpace(distroResult.StandardOutput) && string.IsNullOrWhiteSpace(distroResult.StandardError))

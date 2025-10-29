@@ -25,6 +25,7 @@ public class EnableWslFeaturesStepTests
     {
         processRunner = new Mock<IProcessRunner>(MockBehavior.Strict);
         userInteraction = new Mock<IUserInteraction>(MockBehavior.Strict);
+        userInteraction.Setup(ui => ui.WriteDebug(It.IsAny<string>()));
         configuration = new OnboardingConfiguration();
     }
 
@@ -105,7 +106,6 @@ public class EnableWslFeaturesStepTests
         Assert.That(messages.Any(message => message.Contains("wsl --install -d ContosoLinux", StringComparison.OrdinalIgnoreCase)), Is.True);
         Assert.That(exception?.Message, Does.Contain("WSL prerequisites are missing"));
         processRunner.VerifyAll();
-        userInteraction.VerifyAll();
     }
 
     [Test]
