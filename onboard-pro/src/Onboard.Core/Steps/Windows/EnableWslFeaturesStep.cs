@@ -88,40 +88,94 @@ public class EnableWslFeaturesStep : IOnboardingStep
     private static IReadOnlyCollection<string> ParseDistributionNames(string commandOutput)
     {
         var names = new List<string>();
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
         foreach (string rawLine in commandOutput.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
         {
-            string line = rawLine.Trim();
-            if (line.Length == 0)
+            string? candidateName = TryExtractDistributionName(rawLine);
+            if (string.IsNullOrEmpty(candidateName))
             {
                 continue;
             }
 
-            if (line.StartsWith("NAME", StringComparison.OrdinalIgnoreCase) || line.StartsWith("Windows Subsystem", StringComparison.OrdinalIgnoreCase))
+            if (seen.Add(candidateName))
             {
-                continue;
+                names.Add(candidateName);
             }
-
-            if (line[0] == '*')
-            {
-                line = line[1..].TrimStart();
-            }
-
-            string[] tokens = line.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-            if (tokens.Length == 0 || string.Equals(tokens[0], "NAME", StringComparison.OrdinalIgnoreCase))
-            {
-                continue;
-            }
-
-            string candidateName = tokens[0];
-            if (string.IsNullOrWhiteSpace(candidateName) || string.Equals(candidateName, "*", StringComparison.Ordinal))
-            {
-                continue;
-            }
-
-            names.Add(candidateName);
         }
 
         return names;
+    }
+
+    private static string? TryExtractDistributionName(string rawLine)
+    {
+        if (string.IsNullOrWhiteSpace(rawLine))
+        {
+            return null;
+        }
+
+        string line = rawLine.Trim();
+        if (line.Length == 0)
+        {
+            return null;
+        }
+
+        line = line.TrimStart('\ufeff');
+
+        if (line.StartsWith("Windows Subsystem", StringComparison.OrdinalIgnoreCase) ||
+            line.StartsWith("The following", StringComparison.OrdinalIgnoreCase) ||
+            line.StartsWith("Distributions", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        if (line[0] == '*')
+        {
+            line = line[1..].TrimStart();
+        }
+
+        line = line.TrimStart();
+        if (line.Length == 0)
+        {
+            return null;
+        }
+
+        if (line.StartsWith("NAME", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        int columnBreak = FindColumnBreak(line);
+        string candidateName = columnBreak >= 0 ? line[..columnBreak] : line;
+        candidateName = candidateName.Trim().Trim('\ufeff');
+
+        if (candidateName.EndsWith("(Default)", StringComparison.OrdinalIgnoreCase))
+        {
+            candidateName = candidateName[..^"(Default)".Length].TrimEnd();
+        }
+
+        if (string.IsNullOrWhiteSpace(candidateName) || string.Equals(candidateName, "*", StringComparison.Ordinal))
+        {
+            return null;
+        }
+
+        return candidateName;
+    }
+
+    private static int FindColumnBreak(string line)
+    {
+        for (int index = 0; index < line.Length - 1; index++)
+        {
+            char current = line[index];
+            char next = line[index + 1];
+
+            if (current == '\t' || (current == ' ' && next == ' '))
+            {
+                return index;
+            }
+        }
+
+        return -1;
     }
 
     private static string CombineOutputs(string standardOutput, string standardError)

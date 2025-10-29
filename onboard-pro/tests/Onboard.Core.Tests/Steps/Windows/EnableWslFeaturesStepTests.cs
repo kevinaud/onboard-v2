@@ -66,7 +66,7 @@ public class EnableWslFeaturesStepTests
     [Test]
     public async Task ShouldExecuteAsync_WhenWslReady_ReturnsFalse()
     {
-        string listOutput = "  NAME            STATE           VERSION\r\n* Ubuntu-22.04    Stopped         2\r\n";
+        string listOutput = "\ufeff  NAME            STATE           VERSION\r\n* \u2009Ubuntu-22.04 (Default)    Stopped         2\r\n";
         processRunner
             .Setup(runner => runner.RunAsync("wsl.exe", "-l -v", false))
             .ReturnsAsync(new ProcessResult(0, listOutput, string.Empty));
@@ -106,6 +106,26 @@ public class EnableWslFeaturesStepTests
         Assert.That(exception?.Message, Does.Contain("WSL prerequisites are missing"));
         processRunner.VerifyAll();
         userInteraction.VerifyAll();
+    }
+
+    [Test]
+    public async Task ShouldExecuteAsync_WhenDistributionNameContainsSpaces_ReturnsFalse()
+    {
+        string aliasName = "Dev Ubuntu 22.04";
+        string listOutput = "  NAME            STATE           VERSION\r\n* " + aliasName + "    Running         2\r\n";
+
+        processRunner
+            .Setup(runner => runner.RunAsync("wsl.exe", "-l -v", false))
+            .ReturnsAsync(new ProcessResult(0, listOutput, string.Empty));
+        processRunner
+            .Setup(runner => runner.RunAsync("wsl.exe", "-d \"" + aliasName + "\" -- cat /etc/os-release", false))
+            .ReturnsAsync(new ProcessResult(0, "ID=ubuntu\nVERSION_ID=\"22.04\"", string.Empty));
+
+        var step = CreateStep();
+        bool result = await step.ShouldExecuteAsync().ConfigureAwait(false);
+
+        Assert.That(result, Is.False);
+        processRunner.VerifyAll();
     }
 
     private EnableWslFeaturesStep CreateStep()
