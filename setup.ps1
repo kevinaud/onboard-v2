@@ -4,6 +4,7 @@
 param(
   [string]$ReleaseTag,
   [string]$Repository,
+  [int]$PrNumber = 0,
   [switch]$KeepDownloadedBinary
 )
 
@@ -119,6 +120,45 @@ function Get-AssetDownloadUrl {
   return [string]$asset.browser_download_url
 }
 
+function Get-PRArtifactUrl {
+  param(
+    [string]$RepoSlug,
+    [int]$PRNumber
+  )
+
+  Write-Verbose "Fetching PR #$PRNumber workflow runs..."
+
+  # Get the latest workflow run for this PR
+  $runsUri = "https://api.github.com/repos/$RepoSlug/actions/runs?event=pull_request&status=completed"
+  $runs = Invoke-RestMethod -Uri $runsUri -Headers (New-HttpHeaders)
+
+  $prRun = $runs.workflow_runs | Where-Object {
+    $_.pull_requests -and
+    ($_.pull_requests | Where-Object { $_.number -eq $PRNumber })
+  } | Select-Object -First 1
+
+  if (-not $prRun) {
+    throw "No completed workflow run found for PR #$PRNumber. Has CI completed?"
+  }
+
+  Write-Verbose "Found workflow run: $($prRun.html_url)"
+
+  # Get artifacts for this run
+  $artifactsUri = $prRun.artifacts_url
+  $artifacts = Invoke-RestMethod -Uri $artifactsUri -Headers (New-HttpHeaders)
+
+  $artifact = $artifacts.artifacts | Where-Object {
+    $_.name -eq "onboard-pr-$PRNumber-win-x64"
+  } | Select-Object -First 1
+
+  if (-not $artifact) {
+    $available = ($artifacts.artifacts | Select-Object -ExpandProperty name) -join ', '
+    throw "PR test artifact 'onboard-pr-$PRNumber-win-x64' not found. Available artifacts: $available"
+  }
+
+  return $artifact.archive_download_url
+}
+
 function Get-DownloadPath {
   $base = [System.IO.Path]::GetTempFileName()
   $target = [System.IO.Path]::ChangeExtension($base, '.exe')
@@ -143,6 +183,32 @@ function Get-AssetBinary {
   Invoke-WebRequest -Uri $Url -OutFile $Destination -Headers (New-HttpHeaders) -UseBasicParsing
 }
 
+function Get-PRArtifactBinary {
+  param(
+    [string]$ArtifactUrl,
+    [string]$Destination
+  )
+
+  Write-Verbose "Downloading PR artifact to $Destination"
+
+  # Download the artifact zip
+  $zipPath = [System.IO.Path]::ChangeExtension($Destination, '.zip')
+  Invoke-WebRequest -Uri $ArtifactUrl -OutFile $zipPath -Headers (New-HttpHeaders) -UseBasicParsing
+
+  # Extract the binary
+  $extractDir = [System.IO.Path]::GetDirectoryName($Destination)
+  Expand-Archive -Path $zipPath -DestinationPath $extractDir -Force
+
+  # Find the extracted binary
+  $extractedBinary = Get-ChildItem -Path $extractDir -Filter "Onboard-win-x64.exe" -Recurse | Select-Object -First 1
+  if (-not $extractedBinary) {
+    throw "Could not find Onboard-win-x64.exe in extracted artifact"
+  }
+
+  Move-Item -Path $extractedBinary.FullName -Destination $Destination -Force
+  Remove-Item -Path $zipPath -Force
+}
+
 function Invoke-Binary {
   param(
     [string]$Path,
@@ -162,11 +228,20 @@ try {
   [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor [System.Net.SecurityProtocolType]::Tls12
 
   $repoSlug = Resolve-RepositorySlug -Explicit $Repository
-  $release = Get-ReleaseMetadata -RepoSlug $repoSlug -Tag $ReleaseTag
-  $downloadUrl = Get-AssetDownloadUrl -Release $release -Name $assetName
-
+  
   $script:DownloadPath = Get-DownloadPath
-  Get-AssetBinary -Url $downloadUrl -Destination $script:DownloadPath
+  
+  if ($PrNumber -gt 0) {
+    # PR testing mode - download from GitHub Actions artifacts
+    Write-Host "Testing PR #$PrNumber" -ForegroundColor Yellow
+    $artifactUrl = Get-PRArtifactUrl -RepoSlug $repoSlug -PRNumber $PrNumber
+    Get-PRArtifactBinary -ArtifactUrl $artifactUrl -Destination $script:DownloadPath
+  } else {
+    # Normal release mode
+    $release = Get-ReleaseMetadata -RepoSlug $repoSlug -Tag $ReleaseTag
+    $downloadUrl = Get-AssetDownloadUrl -Release $release -Name $assetName
+    Get-AssetBinary -Url $downloadUrl -Destination $script:DownloadPath
+  }
 
   Invoke-Binary -Path $script:DownloadPath -Arguments $args
 } finally {

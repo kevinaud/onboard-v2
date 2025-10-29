@@ -14,7 +14,7 @@ using Onboard.Core.Abstractions;
 /// </summary>
 public class InstallGitForWindowsStep : IOnboardingStep
 {
-    private const string WingetCommand = "install --id Git.Git -e --source winget";
+    private const string WingetCommand = "install --id Git.Git -e --source winget --accept-package-agreements --accept-source-agreements --disable-interactivity";
 
     private readonly IProcessRunner processRunner;
     private readonly IUserInteraction userInteraction;

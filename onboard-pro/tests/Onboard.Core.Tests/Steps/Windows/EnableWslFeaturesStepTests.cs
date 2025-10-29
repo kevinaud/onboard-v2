@@ -91,12 +91,13 @@ public class EnableWslFeaturesStepTests
 
         var step = CreateStep();
         await step.ShouldExecuteAsync().ConfigureAwait(false);
-        await step.ExecuteAsync().ConfigureAwait(false);
+        var exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await step.ExecuteAsync().ConfigureAwait(false));
 
         Assert.That(messages.Any(message => message.Contains("Manual WSL setup", StringComparison.OrdinalIgnoreCase)), Is.True);
         Assert.That(messages.Any(message => message.Contains("administrator", StringComparison.OrdinalIgnoreCase)), Is.True);
         Assert.That(messages.Any(message => message.Contains("ContosoLinux", StringComparison.OrdinalIgnoreCase)), Is.True);
         Assert.That(messages.Any(message => message.Contains("wsl --install -d ContosoLinux", StringComparison.OrdinalIgnoreCase)), Is.True);
+        Assert.That(exception?.Message, Does.Contain("WSL prerequisites are missing"));
         processRunner.VerifyAll();
         userInteraction.VerifyAll();
     }
