@@ -87,7 +87,7 @@ public class CloneProjectRepoStepTests
         fileSystem.Setup(fs => fs.CreateDirectory(DefaultWorkspace));
         fileSystem.Setup(fs => fs.DirectoryExists(RepositoryPath)).Returns(false);
         processRunner
-            .Setup(pr => pr.RunAsync("git", $"clone https://github.com/psps-mental-health-app/mental-health-app-frontend.git \"{RepositoryPath}\""))
+            .Setup(pr => pr.RunAsync("git", $"clone https://github.com/psps-mental-health-app/mental-health-app-frontend.git \"{RepositoryPath}\"", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
         userInteraction.Setup(ui => ui.WriteSuccess($"Repository cloned to {RepositoryPath}."));
 
@@ -105,7 +105,7 @@ public class CloneProjectRepoStepTests
         fileSystem.Setup(fs => fs.DirectoryExists(DefaultWorkspace)).Returns(true);
         fileSystem.Setup(fs => fs.DirectoryExists(RepositoryPath)).Returns(false);
         processRunner
-            .Setup(pr => pr.RunAsync("git", $"clone https://github.com/psps-mental-health-app/mental-health-app-frontend.git \"{RepositoryPath}\""))
+            .Setup(pr => pr.RunAsync("git", $"clone https://github.com/psps-mental-health-app/mental-health-app-frontend.git \"{RepositoryPath}\"", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "unable to access"));
 
         var step = CreateStep();
@@ -122,7 +122,7 @@ public class CloneProjectRepoStepTests
         fileSystem.Setup(fs => fs.DirectoryExists(RepositoryPath)).Returns(true);
         fileSystem.Setup(fs => fs.DirectoryExists(Path.Combine(RepositoryPath, ".git"))).Returns(true);
         processRunner
-            .Setup(pr => pr.RunAsync("git", $"-C \"{RepositoryPath}\" pull --ff-only"))
+            .Setup(pr => pr.RunAsync("git", $"-C \"{RepositoryPath}\" pull --ff-only", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
         userInteraction.Setup(ui => ui.WriteSuccess("Repository updated to the latest changes."));
 

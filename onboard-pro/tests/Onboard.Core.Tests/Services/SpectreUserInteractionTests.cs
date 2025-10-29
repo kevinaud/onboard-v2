@@ -34,6 +34,58 @@ public class SpectreUserInteractionTests
     }
 
     [Test]
+    public void WriteSuccess_RendersCheckmarkWithMessage()
+    {
+        var console = new TestConsole();
+        var interaction = new SpectreUserInteraction(console, NullLogger<SpectreUserInteraction>.Instance, new ExecutionOptions(false, false));
+
+        interaction.WriteSuccess("All good");
+
+        string output = console.Output.ToString();
+
+        Assert.That(output, Does.Contain("✓ All good"));
+    }
+
+    [Test]
+    public void WriteWarning_RendersWarningIndicator()
+    {
+        var console = new TestConsole();
+        var interaction = new SpectreUserInteraction(console, NullLogger<SpectreUserInteraction>.Instance, new ExecutionOptions(false, false));
+
+        interaction.WriteWarning("Heads up");
+
+        string output = console.Output.ToString();
+
+        Assert.That(output, Does.Contain("⚠ Heads up"));
+    }
+
+    [Test]
+    public void WriteError_RendersCrossWithMessage()
+    {
+        var console = new TestConsole();
+        var interaction = new SpectreUserInteraction(console, NullLogger<SpectreUserInteraction>.Instance, new ExecutionOptions(false, false));
+
+        interaction.WriteError("Something failed");
+
+        string output = console.Output.ToString();
+
+        Assert.That(output, Does.Contain("✗ Something failed"));
+    }
+
+    [Test]
+    public void WriteDebug_WhenVerbose_PrintsLiteralDebugTag()
+    {
+        var console = new TestConsole();
+        var interaction = new SpectreUserInteraction(console, NullLogger<SpectreUserInteraction>.Instance, new ExecutionOptions(false, true));
+
+        interaction.WriteDebug("command details");
+
+        string output = console.Output.ToString();
+
+        Assert.That(output, Does.Contain("[DEBUG] command details"));
+    }
+
+    [Test]
     public void ShowSummary_RendersStatusTable()
     {
         var console = new TestConsole();

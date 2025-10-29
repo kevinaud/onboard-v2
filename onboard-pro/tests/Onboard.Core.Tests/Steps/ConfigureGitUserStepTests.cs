@@ -23,10 +23,10 @@ public class ConfigureGitUserStepTests
         var mockUI = new Mock<IUserInteraction>();
 
         // Simulate git config user.name not set (exit code 1)
-        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.name"))
+        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.name", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(1, string.Empty, string.Empty));
 
-        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.email"))
+        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.email", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, "test@example.com", string.Empty));
 
         var step = new ConfigureGitUserStep(mockProcessRunner.Object, mockUI.Object);
@@ -45,11 +45,11 @@ public class ConfigureGitUserStepTests
         var mockProcessRunner = new Mock<IProcessRunner>();
         var mockUI = new Mock<IUserInteraction>();
 
-        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.name"))
+        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.name", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, "Test User", string.Empty));
 
         // Simulate git config user.email not set (exit code 1)
-        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.email"))
+        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.email", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(1, string.Empty, string.Empty));
 
         var step = new ConfigureGitUserStep(mockProcessRunner.Object, mockUI.Object);
@@ -68,10 +68,10 @@ public class ConfigureGitUserStepTests
         var mockProcessRunner = new Mock<IProcessRunner>();
         var mockUI = new Mock<IUserInteraction>();
 
-        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.name"))
+        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.name", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, "Test User", string.Empty));
 
-        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.email"))
+        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.email", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, "test@example.com", string.Empty));
 
         var step = new ConfigureGitUserStep(mockProcessRunner.Object, mockUI.Object);
@@ -91,10 +91,10 @@ public class ConfigureGitUserStepTests
         var mockUI = new Mock<IUserInteraction>();
 
         // Empty output even though exit code is 0
-        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.name"))
+        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.name", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, "  ", string.Empty));
 
-        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.email"))
+        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.email", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, "test@example.com", string.Empty));
 
         var step = new ConfigureGitUserStep(mockProcessRunner.Object, mockUI.Object);
@@ -120,9 +120,9 @@ public class ConfigureGitUserStepTests
             .Returns("test@example.com");
 
         // Simulate successful git config commands
-        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.name \"Test User\""))
+        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.name \"Test User\"", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
-        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.email \"test@example.com\""))
+        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.email \"test@example.com\"", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
 
         var step = new ConfigureGitUserStep(mockProcessRunner.Object, mockUI.Object);
@@ -131,8 +131,8 @@ public class ConfigureGitUserStepTests
         await step.ExecuteAsync();
 
         // Assert
-        mockProcessRunner.Verify(p => p.RunAsync("git", "config --global user.name \"Test User\""), Times.Once);
-        mockProcessRunner.Verify(p => p.RunAsync("git", "config --global user.email \"test@example.com\""), Times.Once);
+        mockProcessRunner.Verify(p => p.RunAsync("git", "config --global user.name \"Test User\"", It.IsAny<bool>()), Times.Once);
+        mockProcessRunner.Verify(p => p.RunAsync("git", "config --global user.email \"test@example.com\"", It.IsAny<bool>()), Times.Once);
         mockUI.Verify(ui => ui.WriteSuccess("Git user configured as 'Test User <test@example.com>'."), Times.Once);
     }
 
@@ -150,7 +150,7 @@ public class ConfigureGitUserStepTests
         mockUI.Setup(ui => ui.Ask("Please enter your email for Git commits:", null))
             .Returns("test@example.com");
 
-        mockProcessRunner.Setup(p => p.RunAsync("git", It.IsAny<string>()))
+        mockProcessRunner.Setup(p => p.RunAsync("git", It.IsAny<string>(), It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
 
         var step = new ConfigureGitUserStep(mockProcessRunner.Object, mockUI.Object);
@@ -176,7 +176,7 @@ public class ConfigureGitUserStepTests
             .Returns("test@example.com");
 
         // Simulate git config failure
-        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.name \"Test User\""))
+        mockProcessRunner.Setup(p => p.RunAsync("git", "config --global user.name \"Test User\"", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "fatal: unable to write config"));
 
         var step = new ConfigureGitUserStep(mockProcessRunner.Object, mockUI.Object);

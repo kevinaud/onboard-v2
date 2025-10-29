@@ -101,7 +101,8 @@ Key concepts:
 - **Platform detection** – `PlatformDetector` resolves OS, architecture, and WSL facts once per run.
 - **Orchestrators** – one per platform (`WindowsOrchestrator`, `MacOsOrchestrator`, `UbuntuOrchestrator`, `WslGuestOrchestrator`) that compose the required steps.
 - **Steps** – each implements `IOnboardingStep`, performs an idempotency check via `ShouldExecuteAsync`, and executes safely when required.
-- **Process execution** – commands run through `IProcessRunner`, making both live runs and unit tests consistent.
+- **Process execution** – commands run through `IProcessRunner`, which now accepts a `requestElevation` flag so services can trigger Windows UAC spot elevation without forcing the entire app to run as administrator. The concrete `ProcessRunner` routes standard invocations through `System.Diagnostics.Process` and delegates elevated commands to a temporary PowerShell host that captures output via a scratch file, keeping transcripts available for verbose logging.
+- **Prerequisite validation** – Windows-only steps such as `EnableWslFeaturesStep` look up DISM feature state (`Microsoft-Windows-Subsystem-Linux` and `VirtualMachinePlatform`) with elevated `IProcessRunner` calls and fall back to standard `wsl.exe -l -q` checks for distribution presence, ensuring accurate WSL2 detection on modern hosts.
 - **Presentation** – `SpectreUserInteraction` implements the richer `IUserInteraction` contract, keeping Spectre types in the console project while exposing `RunStatusAsync`, banner, prompt, and summary helpers to orchestrators.
 - **Summaries** – orchestrators collect `StepResult` snapshots (executed, skipped with reason, failed with exception) so the interaction layer can render a completion table without duplicating step logic.
 - **Configuration** – `OnboardingConfiguration` centralizes host-specific constants (for example the default WSL distro name/image) and is injected into steps that need them.

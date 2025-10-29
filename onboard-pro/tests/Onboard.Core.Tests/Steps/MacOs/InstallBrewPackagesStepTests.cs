@@ -23,7 +23,7 @@ public class InstallBrewPackagesStepTests
     public async Task ShouldExecuteAsync_WhenPackagesInstalled_ReturnsFalse()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("brew", "list gh"))
+            .Setup(runner => runner.RunAsync("brew", "list gh", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, "gh", string.Empty));
 
         var step = CreateStep();
@@ -37,7 +37,7 @@ public class InstallBrewPackagesStepTests
     public async Task ShouldExecuteAsync_WhenPackagesMissing_ReturnsTrue()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("brew", "list gh"))
+            .Setup(runner => runner.RunAsync("brew", "list gh", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "Error"));
 
         var step = CreateStep();
@@ -51,7 +51,7 @@ public class InstallBrewPackagesStepTests
     public async Task ExecuteAsync_WhenInstallSucceeds_WritesSuccess()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("brew", "install git gh chezmoi"))
+            .Setup(runner => runner.RunAsync("brew", "install git gh chezmoi", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
 
         userInteraction.Setup(ui => ui.WriteSuccess("Homebrew packages installed (git, gh, chezmoi)."));
@@ -67,7 +67,7 @@ public class InstallBrewPackagesStepTests
     public void ExecuteAsync_WhenInstallFails_Throws()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("brew", "install git gh chezmoi"))
+            .Setup(runner => runner.RunAsync("brew", "install git gh chezmoi", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "error"));
 
         var step = CreateStep();

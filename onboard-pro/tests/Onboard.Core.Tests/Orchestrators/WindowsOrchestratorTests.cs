@@ -26,15 +26,16 @@ public class WindowsOrchestratorTests
             capturedSummary.Clear();
             capturedSummary.AddRange(results);
         });
-        var processRunner = new FakeProcessRunner(new Dictionary<(string, string), ProcessResult>
+        var processRunner = new FakeProcessRunner(new Dictionary<(string, string, bool), ProcessResult>
         {
-            { ("wsl.exe", "--status"), new ProcessResult(0, "Version: 1.0", string.Empty) },
-            { ("wsl.exe", "-l -q"), new ProcessResult(0, "Ubuntu-22.04", string.Empty) },
-            { ("where", "git.exe"), new ProcessResult(0, "C\\Git\\git.exe", string.Empty) },
-            { ("where", "code.cmd"), new ProcessResult(0, "C\\VSCode\\code.cmd", string.Empty) },
-            { ("powershell", "-NoProfile -Command \"(Test-Path 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe') -or (Test-Path (Join-Path $env:LOCALAPPDATA 'Programs\\Docker\\Docker Desktop.exe'))\""), new ProcessResult(0, "True", string.Empty) },
-            { ("git", "config --global user.name"), new ProcessResult(0, "Test User", string.Empty) },
-            { ("git", "config --global user.email"), new ProcessResult(0, "test@example.com", string.Empty) },
+            { ("dism.exe", "/online /Get-FeatureInfo /FeatureName:Microsoft-Windows-Subsystem-Linux", true), new ProcessResult(0, "State : Enabled", string.Empty) },
+            { ("dism.exe", "/online /Get-FeatureInfo /FeatureName:VirtualMachinePlatform", true), new ProcessResult(0, "State : Enabled", string.Empty) },
+            { ("wsl.exe", "-l -q", false), new ProcessResult(0, "Ubuntu-22.04", string.Empty) },
+            { ("where", "git.exe", false), new ProcessResult(0, "C\\Git\\git.exe", string.Empty) },
+            { ("where", "code.cmd", false), new ProcessResult(0, "C\\VSCode\\code.cmd", string.Empty) },
+            { ("powershell", "-NoProfile -Command \"(Test-Path 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe') -or (Test-Path (Join-Path $env:LOCALAPPDATA 'Programs\\Docker\\Docker Desktop.exe'))\"", false), new ProcessResult(0, "True", string.Empty) },
+            { ("git", "config --global user.name", false), new ProcessResult(0, "Test User", string.Empty) },
+            { ("git", "config --global user.email", false), new ProcessResult(0, "test@example.com", string.Empty) },
         });
 
         var configuration = new OnboardingConfiguration();
@@ -84,15 +85,16 @@ public class WindowsOrchestratorTests
             capturedSummary.AddRange(results);
         });
 
-        var processRunner = new FakeProcessRunner(new Dictionary<(string, string), ProcessResult>
+        var processRunner = new FakeProcessRunner(new Dictionary<(string, string, bool), ProcessResult>
         {
-            { ("wsl.exe", "--status"), new ProcessResult(0, "Version: 1.0", string.Empty) },
-            { ("wsl.exe", "-l -q"), new ProcessResult(0, "Ubuntu-22.04", string.Empty) },
-            { ("where", "git.exe"), new ProcessResult(1, string.Empty, "not found") },
-            { ("where", "code.cmd"), new ProcessResult(0, "C\\VSCode\\code.cmd", string.Empty) },
-            { ("powershell", "-NoProfile -Command \"(Test-Path 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe') -or (Test-Path (Join-Path $env:LOCALAPPDATA 'Programs\\Docker\\Docker Desktop.exe'))\""), new ProcessResult(0, "True", string.Empty) },
-            { ("git", "config --global user.name"), new ProcessResult(0, "Test User", string.Empty) },
-            { ("git", "config --global user.email"), new ProcessResult(0, "test@example.com", string.Empty) },
+            { ("dism.exe", "/online /Get-FeatureInfo /FeatureName:Microsoft-Windows-Subsystem-Linux", true), new ProcessResult(0, "State : Enabled", string.Empty) },
+            { ("dism.exe", "/online /Get-FeatureInfo /FeatureName:VirtualMachinePlatform", true), new ProcessResult(0, "State : Enabled", string.Empty) },
+            { ("wsl.exe", "-l -q", false), new ProcessResult(0, "Ubuntu-22.04", string.Empty) },
+            { ("where", "git.exe", false), new ProcessResult(1, string.Empty, "not found") },
+            { ("where", "code.cmd", false), new ProcessResult(0, "C\\VSCode\\code.cmd", string.Empty) },
+            { ("powershell", "-NoProfile -Command \"(Test-Path 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe') -or (Test-Path (Join-Path $env:LOCALAPPDATA 'Programs\\Docker\\Docker Desktop.exe'))\"", false), new ProcessResult(0, "True", string.Empty) },
+            { ("git", "config --global user.name", false), new ProcessResult(0, "Test User", string.Empty) },
+            { ("git", "config --global user.email", false), new ProcessResult(0, "test@example.com", string.Empty) },
         });
 
         var configuration = new OnboardingConfiguration();
@@ -135,15 +137,15 @@ public class WindowsOrchestratorTests
             capturedSummary.AddRange(results);
         });
 
-        var processRunner = new FakeProcessRunner(new Dictionary<(string, string), ProcessResult>
+        var processRunner = new FakeProcessRunner(new Dictionary<(string, string, bool), ProcessResult>
         {
-            { ("wsl.exe", "--status"), new ProcessResult(1, string.Empty, "WSL not enabled") },
-            { ("wsl.exe", "-l -q"), new ProcessResult(1, string.Empty, "WSL not enabled") },
-            { ("where", "git.exe"), new ProcessResult(1, string.Empty, "git not found") },
-            { ("where", "code.cmd"), new ProcessResult(1, string.Empty, "code not found") },
-            { ("powershell", "-NoProfile -Command \"(Test-Path 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe') -or (Test-Path (Join-Path $env:LOCALAPPDATA 'Programs\\Docker\\Docker Desktop.exe'))\""), new ProcessResult(1, string.Empty, "Docker not installed") },
-            { ("git", "config --global user.name"), new ProcessResult(1, string.Empty, string.Empty) },
-            { ("git", "config --global user.email"), new ProcessResult(1, string.Empty, string.Empty) },
+            { ("dism.exe", "/online /Get-FeatureInfo /FeatureName:Microsoft-Windows-Subsystem-Linux", true), new ProcessResult(1, string.Empty, "WSL not enabled") },
+            { ("dism.exe", "/online /Get-FeatureInfo /FeatureName:VirtualMachinePlatform", true), new ProcessResult(1, string.Empty, "WSL not enabled") },
+            { ("where", "git.exe", false), new ProcessResult(1, string.Empty, "git not found") },
+            { ("where", "code.cmd", false), new ProcessResult(1, string.Empty, "code not found") },
+            { ("powershell", "-NoProfile -Command \"(Test-Path 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe') -or (Test-Path (Join-Path $env:LOCALAPPDATA 'Programs\\Docker\\Docker Desktop.exe'))\"", false), new ProcessResult(1, string.Empty, "Docker not installed") },
+            { ("git", "config --global user.name", false), new ProcessResult(1, string.Empty, string.Empty) },
+            { ("git", "config --global user.email", false), new ProcessResult(1, string.Empty, string.Empty) },
         });
 
         var configuration = new OnboardingConfiguration();
@@ -236,18 +238,18 @@ public class WindowsOrchestratorTests
 
     private sealed class FakeProcessRunner : IProcessRunner
     {
-        private readonly IReadOnlyDictionary<(string FileName, string Arguments), ProcessResult> responses;
+        private readonly IReadOnlyDictionary<(string FileName, string Arguments, bool RequestElevation), ProcessResult> responses;
 
-        public FakeProcessRunner(IReadOnlyDictionary<(string FileName, string Arguments), ProcessResult> responses)
+        public FakeProcessRunner(IReadOnlyDictionary<(string FileName, string Arguments, bool RequestElevation), ProcessResult> responses)
         {
             this.responses = responses;
         }
 
-        public Task<ProcessResult> RunAsync(string fileName, string arguments)
+        public Task<ProcessResult> RunAsync(string fileName, string arguments, bool requestElevation = false)
         {
-            if (!responses.TryGetValue((fileName, arguments), out var result))
+            if (!responses.TryGetValue((fileName, arguments, requestElevation), out var result))
             {
-                throw new InvalidOperationException($"Unexpected command: {fileName} {arguments}");
+                throw new InvalidOperationException($"Unexpected command: {fileName} {arguments} (elevated: {requestElevation})");
             }
 
             return Task.FromResult(result);

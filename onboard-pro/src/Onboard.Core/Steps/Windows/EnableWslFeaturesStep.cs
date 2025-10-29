@@ -13,7 +13,8 @@ using Onboard.Core.Models;
 /// </summary>
 public class EnableWslFeaturesStep : IOnboardingStep
 {
-    private const string WslStatusCommand = "--status";
+    private const string WslFeatureName = "Microsoft-Windows-Subsystem-Linux";
+    private const string VirtualMachinePlatformFeatureName = "VirtualMachinePlatform";
     private const string WslListDistributionsCommand = "-l -q";
 
     private readonly IProcessRunner processRunner;
@@ -36,8 +37,8 @@ public class EnableWslFeaturesStep : IOnboardingStep
 
     public async Task<bool> ShouldExecuteAsync()
     {
-        readiness = await EvaluateReadinessAsync().ConfigureAwait(false);
-        return !readiness.FeaturesEnabled || !readiness.HasUbuntuDistribution;
+    readiness = await EvaluateReadinessAsync().ConfigureAwait(false);
+    return !readiness.FeaturesEnabled || !readiness.HasUbuntuDistribution;
     }
 
     public async Task ExecuteAsync()
@@ -56,10 +57,16 @@ public class EnableWslFeaturesStep : IOnboardingStep
 
         this.userInteraction.WriteWarning("Manual WSL setup required");
 
-        if (!readiness.FeaturesEnabled)
+        if (!readiness.IsWslOptionalFeatureEnabled)
         {
-            this.userInteraction.WriteWarning("Windows Subsystem for Linux optional features are not enabled.");
-            issues.Add("WSL optional features are disabled");
+            this.userInteraction.WriteWarning("The 'Microsoft-Windows-Subsystem-Linux' optional feature is not enabled.");
+            issues.Add("Microsoft-Windows-Subsystem-Linux feature is disabled");
+        }
+
+        if (!readiness.IsVirtualMachinePlatformEnabled)
+        {
+            this.userInteraction.WriteWarning("The 'VirtualMachinePlatform' optional feature is not enabled.");
+            issues.Add("VirtualMachinePlatform feature is disabled");
         }
 
         if (!readiness.HasUbuntuDistribution)
@@ -79,40 +86,62 @@ public class EnableWslFeaturesStep : IOnboardingStep
 
     private async Task<WslReadiness> EvaluateReadinessAsync()
     {
-        var status = await processRunner.RunAsync("wsl.exe", WslStatusCommand).ConfigureAwait(false);
-        if (!status.IsSuccess)
+        bool isWslFeatureEnabled = await IsFeatureEnabledAsync(WslFeatureName).ConfigureAwait(false);
+        bool isVirtualMachinePlatformEnabled = await IsFeatureEnabledAsync(VirtualMachinePlatformFeatureName).ConfigureAwait(false);
+
+        if (!isWslFeatureEnabled || !isVirtualMachinePlatformEnabled)
         {
-            return WslReadiness.Create(false, false);
+            return WslReadiness.Create(isWslFeatureEnabled, isVirtualMachinePlatformEnabled, false);
         }
 
         var listResult = await processRunner.RunAsync("wsl.exe", WslListDistributionsCommand).ConfigureAwait(false);
         if (!listResult.IsSuccess)
         {
-            return WslReadiness.Create(true, false);
+            return WslReadiness.Create(isWslFeatureEnabled, isVirtualMachinePlatformEnabled, false);
         }
 
         bool hasUbuntu = listResult.StandardOutput
             .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
             .Any(line => string.Equals(line.Trim(), configuration.WslDistroName, StringComparison.OrdinalIgnoreCase));
 
-        return WslReadiness.Create(true, hasUbuntu);
+        return WslReadiness.Create(isWslFeatureEnabled, isVirtualMachinePlatformEnabled, hasUbuntu);
+    }
+
+    private async Task<bool> IsFeatureEnabledAsync(string featureName)
+    {
+        string arguments = $"/online /Get-FeatureInfo /FeatureName:{featureName}";
+        var result = await processRunner.RunAsync("dism.exe", arguments, requestElevation: true).ConfigureAwait(false);
+
+        if (!result.IsSuccess)
+        {
+            return false;
+        }
+
+        return result.StandardOutput
+            .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+            .Any(line => line.Contains("State", StringComparison.OrdinalIgnoreCase) && line.Contains("Enabled", StringComparison.OrdinalIgnoreCase));
     }
 
     private sealed class WslReadiness
     {
-        private WslReadiness(bool featuresEnabled, bool hasUbuntuDistribution, bool isInitialized)
+        private WslReadiness(bool isWslOptionalFeatureEnabled, bool isVirtualMachinePlatformEnabled, bool hasUbuntuDistribution, bool isInitialized)
         {
-            FeaturesEnabled = featuresEnabled;
+            IsWslOptionalFeatureEnabled = isWslOptionalFeatureEnabled;
+            IsVirtualMachinePlatformEnabled = isVirtualMachinePlatformEnabled;
             HasUbuntuDistribution = hasUbuntuDistribution;
             IsInitialized = isInitialized;
         }
 
-        public static WslReadiness Uninitialized { get; } = new(false, false, false);
+        public static WslReadiness Uninitialized { get; } = new(false, false, false, false);
 
-        public static WslReadiness Create(bool featuresEnabled, bool hasUbuntuDistribution) =>
-            new(featuresEnabled, hasUbuntuDistribution, true);
+        public static WslReadiness Create(bool isWslOptionalFeatureEnabled, bool isVirtualMachinePlatformEnabled, bool hasUbuntuDistribution) =>
+            new(isWslOptionalFeatureEnabled, isVirtualMachinePlatformEnabled, hasUbuntuDistribution, true);
 
-        public bool FeaturesEnabled { get; }
+        public bool FeaturesEnabled => this.IsWslOptionalFeatureEnabled && this.IsVirtualMachinePlatformEnabled;
+
+        public bool IsWslOptionalFeatureEnabled { get; }
+
+        public bool IsVirtualMachinePlatformEnabled { get; }
 
         public bool HasUbuntuDistribution { get; }
 

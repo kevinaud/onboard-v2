@@ -26,7 +26,7 @@ public class InstallLinuxVsCodeStepTests
     public async Task ShouldExecuteAsync_WhenCodeCliExists_ReturnsFalse()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("which", "code"))
+            .Setup(runner => runner.RunAsync("which", "code", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, "/usr/bin/code", string.Empty));
 
         var step = CreateStep();
@@ -40,7 +40,7 @@ public class InstallLinuxVsCodeStepTests
     public async Task ShouldExecuteAsync_WhenCodeCliMissing_ReturnsTrue()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("which", "code"))
+            .Setup(runner => runner.RunAsync("which", "code", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "not found"));
 
         var step = CreateStep();
@@ -54,13 +54,13 @@ public class InstallLinuxVsCodeStepTests
     public async Task ExecuteAsync_WhenCommandsSucceed_InvokesDownloadInstallAndCleanup()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("curl", "-L \"https://update.code.visualstudio.com/latest/linux-deb-x64/stable\" -o \"/tmp/vscode.deb\""))
+            .Setup(runner => runner.RunAsync("curl", "-L \"https://update.code.visualstudio.com/latest/linux-deb-x64/stable\" -o \"/tmp/vscode.deb\"", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
         processRunner
-            .Setup(runner => runner.RunAsync("sudo", "apt-get install -y \"/tmp/vscode.deb\""))
+            .Setup(runner => runner.RunAsync("sudo", "apt-get install -y \"/tmp/vscode.deb\"", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
         processRunner
-            .Setup(runner => runner.RunAsync("rm", "-f \"/tmp/vscode.deb\""))
+            .Setup(runner => runner.RunAsync("rm", "-f \"/tmp/vscode.deb\"", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
         userInteraction.Setup(ui => ui.WriteSuccess("Visual Studio Code installed via apt."));
 
@@ -75,7 +75,7 @@ public class InstallLinuxVsCodeStepTests
     public void ExecuteAsync_WhenDownloadFails_ThrowsInvalidOperationException()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("curl", "-L \"https://update.code.visualstudio.com/latest/linux-deb-x64/stable\" -o \"/tmp/vscode.deb\""))
+            .Setup(runner => runner.RunAsync("curl", "-L \"https://update.code.visualstudio.com/latest/linux-deb-x64/stable\" -o \"/tmp/vscode.deb\"", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "curl error"));
 
         var step = CreateStep();
@@ -88,13 +88,13 @@ public class InstallLinuxVsCodeStepTests
     public void ExecuteAsync_WhenInstallFails_ThrowsAndPerformsCleanup()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("curl", "-L \"https://update.code.visualstudio.com/latest/linux-deb-x64/stable\" -o \"/tmp/vscode.deb\""))
+            .Setup(runner => runner.RunAsync("curl", "-L \"https://update.code.visualstudio.com/latest/linux-deb-x64/stable\" -o \"/tmp/vscode.deb\"", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
         processRunner
-            .Setup(runner => runner.RunAsync("sudo", "apt-get install -y \"/tmp/vscode.deb\""))
+            .Setup(runner => runner.RunAsync("sudo", "apt-get install -y \"/tmp/vscode.deb\"", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "apt error"));
         processRunner
-            .Setup(runner => runner.RunAsync("rm", "-f \"/tmp/vscode.deb\""))
+            .Setup(runner => runner.RunAsync("rm", "-f \"/tmp/vscode.deb\"", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
 
         var step = CreateStep();

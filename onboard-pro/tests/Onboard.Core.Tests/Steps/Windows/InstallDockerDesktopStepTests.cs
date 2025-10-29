@@ -64,7 +64,8 @@ public class InstallDockerDesktopStepTests
         processRunner
             .Setup(runner => runner.RunAsync(
                 "powershell",
-                It.Is<string>(arguments => arguments.Contains("Docker Desktop.exe", StringComparison.OrdinalIgnoreCase))))
+                It.Is<string>(arguments => arguments.Contains("Docker Desktop.exe", StringComparison.OrdinalIgnoreCase)),
+                It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, "True", string.Empty));
 
         var step = CreateStep();
@@ -80,7 +81,8 @@ public class InstallDockerDesktopStepTests
         processRunner
             .Setup(runner => runner.RunAsync(
                 "powershell",
-                It.Is<string>(arguments => arguments.Contains("Docker Desktop.exe", StringComparison.OrdinalIgnoreCase))))
+                It.Is<string>(arguments => arguments.Contains("Docker Desktop.exe", StringComparison.OrdinalIgnoreCase)),
+                It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, "False", string.Empty));
 
         var step = CreateStep();
@@ -96,7 +98,8 @@ public class InstallDockerDesktopStepTests
         processRunner
             .Setup(runner => runner.RunAsync(
                 "powershell",
-                It.Is<string>(arguments => arguments.Contains("Docker Desktop.exe", StringComparison.OrdinalIgnoreCase))))
+                It.Is<string>(arguments => arguments.Contains("Docker Desktop.exe", StringComparison.OrdinalIgnoreCase)),
+                It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "error"));
 
         var step = CreateStep();
@@ -110,7 +113,7 @@ public class InstallDockerDesktopStepTests
     public async Task ExecuteAsync_WhenWingetSucceeds_PrintsSuccessAndGuidance()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("winget", "install --id Docker.DockerDesktop -e --source winget"))
+            .Setup(runner => runner.RunAsync("winget", "install --id Docker.DockerDesktop -e --source winget", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
 
         var messages = new List<string>();
@@ -148,7 +151,7 @@ public class InstallDockerDesktopStepTests
     public void ExecuteAsync_WhenWingetFails_Throws()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("winget", "install --id Docker.DockerDesktop -e --source winget"))
+            .Setup(runner => runner.RunAsync("winget", "install --id Docker.DockerDesktop -e --source winget", It.IsAny<bool>()))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "winget error"));
 
         var step = CreateStep();

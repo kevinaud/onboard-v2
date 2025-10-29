@@ -73,7 +73,7 @@ public sealed class SpectreUserInteraction : IUserInteraction
             return;
         }
 
-        this.console.MarkupLine($"[grey][DEBUG] {EscapeMarkup(message)}[/]");
+        this.console.MarkupLine($"[grey][[DEBUG]] {EscapeMarkup(message)}[/]");
     }
 
     public void ShowWelcomeBanner(PlatformFacts platformFacts)

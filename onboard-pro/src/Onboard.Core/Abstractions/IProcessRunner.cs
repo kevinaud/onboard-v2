@@ -17,5 +17,5 @@ public interface IProcessRunner
     /// <param name="fileName">The executable or command to run.</param>
     /// <param name="arguments">The command-line arguments.</param>
     /// <returns>A ProcessResult containing exit code and output.</returns>
-    Task<ProcessResult> RunAsync(string fileName, string arguments);
+    Task<ProcessResult> RunAsync(string fileName, string arguments, bool requestElevation = false);
 }
