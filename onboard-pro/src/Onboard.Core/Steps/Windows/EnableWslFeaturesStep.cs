@@ -37,8 +37,8 @@ public class EnableWslFeaturesStep : IOnboardingStep
 
     public async Task<bool> ShouldExecuteAsync()
     {
-    readiness = await EvaluateReadinessAsync().ConfigureAwait(false);
-    return !readiness.FeaturesEnabled || !readiness.HasUbuntuDistribution;
+        readiness = await EvaluateReadinessAsync().ConfigureAwait(false);
+        return !readiness.FeaturesEnabled || !readiness.HasUbuntuDistribution;
     }
 
     public async Task ExecuteAsync()
