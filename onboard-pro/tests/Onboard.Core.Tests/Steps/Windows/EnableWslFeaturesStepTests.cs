@@ -50,10 +50,10 @@ public class EnableWslFeaturesStepTests
             .Setup(runner => runner.RunAsync("wsl.exe", "-l -v", false))
             .ReturnsAsync(new ProcessResult(0, listOutput, string.Empty));
         processRunner
-            .Setup(runner => runner.RunAsync("wsl.exe", "-d docker-desktop cat /etc/os-release", false))
+            .Setup(runner => runner.RunAsync("wsl.exe", "-d docker-desktop -- cat /etc/os-release", false))
             .ReturnsAsync(new ProcessResult(0, "ID=alpine\nVERSION_ID=3.17", string.Empty));
         processRunner
-            .Setup(runner => runner.RunAsync("wsl.exe", "-d Ubuntu-20.04 cat /etc/os-release", false))
+            .Setup(runner => runner.RunAsync("wsl.exe", "-d Ubuntu-20.04 -- cat /etc/os-release", false))
             .ReturnsAsync(new ProcessResult(0, "ID=ubuntu\nVERSION_ID=\"20.04\"", string.Empty));
 
         var step = CreateStep();
@@ -71,7 +71,7 @@ public class EnableWslFeaturesStepTests
             .Setup(runner => runner.RunAsync("wsl.exe", "-l -v", false))
             .ReturnsAsync(new ProcessResult(0, listOutput, string.Empty));
         processRunner
-            .Setup(runner => runner.RunAsync("wsl.exe", "-d Ubuntu-22.04 cat /etc/os-release", false))
+            .Setup(runner => runner.RunAsync("wsl.exe", "-d Ubuntu-22.04 -- cat /etc/os-release", false))
             .ReturnsAsync(new ProcessResult(0, "ID=ubuntu\nVERSION_ID=\"22.04\"", string.Empty));
 
         var step = CreateStep();

@@ -82,7 +82,7 @@ public class EnableWslFeaturesStep : IOnboardingStep
     private static string BuildOsReleaseArguments(string distributionName)
     {
         string formattedName = distributionName.Any(char.IsWhiteSpace) ? $"\"{distributionName}\"" : distributionName;
-        return $"-d {formattedName} {OsReleaseCommand}";
+        return $"-d {formattedName} -- {OsReleaseCommand}";
     }
 
     private static IReadOnlyCollection<string> ParseDistributionNames(string commandOutput)
@@ -112,7 +112,13 @@ public class EnableWslFeaturesStep : IOnboardingStep
                 continue;
             }
 
-            names.Add(tokens[0]);
+            string candidateName = tokens[0];
+            if (string.IsNullOrWhiteSpace(candidateName) || string.Equals(candidateName, "*", StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            names.Add(candidateName);
         }
 
         return names;
