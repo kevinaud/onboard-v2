@@ -1,6 +1,7 @@
 namespace Onboard.Core.Steps.Windows;
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -51,22 +52,29 @@ public class EnableWslFeaturesStep : IOnboardingStep
             return;
         }
 
+        var issues = new List<string>();
+
         this.userInteraction.WriteWarning("Manual WSL setup required");
 
         if (!readiness.FeaturesEnabled)
         {
             this.userInteraction.WriteWarning("Windows Subsystem for Linux optional features are not enabled.");
+            issues.Add("WSL optional features are disabled");
         }
 
         if (!readiness.HasUbuntuDistribution)
         {
             this.userInteraction.WriteWarning($"{this.configuration.WslDistroName} is not installed in WSL.");
+            issues.Add($"{this.configuration.WslDistroName} distribution is missing");
         }
 
         this.userInteraction.WriteNormal("Follow these steps in an administrator PowerShell window:");
         this.userInteraction.WriteNormal($"  1. Run: wsl --install -d {this.configuration.WslDistroImage}");
         this.userInteraction.WriteNormal("  2. Restart Windows if prompted to complete the installation.");
         this.userInteraction.WriteNormal($"  3. Launch {this.configuration.WslDistroName} once so the user account is created, then rerun this onboarding tool.");
+
+        string issueSummary = issues.Count == 0 ? "WSL prerequisites are missing" : $"WSL prerequisites are missing: {string.Join(", ", issues)}";
+        throw new InvalidOperationException($"{issueSummary}. Complete the manual steps above and rerun the onboarding tool.");
     }
 
     private async Task<WslReadiness> EvaluateReadinessAsync()
