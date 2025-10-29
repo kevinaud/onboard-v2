@@ -40,6 +40,7 @@ dotnet_naming_style.camel_underscore.required_prefix = _
 dotnet_diagnostic.SA0001.severity = none
 dotnet_diagnostic.SA1101.severity = none
 dotnet_diagnostic.SA1201.severity = none
+dotnet_diagnostic.SA1512.severity = none
 dotnet_diagnostic.SA1611.severity = none
 dotnet_diagnostic.SA1633.severity = none
 dotnet_diagnostic.SA1600.severity = none

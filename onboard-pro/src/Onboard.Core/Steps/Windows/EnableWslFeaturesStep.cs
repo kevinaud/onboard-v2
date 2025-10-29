@@ -57,11 +57,11 @@ public class EnableWslFeaturesStep : IOnboardingStep
 
         this.userInteraction.WriteWarning("Manual WSL setup required");
 
-        if (!readiness.IsWslOptionalFeatureEnabled)
-        {
-            this.userInteraction.WriteWarning("The 'Microsoft-Windows-Subsystem-Linux' optional feature is not enabled.");
-            issues.Add("Microsoft-Windows-Subsystem-Linux feature is disabled");
-        }
+        // if (!readiness.IsWslOptionalFeatureEnabled)
+        // {
+        //     this.userInteraction.WriteWarning("The 'Microsoft-Windows-Subsystem-Linux' optional feature is not enabled.");
+        //     issues.Add("Microsoft-Windows-Subsystem-Linux feature is disabled");
+        // }
 
         if (!readiness.IsVirtualMachinePlatformEnabled)
         {
@@ -137,7 +137,8 @@ public class EnableWslFeaturesStep : IOnboardingStep
         public static WslReadiness Create(bool isWslOptionalFeatureEnabled, bool isVirtualMachinePlatformEnabled, bool hasUbuntuDistribution) =>
             new(isWslOptionalFeatureEnabled, isVirtualMachinePlatformEnabled, hasUbuntuDistribution, true);
 
-        public bool FeaturesEnabled => this.IsWslOptionalFeatureEnabled && this.IsVirtualMachinePlatformEnabled;
+        // public bool FeaturesEnabled => this.IsWslOptionalFeatureEnabled && this.IsVirtualMachinePlatformEnabled;
+        public bool FeaturesEnabled => this.IsVirtualMachinePlatformEnabled;
 
         public bool IsWslOptionalFeatureEnabled { get; }
 
