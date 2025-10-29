@@ -22,3 +22,58 @@ jobs:
         run: dotnet build --configuration Release -warnaserror
       - name: Test
         run: dotnet test --configuration Release --no-build
+
+  publish-pr-artifacts:
+    name: Publish PR test binaries
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: build-test-lint
+    strategy:
+      matrix:
+        include:
+          - rid: win-x64
+            asset_name: Onboard-win-x64.exe
+            source_name: Onboard.Console.exe
+          - rid: osx-x64
+            asset_name: Onboard-osx-x64
+            source_name: Onboard.Console
+          - rid: osx-arm64
+            asset_name: Onboard-osx-arm64
+            source_name: Onboard.Console
+          - rid: linux-x64
+            asset_name: Onboard-linux-x64
+            source_name: Onboard.Console
+    defaults:
+      run:
+        working-directory: ./onboard-pro
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+      
+      - name: Restore
+        run: dotnet restore
+      
+      - name: Publish ${{ matrix.rid }} binary
+        run: |
+          dotnet publish src/Onboard.Console/Onboard.Console.csproj \
+            -c Release \
+            -r ${{ matrix.rid }} \
+            --self-contained true \
+            -p:PublishSingleFile=true \
+            -p:IncludeNativeLibrariesForSelfExtract=true \
+            -p:PublishTrimmed=false \
+            -o ../artifacts/pr-test/${{ matrix.rid }}
+          mv ../artifacts/pr-test/${{ matrix.rid }}/${{ matrix.source_name }} ../artifacts/pr-test/${{ matrix.rid }}/${{ matrix.asset_name }}
+          if [ "${{ matrix.rid }}" != "win-x64" ]; then
+            chmod +x ../artifacts/pr-test/${{ matrix.rid }}/${{ matrix.asset_name }}
+          fi
+      
+      - name: Upload ${{ matrix.rid }} artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: onboard-pr-${{ github.event.number }}-${{ matrix.rid }}
+          path: artifacts/pr-test/${{ matrix.rid }}/${{ matrix.asset_name }}
+          retention-days: 3
+          if-no-files-found: error

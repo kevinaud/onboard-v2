@@ -22,6 +22,28 @@ The bootstrapper detects your host OS/architecture, downloads the matching singl
 - `ONBOARD_KEEP_DOWNLOADED_BINARY=true ./setup.sh`
 - `ONBOARD_REPOSITORY=kevinaud/onboard-v2 ./setup.sh` (default; override when testing forks)
 
+#### Testing a pull request before it merges
+
+To test a specific pull request (e.g., PR #28) on macOS, Ubuntu, or WSL, use the `--pr-number` flag:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kevinaud/onboard-v2/main/setup.sh -o setup.sh
+chmod +x setup.sh
+./setup.sh --pr-number 28
+```
+
+Or execute directly via piped curl (this will download and test the PR in one command):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kevinaud/onboard-v2/main/setup.sh | bash -s -- --pr-number 28
+```
+
+The script downloads the corresponding platform-specific binary from the PR's CI artifacts (retention: 3 days). Pass additional onboarding flags after `--pr-number`:
+
+```bash
+./setup.sh --pr-number 28 -- --dry-run --verbose
+```
+
 ### Windows hosts
 ```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
@@ -30,6 +52,21 @@ Invoke-RestMethod https://raw.githubusercontent.com/kevinaud/onboard-v2/main/set
 ```
 
 The PowerShell bootstrapper mirrors the bash script behaviour: it resolves the latest (or requested) tag, downloads `Onboard-win-x64.exe`, executes it, and cleans up the temporary binary unless `-KeepDownloadedBinary` or `ONBOARD_KEEP_DOWNLOADED_BINARY` is supplied.
+
+#### Testing a pull request before it merges
+
+To test a specific pull request (e.g., PR #28) on Windows:
+
+```powershell
+Invoke-RestMethod https://raw.githubusercontent.com/kevinaud/onboard-v2/main/setup.ps1 -OutFile setup.ps1
+.\setup.ps1 -PrNumber 28
+```
+
+Pass additional onboarding flags after `-PrNumber` using the stop-parsing token:
+
+```powershell
+.\setup.ps1 -PrNumber 28 --% --dry-run --verbose
+```
 
 > Tip: run `./setup.sh --mode wsl-guest` **inside** your WSL distribution to execute the WSL-specific workflow.
 

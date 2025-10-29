@@ -5,6 +5,7 @@ script_name=$(basename "${BASH_SOURCE[0]:-$0}")
 temp_dir=""
 download_path=""
 preserve_binary=false
+pr_number=""
 
 log() {
 	printf '%s\n' "$1"
@@ -39,6 +40,24 @@ cleanup() {
 }
 
 trap cleanup EXIT
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		--pr-number)
+			shift
+			pr_number="$1"
+			shift
+			;;
+		--pr-number=*)
+			pr_number="${1#*=}"
+			shift
+			;;
+		*)
+			break
+			;;
+	esac
+done
 
 repository_slug="${ONBOARD_REPOSITORY:-${GITHUB_REPOSITORY:-kevinaud/onboard-v2}}"
 release_tag="${ONBOARD_RELEASE_TAG:-}"
@@ -97,13 +116,6 @@ fi
 
 asset_name="Onboard-${os_token}-${arch_token}"
 
-api_base="https://api.github.com/repos/${repository_slug}/releases"
-if [[ -n "$release_tag" ]]; then
-	release_url="${api_base}/tags/${release_tag}"
-else
-	release_url="${api_base}/latest"
-fi
-
 curl_args=(
 	--fail
 	--silent
@@ -117,10 +129,108 @@ if [[ -n "${GITHUB_TOKEN:-}" ]]; then
 	curl_args+=(-H "Authorization: Bearer ${GITHUB_TOKEN}")
 fi
 
-log "Fetching release metadata from ${release_url}"
-release_payload=$(curl "${curl_args[@]}" "$release_url")
+if [[ -n "$pr_number" ]]; then
+	# PR testing mode - download from GitHub Actions artifacts
+	log "Testing PR #${pr_number}"
+	
+	# Find the latest completed workflow run for this PR
+	runs_url="https://api.github.com/repos/${repository_slug}/actions/runs?event=pull_request&status=completed"
+	log "Fetching PR workflow runs from ${runs_url}"
+	runs_payload=$(curl "${curl_args[@]}" "$runs_url")
+	
+	# Find the workflow run and artifact URL
+	artifact_url=$(python3 - "$pr_number" "$asset_name" <<'PY' <<<"$runs_payload"
+import json
+import sys
 
-download_url=$(python3 - "$asset_name" <<'PY' <<<"$release_payload"
+data = json.load(sys.stdin)
+pr_number = int(sys.argv[1])
+asset_name = sys.argv[2]
+
+workflow_runs = data.get("workflow_runs", [])
+for run in workflow_runs:
+		pull_requests = run.get("pull_requests", [])
+		if any(pr.get("number") == pr_number for pr in pull_requests):
+				artifacts_url = run.get("artifacts_url")
+				if artifacts_url:
+						print(artifacts_url)
+						sys.exit(0)
+
+raise SystemExit(f"No completed workflow run found for PR #{pr_number}. Has CI completed?")
+PY
+)
+	
+	if [[ -z "$artifact_url" ]]; then
+		log_error "Failed to find workflow run for PR #${pr_number}"
+		exit 1
+	fi
+	
+	log "Fetching artifacts from ${artifact_url}"
+	artifacts_payload=$(curl "${curl_args[@]}" "$artifact_url")
+	
+	# Extract the download URL for the artifact
+	download_url=$(python3 - "$pr_number" "$os_token" "$arch_token" <<'PY' <<<"$artifacts_payload"
+import json
+import sys
+
+data = json.load(sys.stdin)
+pr_number = sys.argv[1]
+os_token = sys.argv[2]
+arch_token = sys.argv[3]
+
+artifact_name = f"onboard-pr-{pr_number}-{os_token}-{arch_token}"
+
+artifacts = data.get("artifacts", [])
+for artifact in artifacts:
+		if artifact.get("name") == artifact_name:
+				url = artifact.get("archive_download_url")
+				if url:
+						print(url)
+						sys.exit(0)
+
+available = [a.get("name") for a in artifacts if a.get("name")]
+if available:
+		raise SystemExit(f"PR artifact '{artifact_name}' not found. Available: {', '.join(available)}")
+
+raise SystemExit(f"PR artifact '{artifact_name}' not found.")
+PY
+)
+	
+	if [[ -z "$download_url" ]]; then
+		log_error "Failed to resolve artifact download URL for PR #${pr_number}"
+		exit 1
+	fi
+	
+	temp_dir=$(mktemp -d)
+	zip_path="${temp_dir}/artifact.zip"
+	
+	log "Downloading PR artifact"
+	curl "${curl_args[@]}" --output "$zip_path" "$download_url"
+	
+	log "Extracting artifact"
+	require_command unzip
+	unzip -q "$zip_path" -d "$temp_dir"
+	
+	download_path="${temp_dir}/${asset_name}"
+	if [[ ! -f "$download_path" ]]; then
+		log_error "Expected binary '${asset_name}' not found in artifact"
+		exit 1
+	fi
+	
+	chmod +x "$download_path"
+else
+	# Normal release mode
+	api_base="https://api.github.com/repos/${repository_slug}/releases"
+	if [[ -n "$release_tag" ]]; then
+		release_url="${api_base}/tags/${release_tag}"
+	else
+		release_url="${api_base}/latest"
+	fi
+
+	log "Fetching release metadata from ${release_url}"
+	release_payload=$(curl "${curl_args[@]}" "$release_url")
+
+	download_url=$(python3 - "$asset_name" <<'PY' <<<"$release_payload"
 import json
 import sys
 
@@ -144,17 +254,18 @@ raise SystemExit(f"Asset '{asset_name}' not found in release response.")
 PY
 )
 
-if [[ -z "$download_url" ]]; then
-	log_error "Failed to resolve download URL for asset '${asset_name}'."
-	exit 1
+	if [[ -z "$download_url" ]]; then
+		log_error "Failed to resolve download URL for asset '${asset_name}'."
+		exit 1
+	fi
+
+	temp_dir=$(mktemp -d)
+	download_path="${temp_dir}/${asset_name}"
+
+	log "Downloading ${asset_name} to temporary location"
+	curl "${curl_args[@]}" --output "$download_path" "$download_url"
+	chmod +x "$download_path"
 fi
-
-temp_dir=$(mktemp -d)
-download_path="${temp_dir}/${asset_name}"
-
-log "Downloading ${asset_name} to temporary location"
-curl "${curl_args[@]}" --output "$download_path" "$download_url"
-chmod +x "$download_path"
 
 log "Launching downloaded Onboard binary"
 "$download_path" "$@"
