@@ -30,7 +30,8 @@ public class WindowsOrchestratorTests
         {
             { ("dism.exe", "/online /Get-FeatureInfo /FeatureName:Microsoft-Windows-Subsystem-Linux", true), new ProcessResult(0, "State : Enabled", string.Empty) },
             { ("dism.exe", "/online /Get-FeatureInfo /FeatureName:VirtualMachinePlatform", true), new ProcessResult(0, "State : Enabled", string.Empty) },
-            { ("wsl.exe", "-l -q", false), new ProcessResult(0, "Ubuntu-22.04", string.Empty) },
+            { ("wsl.exe", "-l -v", false), new ProcessResult(0, "  NAME            STATE           VERSION\r\n* Ubuntu-22.04    Stopped         2\r\n", string.Empty) },
+            { ("wsl.exe", "-d Ubuntu-22.04 cat /etc/os-release", false), new ProcessResult(0, "ID=ubuntu\nVERSION_ID=\"22.04\"", string.Empty) },
             { ("where", "git.exe", false), new ProcessResult(0, "C\\Git\\git.exe", string.Empty) },
             { ("where", "code.cmd", false), new ProcessResult(0, "C\\VSCode\\code.cmd", string.Empty) },
             { ("powershell", "-NoProfile -Command \"(Test-Path 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe') -or (Test-Path (Join-Path $env:LOCALAPPDATA 'Programs\\Docker\\Docker Desktop.exe'))\"", false), new ProcessResult(0, "True", string.Empty) },
@@ -89,7 +90,8 @@ public class WindowsOrchestratorTests
         {
             { ("dism.exe", "/online /Get-FeatureInfo /FeatureName:Microsoft-Windows-Subsystem-Linux", true), new ProcessResult(0, "State : Enabled", string.Empty) },
             { ("dism.exe", "/online /Get-FeatureInfo /FeatureName:VirtualMachinePlatform", true), new ProcessResult(0, "State : Enabled", string.Empty) },
-            { ("wsl.exe", "-l -q", false), new ProcessResult(0, "Ubuntu-22.04", string.Empty) },
+            { ("wsl.exe", "-l -v", false), new ProcessResult(0, "  NAME            STATE           VERSION\r\n* Ubuntu-22.04    Stopped         2\r\n", string.Empty) },
+            { ("wsl.exe", "-d Ubuntu-22.04 cat /etc/os-release", false), new ProcessResult(0, "ID=ubuntu\nVERSION_ID=\"22.04\"", string.Empty) },
             { ("where", "git.exe", false), new ProcessResult(1, string.Empty, "not found") },
             { ("where", "code.cmd", false), new ProcessResult(0, "C\\VSCode\\code.cmd", string.Empty) },
             { ("powershell", "-NoProfile -Command \"(Test-Path 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe') -or (Test-Path (Join-Path $env:LOCALAPPDATA 'Programs\\Docker\\Docker Desktop.exe'))\"", false), new ProcessResult(0, "True", string.Empty) },
@@ -141,6 +143,7 @@ public class WindowsOrchestratorTests
         {
             { ("dism.exe", "/online /Get-FeatureInfo /FeatureName:Microsoft-Windows-Subsystem-Linux", true), new ProcessResult(1, string.Empty, "WSL not enabled") },
             { ("dism.exe", "/online /Get-FeatureInfo /FeatureName:VirtualMachinePlatform", true), new ProcessResult(1, string.Empty, "WSL not enabled") },
+            { ("wsl.exe", "-l -v", false), new ProcessResult(1, string.Empty, "WSL not installed") },
             { ("where", "git.exe", false), new ProcessResult(1, string.Empty, "git not found") },
             { ("where", "code.cmd", false), new ProcessResult(1, string.Empty, "code not found") },
             { ("powershell", "-NoProfile -Command \"(Test-Path 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe') -or (Test-Path (Join-Path $env:LOCALAPPDATA 'Programs\\Docker\\Docker Desktop.exe'))\"", false), new ProcessResult(1, string.Empty, "Docker not installed") },

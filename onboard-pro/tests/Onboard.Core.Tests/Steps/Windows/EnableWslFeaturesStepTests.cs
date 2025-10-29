@@ -29,62 +29,55 @@ public class EnableWslFeaturesStepTests
     }
 
     [Test]
-    public async Task ShouldExecuteAsync_WhenAnyFeatureDisabled_ReturnsTrue()
+    public async Task ShouldExecuteAsync_WhenWslListFails_ReturnsTrue()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("dism.exe", "/online /Get-FeatureInfo /FeatureName:Microsoft-Windows-Subsystem-Linux", true))
-            .ReturnsAsync(new ProcessResult(1, string.Empty, "Feature not enabled"));
-        processRunner
-            .Setup(runner => runner.RunAsync("dism.exe", "/online /Get-FeatureInfo /FeatureName:VirtualMachinePlatform", true))
-            .ReturnsAsync(new ProcessResult(0, "State : Enabled", string.Empty));
+            .Setup(runner => runner.RunAsync("wsl.exe", "-l -v", false))
+            .ReturnsAsync(new ProcessResult(1, string.Empty, "WSL not installed"));
 
         var step = CreateStep();
         bool result = await step.ShouldExecuteAsync().ConfigureAwait(false);
 
         Assert.That(result, Is.True);
-        processRunner.Verify(runner => runner.RunAsync("dism.exe", It.IsAny<string>(), true), Times.Exactly(2));
         processRunner.VerifyAll();
     }
 
     [Test]
     public async Task ShouldExecuteAsync_WhenUbuntuDistributionMissing_ReturnsTrue()
     {
+        string listOutput = "  NAME            STATE           VERSION\r\n* docker-desktop   Running         2\r\n  Ubuntu-20.04     Stopped         2\r\n";
         processRunner
-            .Setup(runner => runner.RunAsync("dism.exe", "/online /Get-FeatureInfo /FeatureName:Microsoft-Windows-Subsystem-Linux", true))
-            .ReturnsAsync(new ProcessResult(0, "State : Enabled", string.Empty));
+            .Setup(runner => runner.RunAsync("wsl.exe", "-l -v", false))
+            .ReturnsAsync(new ProcessResult(0, listOutput, string.Empty));
         processRunner
-            .Setup(runner => runner.RunAsync("dism.exe", "/online /Get-FeatureInfo /FeatureName:VirtualMachinePlatform", true))
-            .ReturnsAsync(new ProcessResult(0, "State : Enabled", string.Empty));
+            .Setup(runner => runner.RunAsync("wsl.exe", "-d docker-desktop cat /etc/os-release", false))
+            .ReturnsAsync(new ProcessResult(0, "ID=alpine\nVERSION_ID=3.17", string.Empty));
         processRunner
-            .Setup(runner => runner.RunAsync("wsl.exe", "-l -q", false))
-            .ReturnsAsync(new ProcessResult(0, "Ubuntu\r\n", string.Empty));
+            .Setup(runner => runner.RunAsync("wsl.exe", "-d Ubuntu-20.04 cat /etc/os-release", false))
+            .ReturnsAsync(new ProcessResult(0, "ID=ubuntu\nVERSION_ID=\"20.04\"", string.Empty));
 
         var step = CreateStep();
         bool result = await step.ShouldExecuteAsync().ConfigureAwait(false);
 
         Assert.That(result, Is.True);
-        processRunner.Verify(runner => runner.RunAsync("dism.exe", It.IsAny<string>(), true), Times.Exactly(2));
         processRunner.VerifyAll();
     }
 
     [Test]
     public async Task ShouldExecuteAsync_WhenWslReady_ReturnsFalse()
     {
+        string listOutput = "  NAME            STATE           VERSION\r\n* Ubuntu-22.04    Stopped         2\r\n";
         processRunner
-            .Setup(runner => runner.RunAsync("dism.exe", "/online /Get-FeatureInfo /FeatureName:Microsoft-Windows-Subsystem-Linux", true))
-            .ReturnsAsync(new ProcessResult(0, "State : Enabled", string.Empty));
+            .Setup(runner => runner.RunAsync("wsl.exe", "-l -v", false))
+            .ReturnsAsync(new ProcessResult(0, listOutput, string.Empty));
         processRunner
-            .Setup(runner => runner.RunAsync("dism.exe", "/online /Get-FeatureInfo /FeatureName:VirtualMachinePlatform", true))
-            .ReturnsAsync(new ProcessResult(0, "State : Enabled", string.Empty));
-        processRunner
-            .Setup(runner => runner.RunAsync("wsl.exe", "-l -q", false))
-            .ReturnsAsync(new ProcessResult(0, $"{configuration.WslDistroName}\r\n", string.Empty));
+            .Setup(runner => runner.RunAsync("wsl.exe", "-d Ubuntu-22.04 cat /etc/os-release", false))
+            .ReturnsAsync(new ProcessResult(0, "ID=ubuntu\nVERSION_ID=\"22.04\"", string.Empty));
 
         var step = CreateStep();
         bool result = await step.ShouldExecuteAsync().ConfigureAwait(false);
 
         Assert.That(result, Is.False);
-        processRunner.Verify(runner => runner.RunAsync("dism.exe", It.IsAny<string>(), true), Times.Exactly(2));
         processRunner.VerifyAll();
     }
 
@@ -92,11 +85,8 @@ public class EnableWslFeaturesStepTests
     public async Task ExecuteAsync_WhenWslNotReady_PrintsGuidance()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("dism.exe", "/online /Get-FeatureInfo /FeatureName:Microsoft-Windows-Subsystem-Linux", true))
+            .Setup(runner => runner.RunAsync("wsl.exe", "-l -v", false))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "WSL not installed"));
-        processRunner
-            .Setup(runner => runner.RunAsync("dism.exe", "/online /Get-FeatureInfo /FeatureName:VirtualMachinePlatform", true))
-            .ReturnsAsync(new ProcessResult(0, "State : Enabled", string.Empty));
 
         var messages = new List<string>();
         userInteraction.Setup(ui => ui.WriteWarning(It.IsAny<string>())).Callback<string>(messages.Add);
@@ -112,7 +102,6 @@ public class EnableWslFeaturesStepTests
         Assert.That(messages.Any(message => message.Contains("administrator", StringComparison.OrdinalIgnoreCase)), Is.True);
         Assert.That(messages.Any(message => message.Contains("ContosoLinux", StringComparison.OrdinalIgnoreCase)), Is.True);
 
-        // Assert.That(messages.Any(message => message.Contains("Microsoft-Windows-Subsystem-Linux", StringComparison.OrdinalIgnoreCase)), Is.True);
         Assert.That(messages.Any(message => message.Contains("wsl --install -d ContosoLinux", StringComparison.OrdinalIgnoreCase)), Is.True);
         Assert.That(exception?.Message, Does.Contain("WSL prerequisites are missing"));
         processRunner.VerifyAll();

@@ -13,13 +13,13 @@ using Onboard.Core.Models;
 /// </summary>
 public class EnableWslFeaturesStep : IOnboardingStep
 {
-    private const string WslFeatureName = "Microsoft-Windows-Subsystem-Linux";
-    private const string VirtualMachinePlatformFeatureName = "VirtualMachinePlatform";
-    private const string WslListDistributionsCommand = "-l -q";
+    private const string WslListDistributionsCommand = "-l -v";
+    private const string OsReleaseCommand = "cat /etc/os-release";
 
     private readonly IProcessRunner processRunner;
     private readonly IUserInteraction userInteraction;
     private readonly OnboardingConfiguration configuration;
+    private readonly string? expectedUbuntuVersionId;
 
     private WslReadiness readiness = WslReadiness.Uninitialized;
 
@@ -31,6 +31,7 @@ public class EnableWslFeaturesStep : IOnboardingStep
         this.processRunner = processRunner;
         this.userInteraction = userInteraction;
         this.configuration = configuration;
+        this.expectedUbuntuVersionId = ExtractVersionFromImage(configuration.WslDistroImage);
     }
 
     public string Description => "Verify Windows Subsystem for Linux prerequisites";
@@ -38,7 +39,7 @@ public class EnableWslFeaturesStep : IOnboardingStep
     public async Task<bool> ShouldExecuteAsync()
     {
         readiness = await EvaluateReadinessAsync().ConfigureAwait(false);
-        return !readiness.FeaturesEnabled || !readiness.HasUbuntuDistribution;
+        return !readiness.CanQueryDistributions || !readiness.HasUbuntuDistribution;
     }
 
     public async Task ExecuteAsync()
@@ -48,7 +49,7 @@ public class EnableWslFeaturesStep : IOnboardingStep
             readiness = await EvaluateReadinessAsync().ConfigureAwait(false);
         }
 
-        if (readiness.FeaturesEnabled && readiness.HasUbuntuDistribution)
+        if (readiness.CanQueryDistributions && readiness.HasUbuntuDistribution)
         {
             return;
         }
@@ -57,16 +58,10 @@ public class EnableWslFeaturesStep : IOnboardingStep
 
         this.userInteraction.WriteWarning("Manual WSL setup required");
 
-        // if (!readiness.IsWslOptionalFeatureEnabled)
-        // {
-        //     this.userInteraction.WriteWarning("The 'Microsoft-Windows-Subsystem-Linux' optional feature is not enabled.");
-        //     issues.Add("Microsoft-Windows-Subsystem-Linux feature is disabled");
-        // }
-
-        if (!readiness.IsVirtualMachinePlatformEnabled)
+        if (!readiness.CanQueryDistributions)
         {
-            this.userInteraction.WriteWarning("The 'VirtualMachinePlatform' optional feature is not enabled.");
-            issues.Add("VirtualMachinePlatform feature is disabled");
+            this.userInteraction.WriteWarning("WSL command not available. Unable to list installed distributions.");
+            issues.Add("WSL command unavailable");
         }
 
         if (!readiness.HasUbuntuDistribution)
@@ -84,67 +79,164 @@ public class EnableWslFeaturesStep : IOnboardingStep
         throw new InvalidOperationException($"{issueSummary}. Complete the manual steps above and rerun the onboarding tool.");
     }
 
-    private async Task<WslReadiness> EvaluateReadinessAsync()
+    private static string BuildOsReleaseArguments(string distributionName)
     {
-        bool isWslFeatureEnabled = await IsFeatureEnabledAsync(WslFeatureName).ConfigureAwait(false);
-        bool isVirtualMachinePlatformEnabled = await IsFeatureEnabledAsync(VirtualMachinePlatformFeatureName).ConfigureAwait(false);
+        string formattedName = distributionName.Any(char.IsWhiteSpace) ? $"\"{distributionName}\"" : distributionName;
+        return $"-d {formattedName} {OsReleaseCommand}";
+    }
 
-        if (!isWslFeatureEnabled || !isVirtualMachinePlatformEnabled)
+    private static IReadOnlyCollection<string> ParseDistributionNames(string commandOutput)
+    {
+        var names = new List<string>();
+        foreach (string rawLine in commandOutput.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
         {
-            return WslReadiness.Create(isWslFeatureEnabled, isVirtualMachinePlatformEnabled, false);
+            string line = rawLine.Trim();
+            if (line.Length == 0)
+            {
+                continue;
+            }
+
+            if (line.StartsWith("NAME", StringComparison.OrdinalIgnoreCase) || line.StartsWith("Windows Subsystem", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            if (line[0] == '*')
+            {
+                line = line[1..].TrimStart();
+            }
+
+            string[] tokens = line.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            if (tokens.Length == 0 || string.Equals(tokens[0], "NAME", StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            names.Add(tokens[0]);
         }
 
+        return names;
+    }
+
+    private static string CombineOutputs(string standardOutput, string standardError)
+    {
+        if (string.IsNullOrWhiteSpace(standardError))
+        {
+            return standardOutput;
+        }
+
+        if (string.IsNullOrWhiteSpace(standardOutput))
+        {
+            return standardError;
+        }
+
+        return standardOutput + Environment.NewLine + standardError;
+    }
+
+    private static string? ExtractOsReleaseValue(IEnumerable<string> lines, string key)
+    {
+        string prefix = key + "=";
+        foreach (string line in lines)
+        {
+            if (line.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            {
+                string value = line[prefix.Length..].Trim().Trim('"');
+                return value;
+            }
+        }
+
+        return null;
+    }
+
+    private static string? ExtractVersionFromImage(string distroImage)
+    {
+        if (string.IsNullOrWhiteSpace(distroImage))
+        {
+            return null;
+        }
+
+        int lastDash = distroImage.LastIndexOf('-');
+        if (lastDash < 0 || lastDash == distroImage.Length - 1)
+        {
+            return null;
+        }
+
+        return distroImage[(lastDash + 1)..];
+    }
+
+    private async Task<WslReadiness> EvaluateReadinessAsync()
+    {
         var listResult = await processRunner.RunAsync("wsl.exe", WslListDistributionsCommand).ConfigureAwait(false);
         if (!listResult.IsSuccess)
         {
-            return WslReadiness.Create(isWslFeatureEnabled, isVirtualMachinePlatformEnabled, false);
+            return WslReadiness.Create(false, false, null);
         }
 
-        bool hasUbuntu = listResult.StandardOutput
-            .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-            .Any(line => string.Equals(line.Trim(), configuration.WslDistroName, StringComparison.OrdinalIgnoreCase));
+        var distributionNames = ParseDistributionNames(listResult.StandardOutput);
+        foreach (string distroName in distributionNames)
+        {
+            var distroResult = await processRunner.RunAsync("wsl.exe", BuildOsReleaseArguments(distroName)).ConfigureAwait(false);
+            if (!distroResult.IsSuccess && string.IsNullOrWhiteSpace(distroResult.StandardOutput) && string.IsNullOrWhiteSpace(distroResult.StandardError))
+            {
+                continue;
+            }
 
-        return WslReadiness.Create(isWslFeatureEnabled, isVirtualMachinePlatformEnabled, hasUbuntu);
+            string combinedOutput = CombineOutputs(distroResult.StandardOutput, distroResult.StandardError);
+            if (IsTargetUbuntuDistribution(combinedOutput))
+            {
+                return WslReadiness.Create(true, true, distroName);
+            }
+        }
+
+        return WslReadiness.Create(true, false, null);
     }
 
-    private async Task<bool> IsFeatureEnabledAsync(string featureName)
+    private bool IsTargetUbuntuDistribution(string osReleaseOutput)
     {
-        string arguments = $"/online /Get-FeatureInfo /FeatureName:{featureName}";
-        var result = await processRunner.RunAsync("dism.exe", arguments, requestElevation: true).ConfigureAwait(false);
-
-        if (!result.IsSuccess)
+        if (string.IsNullOrWhiteSpace(osReleaseOutput))
         {
             return false;
         }
 
-        return result.StandardOutput
+        var lines = osReleaseOutput
             .Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-            .Any(line => line.Contains("State", StringComparison.OrdinalIgnoreCase) && line.Contains("Enabled", StringComparison.OrdinalIgnoreCase));
+            .Select(line => line.Trim());
+
+        string? idValue = ExtractOsReleaseValue(lines, "ID");
+        if (!string.Equals(idValue, "ubuntu", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        string? versionId = ExtractOsReleaseValue(lines, "VERSION_ID");
+        if (!string.IsNullOrEmpty(expectedUbuntuVersionId) && !string.Equals(versionId, expectedUbuntuVersionId, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private sealed class WslReadiness
     {
-        private WslReadiness(bool isWslOptionalFeatureEnabled, bool isVirtualMachinePlatformEnabled, bool hasUbuntuDistribution, bool isInitialized)
+        private WslReadiness(bool canQueryDistributions, bool hasUbuntuDistribution, string? matchingDistributionName, bool isInitialized)
         {
-            IsWslOptionalFeatureEnabled = isWslOptionalFeatureEnabled;
-            IsVirtualMachinePlatformEnabled = isVirtualMachinePlatformEnabled;
+            CanQueryDistributions = canQueryDistributions;
             HasUbuntuDistribution = hasUbuntuDistribution;
+            MatchingDistributionName = matchingDistributionName;
             IsInitialized = isInitialized;
         }
 
-        public static WslReadiness Uninitialized { get; } = new(false, false, false, false);
+        public static WslReadiness Uninitialized { get; } = new(false, false, null, false);
 
-        public static WslReadiness Create(bool isWslOptionalFeatureEnabled, bool isVirtualMachinePlatformEnabled, bool hasUbuntuDistribution) =>
-            new(isWslOptionalFeatureEnabled, isVirtualMachinePlatformEnabled, hasUbuntuDistribution, true);
+        public static WslReadiness Create(bool canQueryDistributions, bool hasUbuntuDistribution, string? matchingDistributionName) =>
+            new(canQueryDistributions, hasUbuntuDistribution, matchingDistributionName, true);
 
-        // public bool FeaturesEnabled => this.IsWslOptionalFeatureEnabled && this.IsVirtualMachinePlatformEnabled;
-        public bool FeaturesEnabled => this.IsVirtualMachinePlatformEnabled;
-
-        public bool IsWslOptionalFeatureEnabled { get; }
-
-        public bool IsVirtualMachinePlatformEnabled { get; }
+        public bool CanQueryDistributions { get; }
 
         public bool HasUbuntuDistribution { get; }
+
+        public string? MatchingDistributionName { get; }
 
         public bool IsInitialized { get; }
     }
