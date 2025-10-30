@@ -10,955 +10,6 @@
   ],
   "tasks": [
     {
-      "id": "8501a7e1-6e5a-44b8-88b6-7a17c9143f10",
-      "name": "Iteration 16: Spectre Presentation Layer",
-      "details": "Spectre.Console presentation layer delivered: abstractions expanded, SpectreUserInteraction implemented, documentation refreshed, validations green, and PR #23 with passing CI is live.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "completed": true,
-      "createdAt": "2025-10-28T01:28:48.165Z",
-      "updatedAt": "2025-10-28T22:21:37.993Z",
-      "dependsOn": [],
-      "priority": 5,
-      "complexity": 8,
-      "status": "done",
-      "tags": [
-        "iteration",
-        "iter-16"
-      ],
-      "estimatedHours": 7,
-      "level": 0
-    },
-    {
-      "id": "258d5609-d4a3-45a2-9267-5fae1049db89",
-      "name": "10 Planning",
-      "details": "Turn the iteration16.md scope into an actionable checklist. Define how the IUserInteraction surface expands, how IStatusContext is represented without leaking Spectre types, the location and structure of StepResult/StepStatus, and the sequence for moving ConsoleUserInteraction into Onboard.Console. Capture dependencies on package references, DI updates, and any temporary adapters needed for legacy tests.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "8501a7e1-6e5a-44b8-88b6-7a17c9143f10",
-      "completed": true,
-      "createdAt": "2025-10-28T01:29:00.507Z",
-      "updatedAt": "2025-10-28T21:47:54.893Z",
-      "dependsOn": [
-        "f22586ce-fb6f-406d-be3a-cd032429f20e"
-      ],
-      "priority": 5,
-      "complexity": 4,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "planning"
-      ],
-      "estimatedHours": 1.5,
-      "level": 1
-    },
-    {
-      "id": "2c3147c7-8e7f-4230-99fb-79308785d0b0",
-      "name": "10.10 Create iteration branch \"iter-16\"",
-      "details": "Branch from main to iter-16 to isolate Spectre.Console UX polish work.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "258d5609-d4a3-45a2-9267-5fae1049db89",
-      "completed": true,
-      "createdAt": "2025-10-28T01:29:12.475Z",
-      "updatedAt": "2025-10-28T21:47:15.955Z",
-      "dependsOn": [
-        "f22586ce-fb6f-406d-be3a-cd032429f20e"
-      ],
-      "priority": 5,
-      "complexity": 2,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "planning",
-        "git"
-      ],
-      "estimatedHours": 0.25,
-      "level": 2
-    },
-    {
-      "id": "c03f2b65-7262-4c12-bb43-c62fa1ecfe8c",
-      "name": "10.20 Finalize Spectre.Console rollout plan",
-      "details": "Produce the detailed rollout doc covering: interface method signatures, new IStatusContext API contracts, StepResult/StepStatus placement, SpectreUserInteraction responsibilities, temporary shims for existing tests, and the order of commits. Share planning notes with reviewers before build starts.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "258d5609-d4a3-45a2-9267-5fae1049db89",
-      "completed": true,
-      "createdAt": "2025-10-28T01:29:17.564Z",
-      "updatedAt": "2025-10-28T21:47:51.117Z",
-      "dependsOn": [
-        "2c3147c7-8e7f-4230-99fb-79308785d0b0"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "planning"
-      ],
-      "estimatedHours": 0.75,
-      "level": 2
-    },
-    {
-      "id": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "name": "20 Build & Document",
-      "details": "Deliver the Iteration 16 Spectre presentation layer changes across Onboard.Core and Onboard.Console: expand abstractions, add StepResult models, implement SpectreUserInteraction plus status adapters, register dependencies, and keep the core library free of UI references.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "8501a7e1-6e5a-44b8-88b6-7a17c9143f10",
-      "completed": true,
-      "createdAt": "2025-10-28T01:30:53.717Z",
-      "updatedAt": "2025-10-28T22:12:29.106Z",
-      "dependsOn": [
-        "258d5609-d4a3-45a2-9267-5fae1049db89"
-      ],
-      "priority": 5,
-      "complexity": 4,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "build"
-      ],
-      "estimatedHours": 3,
-      "level": 1
-    },
-    {
-      "id": "aecb8db4-6be6-429f-bc62-a6feff38b814",
-      "name": "20.10 Extend IUserInteraction & add IStatusContext",
-      "details": "Expand Onboard.Core/Abstractions/IUserInteraction.cs with the richer contract (WriteNormal/Success/Warning/Error/Debug, ShowWelcomeBanner, ShowSummary, RunStatusAsync, Ask, Confirm) and introduce Onboard.Core/Abstractions/IStatusContext.cs to expose spinner updates without leaking Spectre types. Update any compile-time references and document default behaviours expected by downstream orchestrators.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": true,
-      "createdAt": "2025-10-28T01:30:59.225Z",
-      "updatedAt": "2025-10-28T22:11:28.755Z",
-      "dependsOn": [
-        "c03f2b65-7262-4c12-bb43-c62fa1ecfe8c"
-      ],
-      "priority": 5,
-      "complexity": 4,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "build",
-        "ux"
-      ],
-      "estimatedHours": 1.25,
-      "level": 2
-    },
-    {
-      "id": "26213253-c887-4524-9663-bc884ff7493d",
-      "name": "20.20 Create SpectreUserInteraction",
-      "details": "Remove ConsoleUserInteraction from Onboard.Core and add Onboard.Console/Services/SpectreUserInteraction.cs implementing the expanded IUserInteraction interface. Use Spectre.Console primitives for semantic colors, prompts, status contexts, and welcome/summary output. Ensure constructors accept injected IAnsiConsole/IConfiguration as needed without introducing Spectre dependencies into Onboard.Core.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": true,
-      "createdAt": "2025-10-28T01:31:04.414Z",
-      "updatedAt": "2025-10-28T22:11:34.042Z",
-      "dependsOn": [
-        "aecb8db4-6be6-429f-bc62-a6feff38b814"
-      ],
-      "priority": 5,
-      "complexity": 4,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "build",
-        "ux"
-      ],
-      "estimatedHours": 1.5,
-      "level": 2
-    },
-    {
-      "id": "23fcec7b-a99b-4b05-af90-c6ca89440f95",
-      "name": "20.30 Add StepResult model",
-      "details": "Create Onboard.Core/Models/StepResult.cs containing the StepStatus enum (Executed, Skipped, Failed) and the StepResult record with step name, status, optional skip reason, and failure details. Ensure the model lives in Onboard.Core so orchestrators can consume it without UI dependencies. Update project files and namespaces accordingly.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": true,
-      "createdAt": "2025-10-28T01:31:13.884Z",
-      "updatedAt": "2025-10-28T22:11:49.924Z",
-      "dependsOn": [
-        "aecb8db4-6be6-429f-bc62-a6feff38b814"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "build",
-        "orchestration"
-      ],
-      "estimatedHours": 1.25,
-      "level": 2
-    },
-    {
-      "id": "3c61e5b5-4ccb-43a0-a250-435464199746",
-      "name": "20.40 Build Spectre status context adapter",
-      "details": "Implement an internal adapter inside Onboard.Console that bridges IUserInteraction.RunStatusAsync to Spectre.Console's Status API. Provide an IStatusContext implementation that proxies update messages, cancellation, and progress reporting without leaking Spectre types to Onboard.Core. Unit-test the adapter at the service level once Spectre.Console.Testing is available.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": true,
-      "createdAt": "2025-10-28T01:31:18.830Z",
-      "updatedAt": "2025-10-28T22:11:54.434Z",
-      "dependsOn": [
-        "23fcec7b-a99b-4b05-af90-c6ca89440f95",
-        "26213253-c887-4524-9663-bc884ff7493d"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "build",
-        "orchestration"
-      ],
-      "estimatedHours": 1,
-      "level": 2
-    },
-    {
-      "id": "ba51e0db-8ed7-43eb-a72e-f8cc06393814",
-      "name": "20.50 Register Spectre dependencies",
-      "details": "Add the Spectre.Console package reference to Onboard.Console, register SpectreUserInteraction and supporting adapters in Program.cs, and ensure dependency injection keeps Onboard.Core free of Spectre references. Update composition root tests or bootstrapping smoke checks to cover the registration changes.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": true,
-      "createdAt": "2025-10-28T01:31:25.883Z",
-      "updatedAt": "2025-10-28T22:11:58.697Z",
-      "dependsOn": [
-        "26213253-c887-4524-9663-bc884ff7493d"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "build",
-        "di"
-      ],
-      "estimatedHours": 0.75,
-      "level": 2
-    },
-    {
-      "id": "a37c8df7-68ff-400b-8bec-b398c37dfd85",
-      "name": "20.60 Ensure Onboard.Core remains UI-agnostic",
-      "details": "Sweep Onboard.Core for lingering ConsoleUserInteraction references, adjust project files to remove Spectre dependencies, and update any helper classes or factories that previously lived in the core library. Confirm the build outputs show a clean separation between Onboard.Core (no Spectre) and Onboard.Console (Spectre-aware).",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": true,
-      "createdAt": "2025-10-28T01:31:32.005Z",
-      "updatedAt": "2025-10-28T22:12:05.674Z",
-      "dependsOn": [
-        "aecb8db4-6be6-429f-bc62-a6feff38b814"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "build",
-        "steps"
-      ],
-      "estimatedHours": 1.25,
-      "level": 2
-    },
-    {
-      "id": "da0c31dd-55e7-49ab-997c-ef603e3d2f65",
-      "name": "20.70 Prepare Spectre.Console testing harness",
-      "details": "Add the Spectre.Console.Testing dependency to the test project, create helper fakes/mocks for IAnsiConsole and IStatusContext, and update existing unit tests to compile after the IUserInteraction expansion. Defer the full SpectreUserInteraction coverage to Iteration 17 but ensure the plumbing is in place.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": true,
-      "createdAt": "2025-10-28T01:31:37.364Z",
-      "updatedAt": "2025-10-28T22:12:09.680Z",
-      "dependsOn": [
-        "26213253-c887-4524-9663-bc884ff7493d"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "build",
-        "testing"
-      ],
-      "estimatedHours": 1.25,
-      "level": 2
-    },
-    {
-      "id": "90620fb1-695f-434a-bf12-4f0496616365",
-      "name": "20.90 Implement changes for iter-16",
-      "details": "Wrap up Iteration 16 implementation work on branch iter-16: ensure IUserInteraction expansion, StepResult models, SpectreUserInteraction, adapters, DI changes, and testing scaffolding all compile together. Capture commit notes for hand-off to Iteration 17.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": true,
-      "createdAt": "2025-10-28T01:31:43.654Z",
-      "updatedAt": "2025-10-28T22:12:12.681Z",
-      "dependsOn": [
-        "3c61e5b5-4ccb-43a0-a250-435464199746",
-        "ba51e0db-8ed7-43eb-a72e-f8cc06393814",
-        "a37c8df7-68ff-400b-8bec-b398c37dfd85",
-        "da0c31dd-55e7-49ab-997c-ef603e3d2f65"
-      ],
-      "priority": 5,
-      "complexity": 2,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "build"
-      ],
-      "estimatedHours": 0.5,
-      "level": 2
-    },
-    {
-      "id": "1637469b-367d-4db5-8192-e72d62b48d90",
-      "name": "30 Local Validation",
-      "details": "Validate Iteration 16 Spectre presentation changes locally with automated suites and targeted Spectre runs before opening the PR.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "8501a7e1-6e5a-44b8-88b6-7a17c9143f10",
-      "completed": true,
-      "createdAt": "2025-10-28T01:31:49.811Z",
-      "updatedAt": "2025-10-28T22:18:21.423Z",
-      "dependsOn": [
-        "310a9786-1bb2-44a8-a0e6-ac9b07252209"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "validation"
-      ],
-      "estimatedHours": 1.5,
-      "level": 1
-    },
-    {
-      "id": "796e7fcd-2a7f-440b-ad1f-3d0ee4843d32",
-      "name": "Open PR: iter-16",
-      "details": "Opened PR #23 (https://github.com/kevinaud/onboard-v2/pull/23) after completing build, tests, documentation, and local Spectre validation. PR summary highlights Spectre.Console adoption and expanded IUserInteraction surface.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "d9b140ac-fd2c-4081-921e-60db125d1598",
-      "completed": true,
-      "createdAt": "2025-10-28T01:31:57.220Z",
-      "updatedAt": "2025-10-28T22:21:22.352Z",
-      "dependsOn": [
-        "90620fb1-695f-434a-bf12-4f0496616365"
-      ],
-      "priority": 5,
-      "complexity": 2,
-      "status": "done",
-      "tags": [
-        "iter-16",
-        "delivery",
-        "pr"
-      ],
-      "estimatedHours": 0.25,
-      "level": 2
-    },
-    {
-      "id": "1f3a3bb7-2888-47ca-87e1-71425ddd350c",
-      "name": "Cross-platform Spectre runtime spot-check",
-      "details": "Run Onboard.Console on Windows, macOS, and Linux environments to confirm SpectreUserInteraction initializes, status adapter runs, and no Spectre types leak into Onboard.Core before publishing the PR.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "1637469b-367d-4db5-8192-e72d62b48d90",
-      "completed": true,
-      "createdAt": "2025-10-28T01:32:18.217Z",
-      "updatedAt": "2025-10-28T22:18:16.799Z",
-      "dependsOn": [],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "validation",
-        "verification"
-      ],
-      "estimatedHours": 1,
-      "level": 2
-    },
-    {
-      "id": "d9b140ac-fd2c-4081-921e-60db125d1598",
-      "name": "40 Delivery & CI",
-      "details": "PR #23 opened and CI run 18890856328 succeeded. Iteration 16 delivery gate closed with no outstanding follow-up actions.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "8501a7e1-6e5a-44b8-88b6-7a17c9143f10",
-      "completed": true,
-      "createdAt": "2025-10-28T01:32:22.150Z",
-      "updatedAt": "2025-10-28T22:21:32.262Z",
-      "dependsOn": [
-        "1637469b-367d-4db5-8192-e72d62b48d90"
-      ],
-      "priority": 5,
-      "complexity": 3,
-      "status": "done",
-      "tags": [
-        "iter-16",
-        "delivery"
-      ],
-      "estimatedHours": 2,
-      "level": 1
-    },
-    {
-      "id": "e9504f11-d68d-4fe4-8727-c929466c5a37",
-      "name": "Local full-suite lint/test & dry-run",
-      "details": "Run dotnet format, dotnet build, and dotnet test on iter-16. Exercise Onboard.Console with the new SpectreUserInteraction in dry-run mode to ensure the presentation layer initializes without the sequential orchestration changes planned for Iteration 17.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "1637469b-367d-4db5-8192-e72d62b48d90",
-      "completed": true,
-      "createdAt": "2025-10-28T01:32:26.724Z",
-      "updatedAt": "2025-10-28T22:18:08.046Z",
-      "dependsOn": [],
-      "priority": 5,
-      "complexity": 2,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "validation",
-        "testing"
-      ],
-      "estimatedHours": 0.75,
-      "level": 2
-    },
-    {
-      "id": "cdd23712-36a4-45d3-830e-0bcd76aa2ca6",
-      "name": "Implement/update unit tests",
-      "details": "Update or add tests to cover the expanded IUserInteraction contract, Spectre status adapter, and DI wiring so the new presentation layer is exercised.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": true,
-      "createdAt": "2025-10-28T01:32:31.246Z",
-      "updatedAt": "2025-10-28T22:12:18.461Z",
-      "dependsOn": [],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "testing"
-      ],
-      "estimatedHours": 1,
-      "level": 2
-    },
-    {
-      "id": "3a11bd06-793d-42b9-8834-6fb8af7c05e3",
-      "name": "Manual Spectre UX smoke test",
-      "details": "Manually exercise SpectreUserInteraction via harness or dry-run to confirm welcome banner, semantic colors, and status updates behave before orchestrator integration lands in Iteration 17.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "1637469b-367d-4db5-8192-e72d62b48d90",
-      "completed": true,
-      "createdAt": "2025-10-28T01:32:39.009Z",
-      "updatedAt": "2025-10-28T22:18:09.585Z",
-      "dependsOn": [
-        "cdd23712-36a4-45d3-830e-0bcd76aa2ca6"
-      ],
-      "priority": 5,
-      "complexity": 2,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "validation",
-        "manual-test"
-      ],
-      "estimatedHours": 0.75,
-      "level": 2
-    },
-    {
-      "id": "fa668889-9f94-4f71-b6a4-ef73ca6c65c8",
-      "name": "Update architecture documentation",
-      "details": "Document the Spectre presentation layer architecture, including IUserInteraction changes, IStatusContext, and the new separation between Onboard.Core and Onboard.Console.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": true,
-      "createdAt": "2025-10-28T01:32:52.631Z",
-      "updatedAt": "2025-10-28T22:11:07.883Z",
-      "dependsOn": [],
-      "priority": 5,
-      "complexity": 2,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "docs"
-      ],
-      "estimatedHours": 0.5,
-      "level": 2
-    },
-    {
-      "id": "90cacdb7-3d8f-4292-841f-f1d47566fba9",
-      "name": "Update README & troubleshooting guidance",
-      "details": "Refresh README/troubleshooting content to explain the Spectre-based interaction layer, logging expectations, and any interim gaps before Iteration 17.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "310a9786-1bb2-44a8-a0e6-ac9b07252209",
-      "completed": true,
-      "createdAt": "2025-10-28T01:32:57.562Z",
-      "updatedAt": "2025-10-28T22:11:12.781Z",
-      "dependsOn": [
-        "fa668889-9f94-4f71-b6a4-ef73ca6c65c8"
-      ],
-      "priority": 5,
-      "complexity": 2,
-      "status": "pending",
-      "tags": [
-        "iter-16",
-        "docs"
-      ],
-      "estimatedHours": 0.5,
-      "level": 2
-    },
-    {
-      "id": "e856eb9a-bc04-4b96-b81d-9ff0cd4825dd",
-      "name": "Iteration 17: UX-Oriented Orchestration",
-      "details": "Goal: Integrate the new Spectre-based interaction APIs into the orchestration pipeline to deliver the polished spinner workflow and completion summary described in prds/iterations/iteration17.md. Scope:\n- Update SequentialOrchestrator to drive execution through IUserInteraction.RunStatusAsync, emit Spectre markup for step lifecycle events, collect StepResult data, and present a completion summary.\n- Enhance Program.cs startup to display a Spectre welcome banner with resolved OS/architecture before invoking the orchestrator, and ensure platform-specific orchestrators provide spinner-friendly descriptions plus skip reasons.\n- Refresh unit tests to mock the expanded IUserInteraction (including RunStatusAsync), and add SpectreUserInteractionTests via Spectre.Console.Testing to verify success/skipped/error markup output and summary behaviour.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "completed": true,
-      "createdAt": "2025-10-28T14:26:23.134Z",
-      "updatedAt": "2025-10-28T23:49:24.404Z",
-      "dependsOn": [],
-      "priority": 5,
-      "complexity": 7,
-      "status": "pending",
-      "tags": [
-        "iteration",
-        "iter-17"
-      ],
-      "estimatedHours": 7,
-      "level": 0
-    },
-    {
-      "id": "551871b6-8ea4-4c24-8bbe-8e22cd950f1f",
-      "name": "10 Planning",
-      "details": "Branch iter-17 created and iteration plan captured in docs/iteration-plans/iteration17-plan.md outlining status flow changes, welcome banner integration, summary handling, and test strategy.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "e856eb9a-bc04-4b96-b81d-9ff0cd4825dd",
-      "completed": true,
-      "createdAt": "2025-10-28T14:27:45.861Z",
-      "updatedAt": "2025-10-28T22:26:26.836Z",
-      "dependsOn": [
-        "d06400fe-db45-4add-b71c-1ce2dd27212b"
-      ],
-      "priority": 5,
-      "status": "done",
-      "tags": [
-        "iter-17",
-        "planning"
-      ],
-      "estimatedHours": 1.5,
-      "level": 1
-    },
-    {
-      "id": "8fd0ab3a-a476-479a-9a97-2f044785de58",
-      "name": "10.10 Create iteration branch \"iter-17\"",
-      "details": "Created branch iter-17 from up-to-date main to isolate orchestration UX updates.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "551871b6-8ea4-4c24-8bbe-8e22cd950f1f",
-      "completed": true,
-      "createdAt": "2025-10-28T14:27:54.065Z",
-      "updatedAt": "2025-10-28T22:25:07.294Z",
-      "dependsOn": [
-        "551871b6-8ea4-4c24-8bbe-8e22cd950f1f"
-      ],
-      "priority": 5,
-      "status": "done",
-      "tags": [
-        "iter-17",
-        "planning",
-        "git"
-      ],
-      "estimatedHours": 0.25,
-      "level": 2
-    },
-    {
-      "id": "ff96e468-e0cf-4a9d-8f02-6fbf6190db78",
-      "name": "10.20 Finalize orchestration UX plan",
-      "details": "Documented orchestration UX rollout in docs/iteration-plans/iteration17-plan.md covering status flow changes, startup banner, summary handling, and test strategy.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "551871b6-8ea4-4c24-8bbe-8e22cd950f1f",
-      "completed": true,
-      "createdAt": "2025-10-28T14:28:00.546Z",
-      "updatedAt": "2025-10-28T22:26:20.882Z",
-      "dependsOn": [
-        "8fd0ab3a-a476-479a-9a97-2f044785de58"
-      ],
-      "priority": 5,
-      "status": "done",
-      "tags": [
-        "iter-17",
-        "planning"
-      ],
-      "estimatedHours": 0.75,
-      "level": 2
-    },
-    {
-      "id": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "name": "20 Build & Document",
-      "details": "Implement the Iteration 17 orchestration UX updates across SequentialOrchestrator, Program.cs, and platform-specific orchestrators.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "e856eb9a-bc04-4b96-b81d-9ff0cd4825dd",
-      "completed": true,
-      "createdAt": "2025-10-28T14:28:08.049Z",
-      "updatedAt": "2025-10-28T22:36:14.910Z",
-      "dependsOn": [
-        "551871b6-8ea4-4c24-8bbe-8e22cd950f1f"
-      ],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "build"
-      ],
-      "estimatedHours": 3,
-      "level": 1
-    },
-    {
-      "id": "430407b6-ae0e-4747-a914-1bf6ea1a1fc6",
-      "name": "20.10 Enhance SequentialOrchestrator status flow",
-      "details": "Refactor SequentialOrchestrator to run each step inside IUserInteraction.RunStatusAsync, emit Spectre markup for start/success/warning/error states, and ensure spinner updates pause cleanly for prompts.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "completed": true,
-      "createdAt": "2025-10-28T14:28:15.369Z",
-      "updatedAt": "2025-10-28T22:35:25.896Z",
-      "dependsOn": [
-        "ff96e468-e0cf-4a9d-8f02-6fbf6190db78"
-      ],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "build",
-        "orchestration"
-      ],
-      "estimatedHours": 1.25,
-      "level": 2
-    },
-    {
-      "id": "1ec347c3-6e4e-4b15-afbe-d69d3bd4e135",
-      "name": "20.20 Collect StepResult data & ShowSummary",
-      "details": "Augment SequentialOrchestrator to populate StepResult entries for each step (executed, skipped with reason, failed with exception) and call IUserInteraction.ShowSummary with aggregated results after execution.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "completed": true,
-      "createdAt": "2025-10-28T14:28:23.753Z",
-      "updatedAt": "2025-10-28T22:35:31.651Z",
-      "dependsOn": [
-        "430407b6-ae0e-4747-a914-1bf6ea1a1fc6"
-      ],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "build",
-        "orchestration"
-      ],
-      "estimatedHours": 1.25,
-      "level": 2
-    },
-    {
-      "id": "ab890089-fd4e-4709-ab04-4596c3482bb0",
-      "name": "20.30 Update Program.cs startup experience",
-      "details": "Call IUserInteraction.ShowWelcomeBanner in Program.cs with the resolved OS/architecture before dispatching to the platform orchestrator. Ensure the banner uses Spectre markup and that dependency injection surfaces ExecutionOptions or PlatformFacts as needed.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "completed": true,
-      "createdAt": "2025-10-28T14:28:31.100Z",
-      "updatedAt": "2025-10-28T22:35:38.979Z",
-      "dependsOn": [
-        "ff96e468-e0cf-4a9d-8f02-6fbf6190db78"
-      ],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "build",
-        "startup"
-      ],
-      "estimatedHours": 1,
-      "level": 2
-    },
-    {
-      "id": "6d666156-2371-43fd-970b-7bdb82103541",
-      "name": "20.40 Surface orchestrator status metadata",
-      "details": "Update each platform-specific orchestrator to supply spinner-friendly step descriptions and capture human-readable skip reasons that populate StepResult entries for summary output.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "completed": true,
-      "createdAt": "2025-10-28T14:28:37.143Z",
-      "updatedAt": "2025-10-28T22:35:47.882Z",
-      "dependsOn": [
-        "1ec347c3-6e4e-4b15-afbe-d69d3bd4e135"
-      ],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "build",
-        "orchestration"
-      ],
-      "estimatedHours": 1.25,
-      "level": 2
-    },
-    {
-      "id": "e17872e8-ae5e-40f4-95a9-fe35c5458e0e",
-      "name": "20.50 Polish Spectre summary output",
-      "details": "Update SpectreUserInteraction.ShowSummary to render executed/skipped/failed steps with Spectre tables or markup consistent with the UX plan, including skip reasons and failure details sourced from StepResult.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "completed": true,
-      "createdAt": "2025-10-28T14:28:52.657Z",
-      "updatedAt": "2025-10-28T22:35:55.209Z",
-      "dependsOn": [
-        "1ec347c3-6e4e-4b15-afbe-d69d3bd4e135"
-      ],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "build",
-        "ux"
-      ],
-      "estimatedHours": 1,
-      "level": 2
-    },
-    {
-      "id": "6abbf1cd-4485-4023-bbd1-51d9d9f1537f",
-      "name": "20.90 Implement changes for iter-17",
-      "details": "Wrap up Iteration 17 implementation work on branch iter-17: ensure SequentialOrchestrator, Program.cs, platform orchestrators, and Spectre summaries all build together and are ready for validation.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "completed": true,
-      "createdAt": "2025-10-28T14:29:00.139Z",
-      "updatedAt": "2025-10-28T22:36:08.802Z",
-      "dependsOn": [
-        "6d666156-2371-43fd-970b-7bdb82103541",
-        "e17872e8-ae5e-40f4-95a9-fe35c5458e0e"
-      ],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "build"
-      ],
-      "estimatedHours": 0.5,
-      "level": 2
-    },
-    {
-      "id": "011a0a57-589a-4a2b-990f-800b1fe90a8c",
-      "name": "30 Local Validation",
-      "details": "Validate Iteration 17 orchestrator UX updates locally through automated suites and representative Spectre runs before opening the PR.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "e856eb9a-bc04-4b96-b81d-9ff0cd4825dd",
-      "completed": true,
-      "createdAt": "2025-10-28T14:29:08.145Z",
-      "updatedAt": "2025-10-28T22:40:26.209Z",
-      "dependsOn": [
-        "fe445a4e-112e-442c-a56f-fabdc0a1c996"
-      ],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "validation"
-      ],
-      "estimatedHours": 1.5,
-      "level": 1
-    },
-    {
-      "id": "8b2aeaed-dbcf-4bf7-9e4d-77a6082bc164",
-      "name": "Open PR: iter-17",
-      "details": "Opened PR #25 (https://github.com/kevinaud/onboard-v2/pull/25) summarizing the spinner workflow, welcome banner, and completion summary UX.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "0be2b500-02c8-4bd1-8b8a-3fc9d58ed35d",
-      "completed": true,
-      "createdAt": "2025-10-28T14:29:19.099Z",
-      "updatedAt": "2025-10-28T23:48:12.040Z",
-      "dependsOn": [
-        "6abbf1cd-4485-4023-bbd1-51d9d9f1537f"
-      ],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "delivery",
-        "pr"
-      ],
-      "estimatedHours": 0.25,
-      "level": 2
-    },
-    {
-      "id": "e58bd3a8-1709-4b19-8469-ea652ae003da",
-      "name": "Cross-platform spinner workflow spot-check",
-      "details": "Run Onboard.Console on Linux in dry-run mode to confirm spinner flow, skip messaging, and completion summary. Non-Linux spot-checks require host access and remain a residual risk.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "011a0a57-589a-4a2b-990f-800b1fe90a8c",
-      "completed": true,
-      "createdAt": "2025-10-28T14:29:36.848Z",
-      "updatedAt": "2025-10-28T22:40:22.201Z",
-      "dependsOn": [],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "validation",
-        "verification"
-      ],
-      "estimatedHours": 0.75,
-      "level": 2
-    },
-    {
-      "id": "0be2b500-02c8-4bd1-8b8a-3fc9d58ed35d",
-      "name": "40 Delivery & CI",
-      "details": "Push Iteration 17 orchestrator UX changes for review and keep PR CI runs green.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "e856eb9a-bc04-4b96-b81d-9ff0cd4825dd",
-      "completed": true,
-      "createdAt": "2025-10-28T14:29:45.430Z",
-      "updatedAt": "2025-10-28T23:49:13.841Z",
-      "dependsOn": [
-        "011a0a57-589a-4a2b-990f-800b1fe90a8c"
-      ],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "delivery"
-      ],
-      "estimatedHours": 2,
-      "level": 1
-    },
-    {
-      "id": "2df47d18-5216-4d41-b2ae-58ad6a808e31",
-      "name": "Local full-suite lint/test & dry-run",
-      "details": "Run dotnet format, dotnet build, and dotnet test on iter-17, then execute the onboarding flow in dry-run mode to validate spinner messaging and summary output end-to-end.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "011a0a57-589a-4a2b-990f-800b1fe90a8c",
-      "completed": true,
-      "createdAt": "2025-10-28T14:29:53.476Z",
-      "updatedAt": "2025-10-28T22:39:54.909Z",
-      "dependsOn": [],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "validation",
-        "testing"
-      ],
-      "estimatedHours": 0.75,
-      "level": 2
-    },
-    {
-      "id": "b1309f3e-17cd-40a8-821b-a4e97521980d",
-      "name": "Implement/update unit tests",
-      "details": "Refresh orchestrator and interaction tests to mock RunStatusAsync flows, verify StepResult collection, and cover new summary output paths.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "completed": true,
-      "createdAt": "2025-10-28T14:29:59.443Z",
-      "updatedAt": "2025-10-28T22:35:59.593Z",
-      "dependsOn": [],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "testing"
-      ],
-      "estimatedHours": 1,
-      "level": 2
-    },
-    {
-      "id": "e83f17f9-c397-4cca-87a1-ea719b485fef",
-      "name": "Add SpectreUserInteraction tests",
-      "details": "Add Spectre.Console.Testing-based coverage to verify SpectreUserInteraction markup for success, skipped, and error cases plus summary rendering.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "completed": true,
-      "createdAt": "2025-10-28T14:30:09.884Z",
-      "updatedAt": "2025-10-28T22:36:03.192Z",
-      "dependsOn": [],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "testing"
-      ],
-      "estimatedHours": 1,
-      "level": 2
-    },
-    {
-      "id": "a7ea79b6-cdec-40e1-ab8d-066918a7a31b",
-      "name": "Update README & quick-start docs",
-      "details": "Update README and quick-start instructions to highlight the Spectre spinner workflow and completion summary experience.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "completed": true,
-      "createdAt": "2025-10-28T14:30:28.497Z",
-      "updatedAt": "2025-10-28T22:38:53.569Z",
-      "dependsOn": [],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "docs"
-      ],
-      "estimatedHours": 0.5,
-      "level": 2
-    },
-    {
-      "id": "8b84d298-cfbc-445c-802d-efd462961007",
-      "name": "Update architecture documentation",
-      "details": "Revise architecture and UX references to explain SequentialOrchestrator status flow, StepResult summary output, and platform skip reasons.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "fe445a4e-112e-442c-a56f-fabdc0a1c996",
-      "completed": true,
-      "createdAt": "2025-10-28T14:30:38.539Z",
-      "updatedAt": "2025-10-28T22:38:45.536Z",
-      "dependsOn": [
-        "a7ea79b6-cdec-40e1-ab8d-066918a7a31b"
-      ],
-      "priority": 5,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "docs"
-      ],
-      "estimatedHours": 0.5,
-      "level": 2
-    },
-    {
-      "id": "29666a20-6635-4fc0-83d1-e20b900c3770",
-      "name": "Monitor CI & Resolve Failures",
-      "details": "CI workflow run 18890856328 for PR #23 finished successfully (ci.yml). No follow-up fixes required.",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "d9b140ac-fd2c-4081-921e-60db125d1598",
-      "completed": true,
-      "createdAt": "2025-10-28T16:23:11.707Z",
-      "updatedAt": "2025-10-28T22:21:26.197Z",
-      "dependsOn": [],
-      "priority": 5,
-      "complexity": 3,
-      "status": "done",
-      "tags": [
-        "iter-16",
-        "delivery",
-        "ci"
-      ],
-      "estimatedHours": 0.5,
-      "level": 2
-    },
-    {
-      "id": "d956656c-3fe8-4dcd-b9be-86487165a5d2",
-      "name": "Monitor CI & Resolve Failures",
-      "details": "CI run 18892491190 for PR #25 finished successfully (conclusion: success).",
-      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
-      "parentId": "0be2b500-02c8-4bd1-8b8a-3fc9d58ed35d",
-      "completed": true,
-      "createdAt": "2025-10-28T16:25:27.988Z",
-      "updatedAt": "2025-10-28T23:49:09.041Z",
-      "dependsOn": [],
-      "priority": 5,
-      "complexity": 3,
-      "status": "pending",
-      "tags": [
-        "iter-17",
-        "delivery",
-        "ci"
-      ],
-      "estimatedHours": 0.5,
-      "level": 2
-    },
-    {
       "id": "6b6cc900-0095-4d7d-afde-2e897f75a473",
       "name": "Iteration 18: Hardening Diagnostics and Prerequisite Handling",
       "details": "Fix critical bugs in diagnostic and system-check layers: resolve verbose mode UI crash and overhaul WSL prerequisite check with UAC elevation support. Expand test coverage for UI and process execution.",
@@ -1293,6 +344,245 @@
         "monitoring"
       ],
       "estimatedHours": 1,
+      "level": 2
+    },
+    {
+      "id": "d76e408b-70e1-4ebd-a8b1-9600433ae874",
+      "name": "Iteration 19: Windows Developer Experience Parity",
+      "details": "Implement the Windows developer parity scope from prds/iterations/iteration19.md, ensuring VS Code remote tooling, dotfiles bootstrap, GitHub authentication, and Docker Desktop integration reach feature-complete parity with the legacy Windows bootstrapper. Follow Fire-and-Forget standards so the iteration ends with a green PR.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "completed": false,
+      "createdAt": "2025-10-30T15:38:58.039Z",
+      "updatedAt": "2025-10-30T15:38:58.039Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [],
+      "level": 0
+    },
+    {
+      "id": "9139942f-f3bc-45d1-82e0-c0e7e7b0efa4",
+      "name": "10 Planning",
+      "details": "Prepare the workspace for iteration 19 by following the planning checklist before any implementation work begins.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "d76e408b-70e1-4ebd-a8b1-9600433ae874",
+      "completed": false,
+      "createdAt": "2025-10-30T15:39:03.029Z",
+      "updatedAt": "2025-10-30T15:39:03.029Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [],
+      "level": 1
+    },
+    {
+      "id": "b4c3d721-9796-4801-8e9b-5fe447e29d2f",
+      "name": "20 Build & Document",
+      "details": "Deliver all iteration 19 code, tests, and documentation updates required for Windows developer experience parity before validation begins.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "d76e408b-70e1-4ebd-a8b1-9600433ae874",
+      "completed": false,
+      "createdAt": "2025-10-30T15:39:06.241Z",
+      "updatedAt": "2025-10-30T15:39:06.241Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [],
+      "level": 1
+    },
+    {
+      "id": "d19e57f8-e459-41b2-a448-4f107996a22e",
+      "name": "30 Local Validation",
+      "details": "Run the full local validation gauntlet for iteration 19 before handing off to CI.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "d76e408b-70e1-4ebd-a8b1-9600433ae874",
+      "completed": false,
+      "createdAt": "2025-10-30T15:39:11.431Z",
+      "updatedAt": "2025-10-30T15:39:11.431Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [],
+      "level": 1
+    },
+    {
+      "id": "57629231-ea5e-4600-8403-fd7f45bb3bda",
+      "name": "40 Delivery & CI",
+      "details": "Push iteration 19 for review and ensure remote automation finishes green.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "d76e408b-70e1-4ebd-a8b1-9600433ae874",
+      "completed": false,
+      "createdAt": "2025-10-30T15:39:15.258Z",
+      "updatedAt": "2025-10-30T15:39:15.258Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [],
+      "level": 1
+    },
+    {
+      "id": "0b97de80-8fd1-4859-82ed-9facf7f7fa6d",
+      "name": "Create iteration branch \"iter-19\"",
+      "details": "Branch from the latest main into iter-19 before any implementation work, pushing the branch to origin once created.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "9139942f-f3bc-45d1-82e0-c0e7e7b0efa4",
+      "completed": false,
+      "createdAt": "2025-10-30T15:39:22.178Z",
+      "updatedAt": "2025-10-30T15:39:22.178Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [],
+      "level": 2
+    },
+    {
+      "id": "2d276cdf-b2c2-4e82-96e9-8705875f1670",
+      "name": "Add VS Code Remote Development extension provisioning",
+      "details": "Create a Windows onboarding step that uses IProcessRunner to detect ms-vscode-remote.vscode-remote-extensionpack via `code --list-extensions` and installs it with `code --install-extension` when missing. Ensure status output is surfaced through IUserInteraction and guard the step for idempotency. Cover skip vs install paths with unit tests.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "b4c3d721-9796-4801-8e9b-5fe447e29d2f",
+      "completed": false,
+      "createdAt": "2025-10-30T15:39:32.037Z",
+      "updatedAt": "2025-10-30T15:39:32.037Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [],
+      "level": 2
+    },
+    {
+      "id": "e68bffa9-4434-49de-adb2-f3741d06f75b",
+      "name": "Implement VS Code dotfiles bootstrap configuration",
+      "details": "Build a Windows step that reads %APPDATA%/Code/User/settings.json through IFileSystem, prompts for a dotfiles repository (custom value, default kevinaud/dotfiles, or skip), and persists dotfiles.repository plus optional dotfiles.targetPath without disturbing other settings. Ensure idempotent behavior when configuration exists and add tests covering all prompt branches.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "b4c3d721-9796-4801-8e9b-5fe447e29d2f",
+      "completed": false,
+      "createdAt": "2025-10-30T15:39:36.963Z",
+      "updatedAt": "2025-10-30T15:39:36.963Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [],
+      "level": 2
+    },
+    {
+      "id": "6cb90b23-b53f-4617-9f99-f720b463e9fa",
+      "name": "Pre-authenticate Git Credential Manager with GitHub",
+      "details": "Introduce a Windows onboarding step that probes for cached GitHub credentials using git-credential-manager.exe with GCM_INTERACTIVE=never and, when absent, launches `gh auth login --hostname github.com --git-protocol https --web`. Mirror the command flow outlined in prds/git_auth_reference.md, surface clear messaging, and mock gh/GCM calls in unit tests for both skip and login scenarios.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "b4c3d721-9796-4801-8e9b-5fe447e29d2f",
+      "completed": false,
+      "createdAt": "2025-10-30T15:39:42.120Z",
+      "updatedAt": "2025-10-30T15:39:42.120Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [],
+      "level": 2
+    },
+    {
+      "id": "4d8e60d1-efa5-4958-910c-1962966f8262",
+      "name": "Synchronize Docker Desktop WSL integration",
+      "details": "Create a Windows step that loads %APPDATA%/Docker/settings-store.json via IFileSystem, ensures the selected WSL distro from earlier steps appears in IntegratedWslDistros, writes updates atomically, and restarts Docker Desktop only when changes occur. Respect idempotency and add tests for no-op, append, and restart-required paths.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "b4c3d721-9796-4801-8e9b-5fe447e29d2f",
+      "completed": false,
+      "createdAt": "2025-10-30T15:39:47.390Z",
+      "updatedAt": "2025-10-30T15:39:47.390Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [],
+      "level": 2
+    },
+    {
+      "id": "078dddc7-697e-45fb-a029-a7692baaec6c",
+      "name": "Integrate new steps into Windows orchestrator and UX",
+      "details": "Register the new Windows steps in logical order within WindowsOrchestrator, ensure summary tables and messaging account for remote tooling, dotfiles, GCM auth, and Docker integration, and update orchestrator/unit tests to reflect the expanded sequence and branching behaviors.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "b4c3d721-9796-4801-8e9b-5fe447e29d2f",
+      "completed": false,
+      "createdAt": "2025-10-30T15:39:52.953Z",
+      "updatedAt": "2025-10-30T15:39:52.953Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [],
+      "level": 2
+    },
+    {
+      "id": "0e266de2-2bac-4b76-a19d-72fd4e5ec4eb",
+      "name": "Implement/update unit tests",
+      "details": "Expand automated coverage to exercise the new Windows onboarding steps, including install/no-op flows, user prompt branches, GCM authentication, Docker integration, and orchestrator sequencing.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "b4c3d721-9796-4801-8e9b-5fe447e29d2f",
+      "completed": false,
+      "createdAt": "2025-10-30T15:40:00.126Z",
+      "updatedAt": "2025-10-30T15:40:00.126Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [],
+      "level": 2
+    },
+    {
+      "id": "aa77b37b-5371-488d-be78-600131a211ff",
+      "name": "Update architecture documentation",
+      "details": "Refresh architecture and onboarding docs to capture the new Windows remote tooling, dotfiles, GCM auth, and Docker integration behaviors plus any new CLI dependencies.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "b4c3d721-9796-4801-8e9b-5fe447e29d2f",
+      "completed": false,
+      "createdAt": "2025-10-30T15:40:03.618Z",
+      "updatedAt": "2025-10-30T15:40:03.618Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [],
+      "level": 2
+    },
+    {
+      "id": "b8f2d98b-3c17-42ab-93a9-91f0659d50f8",
+      "name": "Local full-suite lint/test & dry-run",
+      "details": "Run dotnet format, dotnet build, dotnet test, and a Windows onboarding dry run to confirm the new steps execute or skip appropriately before opening the PR.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "d19e57f8-e459-41b2-a448-4f107996a22e",
+      "completed": false,
+      "createdAt": "2025-10-30T15:40:07.774Z",
+      "updatedAt": "2025-10-30T15:40:07.774Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [],
+      "level": 2
+    },
+    {
+      "id": "c4f37f9f-c077-4a86-98b6-b3c3161eb816",
+      "name": "Open PR: iter-19",
+      "details": "Push iter-19, open the PR with a full summary of Windows parity work, and ensure tests/docs are linked in the description.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "57629231-ea5e-4600-8403-fd7f45bb3bda",
+      "completed": false,
+      "createdAt": "2025-10-30T15:40:13.814Z",
+      "updatedAt": "2025-10-30T15:40:13.814Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [],
+      "level": 2
+    },
+    {
+      "id": "618478ad-0f7a-425a-a2c3-75b492dc2a13",
+      "name": "Monitor CI & Resolve Failures",
+      "details": "Watch the iter-19 PR automation and push follow-up fixes until all CI checks report success; this is the final active task for the iteration.",
+      "projectId": "90441ce6-05a9-4582-8524-ba81437b74e8",
+      "parentId": "57629231-ea5e-4600-8403-fd7f45bb3bda",
+      "completed": false,
+      "createdAt": "2025-10-30T15:40:18.495Z",
+      "updatedAt": "2025-10-30T15:40:18.495Z",
+      "dependsOn": [],
+      "priority": 5,
+      "status": "pending",
+      "tags": [],
       "level": 2
     }
   ],
