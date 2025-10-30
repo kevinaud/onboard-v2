@@ -123,11 +123,14 @@ public class EnableWslFeaturesStep : IOnboardingStep
         var listResult = await processRunner.RunAsync("wsl.exe", WslListDistributionsCommand).ConfigureAwait(false);
         if (!listResult.IsSuccess)
         {
+            this.configuration.ActiveWslDistroName = null;
             return WslReadiness.Create(false, false, Array.Empty<string>());
         }
 
         var distributionNames = ParseDistributionNames(listResult.StandardOutput);
         bool hasTarget = distributionNames.Any(name => string.Equals(name, this.configuration.WslDistroName, StringComparison.OrdinalIgnoreCase));
+
+        this.configuration.ActiveWslDistroName = hasTarget ? this.configuration.WslDistroName : null;
         return WslReadiness.Create(true, hasTarget, distributionNames);
     }
 

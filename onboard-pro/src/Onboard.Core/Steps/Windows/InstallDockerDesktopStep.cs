@@ -1,9 +1,6 @@
 namespace Onboard.Core.Steps.Windows;
 
 using System;
-using System.IO;
-using System.Text.Json;
-using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
 using Onboard.Core.Abstractions;
@@ -57,105 +54,7 @@ public class InstallDockerDesktopStep : IOnboardingStep
         }
 
         this.userInteraction.WriteSuccess("Docker Desktop installed via winget.");
-        bool integrationConfigured = await this.ConfigureDockerSettingsAsync().ConfigureAwait(false);
         this.userInteraction.WriteNormal("Launch Docker Desktop and accept the terms of service if prompted.");
-
-        if (integrationConfigured)
-        {
-            this.userInteraction.WriteNormal($"WSL integration for {this.configuration.WslDistroName} has been pre-configured. Restart Docker Desktop if it was already running.");
-        }
-        else
-        {
-            this.userInteraction.WriteNormal($"Verify WSL integration for {this.configuration.WslDistroName} inside Docker Desktop before continuing.");
-        }
-    }
-
-    private static bool EnsureIntegratedDistro(JsonObject settings, string distroName)
-    {
-        JsonArray integratedDistros;
-
-        if (settings["IntegratedWslDistros"] is JsonArray existingArray)
-        {
-            integratedDistros = existingArray;
-        }
-        else
-        {
-            integratedDistros = new JsonArray();
-            settings["IntegratedWslDistros"] = integratedDistros;
-        }
-
-        foreach (JsonNode? node in integratedDistros)
-        {
-            if (node is JsonValue value && string.Equals(value.ToString(), distroName, StringComparison.OrdinalIgnoreCase))
-            {
-                return false;
-            }
-        }
-
-        integratedDistros.Add(distroName);
-        return true;
-    }
-
-    private async Task<bool> ConfigureDockerSettingsAsync()
-    {
-        string? appData = Environment.GetEnvironmentVariable("APPDATA");
-        if (string.IsNullOrWhiteSpace(appData))
-        {
-            appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        }
-
-        if (string.IsNullOrWhiteSpace(appData))
-        {
-            userInteraction.WriteWarning("Unable to locate the AppData folder. Please ensure WSL integration is enabled manually in Docker Desktop.");
-            return false;
-        }
-
-        string dockerDirectory = Path.Combine(appData, "Docker");
-        string settingsPath = Path.Combine(dockerDirectory, "settings-store.json");
-
-        JsonObject settings;
-
-        if (File.Exists(settingsPath))
-        {
-            try
-            {
-                string existingContent = await File.ReadAllTextAsync(settingsPath).ConfigureAwait(false);
-                settings = JsonNode.Parse(existingContent)?.AsObject() ?? new JsonObject();
-            }
-            catch (JsonException ex)
-            {
-                userInteraction.WriteWarning($"Unable to parse Docker Desktop settings. Enable WSL integration manually in Docker Desktop. Details: {ex.Message}");
-                return false;
-            }
-            catch (IOException ex)
-            {
-                userInteraction.WriteWarning($"Failed to read Docker Desktop settings: {ex.Message}. Enable WSL integration manually if needed.");
-                return false;
-            }
-        }
-        else
-        {
-            Directory.CreateDirectory(dockerDirectory);
-            settings = new JsonObject();
-        }
-
-        bool updated = EnsureIntegratedDistro(settings, configuration.WslDistroName);
-        if (!updated)
-        {
-            return true;
-        }
-
-        try
-        {
-            string json = settings.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
-            await File.WriteAllTextAsync(settingsPath, json).ConfigureAwait(false);
-        }
-        catch (IOException ex)
-        {
-            userInteraction.WriteWarning($"Failed to update Docker Desktop settings: {ex.Message}. Enable WSL integration manually if needed.");
-            return false;
-        }
-
-        return true;
+        this.userInteraction.WriteNormal($"Run Docker Desktop once to finish setup, then verify WSL integration for {this.configuration.WslDistroName} before continuing.");
     }
 }

@@ -120,10 +120,12 @@ At the end of the run the orchestrator calls `ShowSummary(results)` to render a 
 
 ## Configuration defaults
 
-The defaults that drive host-specific behaviour live in `src/Onboard.Core/Models/OnboardingConfiguration.cs`. Today the record exposes two properties:
+The defaults that drive host-specific behaviour live in `src/Onboard.Core/Models/OnboardingConfiguration.cs`. Today the record exposes these properties:
 
 - `WslDistroName` – the distribution name returned by `wsl.exe -l -q`.
 - `WslDistroImage` – the identifier passed to `wsl --install -d <image>`.
+- `GitCredentialManagerPath` – the expected location of `git-credential-manager.exe` used when probing cached credentials.
+- `ActiveWslDistroName` – populated at runtime by the WSL prerequisite step so Docker integration can reuse the detected distribution.
 
 `Program.cs` registers a single `OnboardingConfiguration` instance in the DI container, so Windows steps such as `EnableWslFeaturesStep` and `InstallDockerDesktopStep` consume the same values. Updating the record allows you to align the onboarding workflow with a different corporate-standard WSL distribution without hunting down hard-coded strings.
 

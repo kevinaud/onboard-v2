@@ -20,7 +20,11 @@ public class WindowsOrchestrator : SequentialOrchestrator
         EnableWslFeaturesStep enableWslFeaturesStep,
         InstallGitForWindowsStep installGitForWindowsStep,
         InstallWindowsVsCodeStep installWindowsVsCodeStep,
+        EnsureVsCodeRemoteExtensionPackStep ensureVsCodeRemoteExtensionPackStep,
+        ConfigureVsCodeDotfilesStep configureVsCodeDotfilesStep,
         InstallDockerDesktopStep installDockerDesktopStep,
+        ConfigureDockerDesktopWslIntegrationStep configureDockerDesktopWslIntegrationStep,
+        PreAuthenticateGitCredentialManagerStep preAuthenticateGitCredentialManagerStep,
         ConfigureGitUserStep configureGitUserStep)
         : base(
             ui,
@@ -31,7 +35,11 @@ public class WindowsOrchestrator : SequentialOrchestrator
                 enableWslFeaturesStep,
                 installGitForWindowsStep,
                 installWindowsVsCodeStep,
+                ensureVsCodeRemoteExtensionPackStep,
+                configureVsCodeDotfilesStep,
                 installDockerDesktopStep,
+                configureDockerDesktopWslIntegrationStep,
+                preAuthenticateGitCredentialManagerStep,
                 configureGitUserStep,
             })
     {
