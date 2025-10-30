@@ -21,7 +21,10 @@ public class SpectreUserInteractionTests
     public void ShowWelcomeBanner_WritesPlatformInformation()
     {
         var console = new TestConsole();
-        var interaction = new SpectreUserInteraction(console, NullLogger<SpectreUserInteraction>.Instance, new ExecutionOptions(false, false));
+        var interaction = new SpectreUserInteraction(
+            console,
+            NullLogger<SpectreUserInteraction>.Instance,
+            new ExecutionOptions(IsDryRun: false, IsVerbose: false));
         var platformFacts = new PlatformFacts(OS.Windows, CPU.X64, IsWsl: false, HomeDirectory: "C:/Users/test");
 
         interaction.ShowWelcomeBanner(platformFacts);
@@ -34,10 +37,77 @@ public class SpectreUserInteractionTests
     }
 
     [Test]
+    public void WriteSuccess_RendersCheckmarkWithMessage()
+    {
+        var console = new TestConsole();
+        var interaction = new SpectreUserInteraction(
+            console,
+            NullLogger<SpectreUserInteraction>.Instance,
+            new ExecutionOptions(IsDryRun: false, IsVerbose: false));
+
+        interaction.WriteSuccess("All good");
+
+        string output = console.Output.ToString();
+
+        Assert.That(output, Does.Contain("✓ All good"));
+    }
+
+    [Test]
+    public void WriteWarning_RendersWarningIndicator()
+    {
+        var console = new TestConsole();
+        var interaction = new SpectreUserInteraction(
+            console,
+            NullLogger<SpectreUserInteraction>.Instance,
+            new ExecutionOptions(IsDryRun: false, IsVerbose: false));
+
+        interaction.WriteWarning("Heads up");
+
+        string output = console.Output.ToString();
+
+        Assert.That(output, Does.Contain("⚠ Heads up"));
+    }
+
+    [Test]
+    public void WriteError_RendersCrossWithMessage()
+    {
+        var console = new TestConsole();
+        var interaction = new SpectreUserInteraction(
+            console,
+            NullLogger<SpectreUserInteraction>.Instance,
+            new ExecutionOptions(IsDryRun: false, IsVerbose: false));
+
+        interaction.WriteError("Something failed");
+
+        string output = console.Output.ToString();
+
+        Assert.That(output, Does.Contain("✗ Something failed"));
+    }
+
+    [Test]
+    public void WriteDebug_WhenVerbose_PrintsLiteralDebugTag()
+    {
+        var console = new TestConsole();
+        var interaction = new SpectreUserInteraction(
+            console,
+            NullLogger<SpectreUserInteraction>.Instance,
+            new ExecutionOptions(IsDryRun: false, IsVerbose: true));
+
+        interaction.WriteDebug("command details");
+
+        string output = console.Output.ToString();
+
+        Assert.That(output, Does.Contain("[DEBUG] command details"));
+    }
+
+    [Test]
     public void ShowSummary_RendersStatusTable()
     {
         var console = new TestConsole();
-        var interaction = new SpectreUserInteraction(console, NullLogger<SpectreUserInteraction>.Instance, new ExecutionOptions(false, false));
+        var interaction = new SpectreUserInteraction(
+            console,
+            NullLogger<SpectreUserInteraction>.Instance,
+            new ExecutionOptions(IsDryRun: false, IsVerbose: false));
         var results = new[]
         {
             new StepResult("Step A", StepStatus.Executed),
@@ -64,7 +134,10 @@ public class SpectreUserInteractionTests
     public async Task RunStatusAsync_ExecutesActionWithinStatusContext()
     {
         var console = new TestConsole();
-        var interaction = new SpectreUserInteraction(console, NullLogger<SpectreUserInteraction>.Instance, new ExecutionOptions(false, false));
+        var interaction = new SpectreUserInteraction(
+            console,
+            NullLogger<SpectreUserInteraction>.Instance,
+            new ExecutionOptions(IsDryRun: false, IsVerbose: false));
 
         await interaction.RunStatusAsync(
             "Checking Step",

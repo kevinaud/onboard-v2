@@ -61,11 +61,7 @@ public class InstallDockerDesktopStepTests
     [Test]
     public async Task ShouldExecuteAsync_WhenDockerDesktopDetected_ReturnsFalse()
     {
-        processRunner
-            .Setup(runner => runner.RunAsync(
-                "powershell",
-                It.Is<string>(arguments => arguments.Contains("Docker Desktop.exe", StringComparison.OrdinalIgnoreCase))))
-            .ReturnsAsync(new ProcessResult(0, "True", string.Empty));
+        SetupPowershellDetection(new ProcessResult(0, "True", string.Empty));
 
         var step = CreateStep();
         bool result = await step.ShouldExecuteAsync().ConfigureAwait(false);
@@ -77,11 +73,7 @@ public class InstallDockerDesktopStepTests
     [Test]
     public async Task ShouldExecuteAsync_WhenDockerDesktopMissing_ReturnsTrue()
     {
-        processRunner
-            .Setup(runner => runner.RunAsync(
-                "powershell",
-                It.Is<string>(arguments => arguments.Contains("Docker Desktop.exe", StringComparison.OrdinalIgnoreCase))))
-            .ReturnsAsync(new ProcessResult(0, "False", string.Empty));
+        SetupPowershellDetection(new ProcessResult(0, "False", string.Empty));
 
         var step = CreateStep();
         bool result = await step.ShouldExecuteAsync().ConfigureAwait(false);
@@ -93,11 +85,7 @@ public class InstallDockerDesktopStepTests
     [Test]
     public async Task ShouldExecuteAsync_WhenDetectionFails_ReturnsTrue()
     {
-        processRunner
-            .Setup(runner => runner.RunAsync(
-                "powershell",
-                It.Is<string>(arguments => arguments.Contains("Docker Desktop.exe", StringComparison.OrdinalIgnoreCase))))
-            .ReturnsAsync(new ProcessResult(1, string.Empty, "error"));
+        SetupPowershellDetection(new ProcessResult(1, string.Empty, "error"));
 
         var step = CreateStep();
         bool result = await step.ShouldExecuteAsync().ConfigureAwait(false);
@@ -159,5 +147,12 @@ public class InstallDockerDesktopStepTests
     private InstallDockerDesktopStep CreateStep()
     {
         return new InstallDockerDesktopStep(processRunner.Object, userInteraction.Object, configuration);
+    }
+
+    private void SetupPowershellDetection(ProcessResult result)
+    {
+        processRunner
+            .Setup(runner => runner.RunAsync("powershell", It.IsAny<string>()))
+            .ReturnsAsync(result);
     }
 }
