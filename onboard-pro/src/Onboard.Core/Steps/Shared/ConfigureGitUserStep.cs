@@ -9,7 +9,7 @@ using Onboard.Core.Abstractions;
 /// <summary>
 /// Configures global Git user identity (name and email).
 /// </summary>
-public class ConfigureGitUserStep : IOnboardingStep
+public class ConfigureGitUserStep : IOnboardingStep, IInteractiveOnboardingStep
 {
     private readonly IProcessRunner processRunner;
     private readonly IUserInteraction ui;

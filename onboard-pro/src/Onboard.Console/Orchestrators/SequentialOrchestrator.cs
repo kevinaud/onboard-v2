@@ -35,12 +35,13 @@ public abstract class SequentialOrchestrator : IPlatformOrchestrator
 
         foreach (var step in this.steps)
         {
+            bool shouldExecute = false;
+            bool executeOutsideStatus = false;
+
             try
             {
                 await this.userInteraction.RunStatusAsync($"Checking {step.Description}...", async status =>
                 {
-                    bool shouldExecute;
-
                     try
                     {
                         shouldExecute = await step.ShouldExecuteAsync().ConfigureAwait(false);
@@ -66,6 +67,13 @@ public abstract class SequentialOrchestrator : IPlatformOrchestrator
                         return;
                     }
 
+                    if (step is IInteractiveOnboardingStep)
+                    {
+                        status.WriteNormal($"{step.Description} requires user input.");
+                        executeOutsideStatus = true;
+                        return;
+                    }
+
                     status.UpdateStatus($"Running {step.Description}...");
 
                     try
@@ -86,6 +94,25 @@ public abstract class SequentialOrchestrator : IPlatformOrchestrator
             {
                 failure = ex;
                 break;
+            }
+
+            if (executeOutsideStatus && shouldExecute)
+            {
+                this.userInteraction.WriteNormal($"Running {step.Description}...");
+
+                try
+                {
+                    await step.ExecuteAsync().ConfigureAwait(false);
+                    this.userInteraction.WriteSuccess($"{step.Description} completed.");
+                    results.Add(new StepResult(step.Description, StepStatus.Executed));
+                }
+                catch (Exception ex)
+                {
+                    this.userInteraction.WriteError($"{step.Description} failed: {ex.Message}");
+                    results.Add(new StepResult(step.Description, StepStatus.Failed, Exception: ex));
+                    failure = OnboardingStepException.ExecutionFailed(step.Description, ex);
+                    break;
+                }
             }
         }
 

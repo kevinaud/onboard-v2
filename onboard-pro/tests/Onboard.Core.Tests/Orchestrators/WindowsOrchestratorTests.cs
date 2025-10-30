@@ -179,6 +179,80 @@ public class WindowsOrchestratorTests
         Assert.That(allDryRun);
     }
 
+    [Test]
+    public async Task ExecuteAsync_WhenInteractiveStepRuns_PromptsOutsideStatus()
+    {
+        var capturedSummary = new List<StepResult>();
+        bool isInsideStatus = false;
+
+        var ui = new Mock<IUserInteraction>(MockBehavior.Loose);
+
+        ui.Setup(x => x.RunStatusAsync(It.IsAny<string>(), It.IsAny<Func<IStatusContext, Task>>(), It.IsAny<CancellationToken>()))
+            .Returns(async (string _, Func<IStatusContext, Task> action, CancellationToken token) =>
+            {
+                isInsideStatus = true;
+
+                try
+                {
+                    await action(new TestStatusContext(ui.Object, token)).ConfigureAwait(false);
+                }
+                finally
+                {
+                    isInsideStatus = false;
+                }
+            });
+
+        ui.Setup(x => x.ShowSummary(It.IsAny<IReadOnlyCollection<StepResult>>()))
+            .Callback((IReadOnlyCollection<StepResult> results) =>
+            {
+                capturedSummary.Clear();
+                capturedSummary.AddRange(results);
+            });
+
+        ui.Setup(x => x.Ask(It.IsAny<string>(), It.IsAny<string?>()))
+            .Returns((string prompt, string? _) =>
+            {
+                Assert.That(isInsideStatus, Is.False, "Prompts should execute outside the status spinner.");
+                return prompt.Contains("email", StringComparison.OrdinalIgnoreCase) ? "test@example.com" : "Test User";
+            });
+
+        var processRunner = new FakeProcessRunner(new Dictionary<(string, string, bool, bool), ProcessResult>
+        {
+            { ("dism.exe", "/online /Get-FeatureInfo /FeatureName:Microsoft-Windows-Subsystem-Linux", false, false), new ProcessResult(0, "State : Enabled", string.Empty) },
+            { ("dism.exe", "/online /Get-FeatureInfo /FeatureName:VirtualMachinePlatform", false, false), new ProcessResult(0, "State : Enabled", string.Empty) },
+            { ("wsl.exe", "-l -q", false, false), new ProcessResult(0, "Ubuntu-22.04\r\n", string.Empty) },
+            { ("wsl.exe", "-d \"Ubuntu-22.04\" -- cat /etc/os-release", false, true), new ProcessResult(0, string.Empty, string.Empty) },
+            { ("where", "git.exe", false, false), new ProcessResult(0, "C\\Git\\git.exe", string.Empty) },
+            { ("where", "code.cmd", false, false), new ProcessResult(0, "C\\VSCode\\code.cmd", string.Empty) },
+            { ("powershell", "-NoProfile -Command \"(Test-Path 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe') -or (Test-Path (Join-Path $env:LOCALAPPDATA 'Programs\\Docker\\Docker Desktop.exe'))\"", false, false), new ProcessResult(0, "True", string.Empty) },
+            { ("git", "config --global user.name", false, false), new ProcessResult(1, string.Empty, string.Empty) },
+            { ("git", "config --global user.email", false, false), new ProcessResult(1, string.Empty, string.Empty) },
+            { ("git", "config --global user.name \"Test User\"", false, false), new ProcessResult(0, string.Empty, string.Empty) },
+            { ("git", "config --global user.email \"test@example.com\"", false, false), new ProcessResult(0, string.Empty, string.Empty) },
+        });
+
+        var configuration = new OnboardingConfiguration();
+        var enableWslStep = new EnableWslFeaturesStep(processRunner, ui.Object, configuration);
+        var installGitStep = new InstallGitForWindowsStep(processRunner, ui.Object);
+        var installVsCodeStep = new InstallWindowsVsCodeStep(processRunner, ui.Object);
+        var installDockerStep = new InstallDockerDesktopStep(processRunner, ui.Object, configuration);
+        var configureGitStep = new ConfigureGitUserStep(processRunner, ui.Object);
+
+        var orchestrator = new WindowsOrchestrator(
+            ui.Object,
+            new ExecutionOptions(IsDryRun: false, IsVerbose: false),
+            enableWslStep,
+            installGitStep,
+            installVsCodeStep,
+            installDockerStep,
+            configureGitStep);
+
+        await orchestrator.ExecuteAsync().ConfigureAwait(false);
+
+        Assert.That(capturedSummary.Last().StepName, Is.EqualTo("Configure Git user identity"));
+        Assert.That(capturedSummary.Last().Status, Is.EqualTo(StepStatus.Executed));
+    }
+
     private static Mock<IUserInteraction> CreateUserInteractionMock(Action<IReadOnlyCollection<StepResult>> summaryCallback)
     {
         var ui = new Mock<IUserInteraction>(MockBehavior.Loose);
