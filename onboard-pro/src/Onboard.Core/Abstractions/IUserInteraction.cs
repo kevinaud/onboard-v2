@@ -21,6 +21,12 @@ public interface IUserInteraction
     void WriteNormal(string message);
 
     /// <summary>
+    /// Writes formatted markdown content to the console.
+    /// </summary>
+    /// <param name="markdown">Markdown payload to render.</param>
+    void WriteMarkdown(string markdown);
+
+    /// <summary>
     /// Writes a success message to the console (typically styled green).
     /// </summary>
     void WriteSuccess(string message);

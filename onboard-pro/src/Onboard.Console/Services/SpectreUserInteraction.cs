@@ -2,6 +2,7 @@ namespace Onboard.Console.Services;
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,6 +45,23 @@ public sealed class SpectreUserInteraction : IUserInteraction
         }
 
         this.console.MarkupLine(EscapeMarkup(message));
+    }
+
+    public void WriteMarkdown(string markdown)
+    {
+        if (markdown is null)
+        {
+            throw new ArgumentNullException(nameof(markdown));
+        }
+
+        this.LogTranscript(LogLevel.Information, "MARKDOWN", markdown);
+
+        string normalized = markdown.Replace("\r\n", "\n", StringComparison.Ordinal);
+        string[] lines = normalized.Split('\n');
+        foreach (string rawLine in lines)
+        {
+            this.RenderMarkdownLine(rawLine);
+        }
     }
 
     public void WriteSuccess(string message)
@@ -194,6 +212,114 @@ public sealed class SpectreUserInteraction : IUserInteraction
         bool result = this.console.Prompt(confirmationPrompt);
         this.LogTranscript(LogLevel.Information, "PROMPT_RESPONSE", result ? "Yes" : "No");
         return result;
+    }
+
+    private static bool TryGetHeading(string line, out int level, out string text)
+    {
+        level = 0;
+        text = string.Empty;
+
+        int index = 0;
+        while (index < line.Length && line[index] == '#')
+        {
+            level++;
+            index++;
+        }
+
+        if (level == 0 || level > 6)
+        {
+            text = string.Empty;
+            return false;
+        }
+
+        if (index >= line.Length || line[index] != ' ')
+        {
+            text = string.Empty;
+            return false;
+        }
+
+        text = line.Substring(index + 1).TrimEnd();
+        return true;
+    }
+
+    private static string ConvertInlineMarkdown(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            return string.Empty;
+        }
+
+        StringBuilder builder = new StringBuilder(text.Length);
+        int index = 0;
+        while (index < text.Length)
+        {
+            if (text[index] == '`')
+            {
+                int end = text.IndexOf('`', index + 1);
+                if (end != -1)
+                {
+                    string code = text.Substring(index + 1, end - index - 1);
+                    builder.Append("[grey]");
+                    builder.Append(Markup.Escape(code));
+                    builder.Append("[/]");
+                    index = end + 1;
+                    continue;
+                }
+            }
+
+            if (text[index] == '*' && index + 1 < text.Length && text[index + 1] == '*')
+            {
+                int end = text.IndexOf("**", index + 2, StringComparison.Ordinal);
+                if (end != -1)
+                {
+                    string boldContent = text.Substring(index + 2, end - index - 2);
+                    builder.Append("[bold]");
+                    builder.Append(ConvertInlineMarkdown(boldContent));
+                    builder.Append("[/]");
+                    index = end + 2;
+                    continue;
+                }
+            }
+
+            builder.Append(EscapeMarkup(text[index].ToString()));
+            index++;
+        }
+
+        return builder.ToString();
+    }
+
+    private void RenderMarkdownLine(string line)
+    {
+        if (string.IsNullOrWhiteSpace(line))
+        {
+            this.console.WriteLine();
+            return;
+        }
+
+        string trimmed = line.TrimStart();
+        if (TryGetHeading(trimmed, out int level, out string headingText))
+        {
+            string markup = ConvertInlineMarkdown(headingText);
+            string rendered = level switch
+            {
+                1 => $"[bold underline]{markup}[/]",
+                2 => $"[bold]{markup}[/]",
+                _ => $"[bold]{markup}[/]",
+            };
+
+            this.console.MarkupLine(rendered);
+            return;
+        }
+
+        if (trimmed.StartsWith("- ", StringComparison.Ordinal))
+        {
+            string content = trimmed.Substring(2).TrimStart();
+            string markup = ConvertInlineMarkdown(content);
+            this.console.MarkupLine($"[grey]-[/] {markup}");
+            return;
+        }
+
+        this.console.MarkupLine(ConvertInlineMarkdown(line.TrimEnd()));
     }
 
     private void LogTranscript(LogLevel level, string category, string message)

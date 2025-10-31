@@ -140,6 +140,10 @@ public class ProcessRunnerTests
         {
         }
 
+        public void WriteMarkdown(string markdown)
+        {
+        }
+
         public void WriteSuccess(string message)
         {
         }
@@ -177,6 +181,10 @@ public class ProcessRunnerTests
         }
 
         public void WriteNormal(string message)
+        {
+        }
+
+        public void WriteMarkdown(string markdown)
         {
         }
 

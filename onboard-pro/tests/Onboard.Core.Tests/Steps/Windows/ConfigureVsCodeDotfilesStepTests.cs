@@ -68,6 +68,9 @@ public class ConfigureVsCodeDotfilesStepTests
             });
 
         userInteraction.Setup(ui => ui.WriteNormal(It.IsAny<string>()));
+        string? markdownPrompt = null;
+        userInteraction.Setup(ui => ui.WriteMarkdown(It.IsAny<string>()))
+            .Callback<string>(value => markdownPrompt = value);
         userInteraction.Setup(ui => ui.WriteSuccess("VS Code dotfiles configuration updated."));
         userInteraction.Setup(ui => ui.Ask(It.IsAny<string>(), It.IsAny<string?>()))
             .Returns(() => responses.Dequeue());
@@ -77,6 +80,8 @@ public class ConfigureVsCodeDotfilesStepTests
         await step.ExecuteAsync().ConfigureAwait(false);
 
         fileSystem.Verify(fs => fs.WriteAllText(SettingsPath, It.IsAny<string>()), Times.Once);
+        Assert.That(markdownPrompt, Is.Not.Null);
+        Assert.That(markdownPrompt, Does.Contain("VS Code dotfiles configuration needs your input"));
         userInteraction.VerifyAll();
     }
 
@@ -99,6 +104,7 @@ public class ConfigureVsCodeDotfilesStepTests
             });
 
         userInteraction.Setup(ui => ui.WriteNormal(It.IsAny<string>()));
+        userInteraction.Setup(ui => ui.WriteMarkdown(It.Is<string>(value => value.Contains("`kevinaud/dotfiles`", StringComparison.Ordinal))));
         userInteraction.Setup(ui => ui.WriteSuccess("VS Code dotfiles configuration updated."));
         userInteraction.Setup(ui => ui.Ask(It.IsAny<string>(), It.IsAny<string?>()))
             .Returns(() => responses.Dequeue());
@@ -119,6 +125,7 @@ public class ConfigureVsCodeDotfilesStepTests
         fileSystem.Setup(fs => fs.FileExists(SettingsPath)).Returns(false);
 
         userInteraction.Setup(ui => ui.WriteNormal(It.IsAny<string>()));
+        userInteraction.Setup(ui => ui.WriteMarkdown(It.IsAny<string>()));
         userInteraction.Setup(ui => ui.WriteWarning("Skipping VS Code dotfiles configuration at user request."));
         userInteraction.Setup(ui => ui.Ask(It.IsAny<string>(), It.IsAny<string?>()))
             .Returns(() => responses.Dequeue());

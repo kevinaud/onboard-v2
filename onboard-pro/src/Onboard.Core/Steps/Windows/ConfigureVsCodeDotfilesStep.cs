@@ -77,18 +77,26 @@ public class ConfigureVsCodeDotfilesStep : IInteractiveOnboardingStep
         var settings = cachedSettings;
 
         userInteraction.WriteNormal(string.Empty);
-        userInteraction.WriteNormal("[bold yellow]VS Code dotfiles configuration needs your input.[/]");
-        userInteraction.WriteNormal(string.Empty);
-        userInteraction.WriteNormal("[bold]What this does[/]");
-        userInteraction.WriteNormal("- VS Code Dev Containers can automatically clone a dotfiles repository whenever a container starts.");
-        userInteraction.WriteNormal("- The setting only applies inside Dev Container environments.");
-        userInteraction.WriteNormal("- Learn more: https://code.visualstudio.com/docs/devcontainers/containers#_personalizing-with-dotfile-repositories");
-        userInteraction.WriteNormal(string.Empty);
-        userInteraction.WriteNormal($"[bold]Default repository[/]: [cyan]{DefaultRepository}[/]");
-        userInteraction.WriteNormal("[bold]Choose an option[/]:");
-        userInteraction.WriteNormal("- [bold cyan]CUSTOM[/]: Provide a repository and optional target path.");
-        userInteraction.WriteNormal("- [bold green]DEFAULT[/]: Use the default repository above.");
-        userInteraction.WriteNormal("- [bold gray]SKIP[/]: Leave dotfiles unconfigured for now.");
+        string markdown = $"""
+**VS Code dotfiles configuration needs your input.**
+
+### What this does
+
+- VS Code Dev Containers can automatically clone a dotfiles repository whenever a container starts.
+- The setting only applies inside Dev Container environments.
+- Learn more: https://code.visualstudio.com/docs/devcontainers/containers#_personalizing-with-dotfile-repositories
+
+### Default repository
+
+- `{DefaultRepository}`
+
+### Choose an option
+
+- **CUSTOM**: Provide a repository and optional target path.
+- **DEFAULT**: Use the default repository above.
+- **SKIP**: Leave dotfiles unconfigured for now.
+""";
+        userInteraction.WriteMarkdown(markdown);
 
         string option = PromptForOption();
         if (string.Equals(option, "SKIP", StringComparison.OrdinalIgnoreCase))
