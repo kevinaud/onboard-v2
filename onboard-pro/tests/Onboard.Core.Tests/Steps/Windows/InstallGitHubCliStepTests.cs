@@ -23,10 +23,10 @@ public class InstallGitHubCliStepTests
     [SetUp]
     public void SetUp()
     {
-    processRunner = new Mock<IProcessRunner>(MockBehavior.Strict);
-    userInteraction = new Mock<IUserInteraction>(MockBehavior.Strict);
-    environmentRefresher = new Mock<IEnvironmentRefresher>(MockBehavior.Strict);
-    configuration = new OnboardingConfiguration();
+        processRunner = new Mock<IProcessRunner>(MockBehavior.Strict);
+        userInteraction = new Mock<IUserInteraction>(MockBehavior.Strict);
+        environmentRefresher = new Mock<IEnvironmentRefresher>(MockBehavior.Strict);
+        configuration = new OnboardingConfiguration();
     }
 
     [Test]

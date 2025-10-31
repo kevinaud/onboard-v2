@@ -21,10 +21,10 @@ public class InstallDockerDesktopStepTests
     [SetUp]
     public void SetUp()
     {
-    processRunner = new Mock<IProcessRunner>(MockBehavior.Strict);
-    userInteraction = new Mock<IUserInteraction>(MockBehavior.Strict);
-    environmentRefresher = new Mock<IEnvironmentRefresher>(MockBehavior.Strict);
-    configuration = new OnboardingConfiguration { WslDistroName = "Ubuntu-22.04" };
+        processRunner = new Mock<IProcessRunner>(MockBehavior.Strict);
+        userInteraction = new Mock<IUserInteraction>(MockBehavior.Strict);
+        environmentRefresher = new Mock<IEnvironmentRefresher>(MockBehavior.Strict);
+        configuration = new OnboardingConfiguration { WslDistroName = "Ubuntu-22.04" };
     }
 
     [Test]

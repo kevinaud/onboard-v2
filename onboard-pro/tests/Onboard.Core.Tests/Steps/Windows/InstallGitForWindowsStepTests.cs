@@ -22,9 +22,9 @@ public class InstallGitForWindowsStepTests
     [SetUp]
     public void SetUp()
     {
-    processRunner = new Mock<IProcessRunner>(MockBehavior.Strict);
-    userInteraction = new Mock<IUserInteraction>(MockBehavior.Strict);
-    environmentRefresher = new Mock<IEnvironmentRefresher>(MockBehavior.Strict);
+        processRunner = new Mock<IProcessRunner>(MockBehavior.Strict);
+        userInteraction = new Mock<IUserInteraction>(MockBehavior.Strict);
+        environmentRefresher = new Mock<IEnvironmentRefresher>(MockBehavior.Strict);
     }
 
     [Test]
