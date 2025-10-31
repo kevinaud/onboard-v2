@@ -12,6 +12,8 @@ using Moq;
 [TestFixture]
 public class EnsureVsCodeRemoteExtensionPackStepTests
 {
+    private const string CodeCliPath = @"C:\VSCode\code.cmd";
+
     private Mock<IProcessRunner> processRunner = null!;
     private Mock<IUserInteraction> userInteraction = null!;
 
@@ -26,7 +28,10 @@ public class EnsureVsCodeRemoteExtensionPackStepTests
     public async Task ShouldExecuteAsync_WhenExtensionAlreadyInstalled_ReturnsFalse()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("code", "--list-extensions"))
+            .Setup(runner => runner.RunAsync("where", "code.cmd"))
+            .ReturnsAsync(new ProcessResult(0, CodeCliPath, string.Empty));
+        processRunner
+            .Setup(runner => runner.RunAsync("cmd.exe", It.Is<string>(args => args.Contains("--list-extensions", StringComparison.Ordinal))))
             .ReturnsAsync(new ProcessResult(0, "ms-vscode-remote.vscode-remote-extensionpack\r\nms-dotnettools.csharp", string.Empty));
 
         var step = CreateStep();
@@ -40,7 +45,10 @@ public class EnsureVsCodeRemoteExtensionPackStepTests
     public async Task ShouldExecuteAsync_WhenExtensionMissing_ReturnsTrue()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("code", "--list-extensions"))
+            .Setup(runner => runner.RunAsync("where", "code.cmd"))
+            .ReturnsAsync(new ProcessResult(0, CodeCliPath, string.Empty));
+        processRunner
+            .Setup(runner => runner.RunAsync("cmd.exe", It.Is<string>(args => args.Contains("--list-extensions", StringComparison.Ordinal))))
             .ReturnsAsync(new ProcessResult(0, "ms-dotnettools.csharp", string.Empty));
 
         var step = CreateStep();
@@ -54,7 +62,10 @@ public class EnsureVsCodeRemoteExtensionPackStepTests
     public async Task ShouldExecuteAsync_WhenListExtensionsFails_ReturnsTrue()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("code", "--list-extensions"))
+            .Setup(runner => runner.RunAsync("where", "code.cmd"))
+            .ReturnsAsync(new ProcessResult(0, CodeCliPath, string.Empty));
+        processRunner
+            .Setup(runner => runner.RunAsync("cmd.exe", It.Is<string>(args => args.Contains("--list-extensions", StringComparison.Ordinal))))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "code CLI not found"));
 
         var step = CreateStep();
@@ -68,7 +79,10 @@ public class EnsureVsCodeRemoteExtensionPackStepTests
     public async Task ExecuteAsync_WhenInstallSucceeds_WritesSuccess()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("code", "--install-extension ms-vscode-remote.vscode-remote-extensionpack"))
+            .Setup(runner => runner.RunAsync("where", "code.cmd"))
+            .ReturnsAsync(new ProcessResult(0, CodeCliPath, string.Empty));
+        processRunner
+            .Setup(runner => runner.RunAsync("cmd.exe", It.Is<string>(args => args.Contains("--install-extension", StringComparison.Ordinal))))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
         userInteraction.Setup(ui => ui.WriteSuccess("VS Code Remote Development extension pack installed."));
 
@@ -83,7 +97,10 @@ public class EnsureVsCodeRemoteExtensionPackStepTests
     public void ExecuteAsync_WhenInstallFails_Throws()
     {
         processRunner
-            .Setup(runner => runner.RunAsync("code", "--install-extension ms-vscode-remote.vscode-remote-extensionpack"))
+            .Setup(runner => runner.RunAsync("where", "code.cmd"))
+            .ReturnsAsync(new ProcessResult(0, CodeCliPath, string.Empty));
+        processRunner
+            .Setup(runner => runner.RunAsync("cmd.exe", It.Is<string>(args => args.Contains("--install-extension", StringComparison.Ordinal))))
             .ReturnsAsync(new ProcessResult(1, string.Empty, "install failed"));
 
         var step = CreateStep();
