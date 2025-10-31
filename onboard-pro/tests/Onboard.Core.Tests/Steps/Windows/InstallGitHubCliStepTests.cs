@@ -1,6 +1,8 @@
 namespace Onboard.Core.Tests.Steps.Windows;
 
 using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 using global::Onboard.Core.Abstractions;
@@ -14,12 +16,14 @@ public class InstallGitHubCliStepTests
 {
     private Mock<IProcessRunner> processRunner = null!;
     private Mock<IUserInteraction> userInteraction = null!;
+    private OnboardingConfiguration configuration = null!;
 
     [SetUp]
     public void SetUp()
     {
         processRunner = new Mock<IProcessRunner>(MockBehavior.Strict);
         userInteraction = new Mock<IUserInteraction>(MockBehavior.Strict);
+        configuration = new OnboardingConfiguration();
     }
 
     [Test]
@@ -49,16 +53,47 @@ public class InstallGitHubCliStepTests
     [Test]
     public async Task ExecuteAsync_WhenWingetSucceeds_WritesSuccess()
     {
-        processRunner
-            .Setup(runner => runner.RunAsync("winget", It.Is<string>(args => args.Contains("GitHub.cli", StringComparison.OrdinalIgnoreCase))))
-            .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
-        userInteraction.Setup(ui => ui.WriteSuccess("GitHub CLI installed via winget."));
+        string originalPath = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+        string tempDirectory = Path.Combine(Path.GetTempPath(), $"gh-cli-{Guid.NewGuid():N}");
+        string cliPath = Path.Combine(tempDirectory, "gh.exe");
 
-        var step = CreateStep();
-        await step.ExecuteAsync().ConfigureAwait(false);
+        try
+        {
+            Directory.CreateDirectory(tempDirectory);
+            await File.WriteAllTextAsync(cliPath, string.Empty).ConfigureAwait(false);
 
-        processRunner.VerifyAll();
-        userInteraction.VerifyAll();
+            processRunner
+                .Setup(runner => runner.RunAsync("winget", It.Is<string>(args => args.Contains("GitHub.cli", StringComparison.OrdinalIgnoreCase))))
+                .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
+            processRunner
+                .Setup(runner => runner.RunAsync("where", "gh.exe"))
+                .ReturnsAsync(new ProcessResult(0, cliPath, string.Empty));
+            userInteraction.Setup(ui => ui.WriteSuccess("GitHub CLI installed via winget."));
+
+            var step = CreateStep();
+            await step.ExecuteAsync().ConfigureAwait(false);
+
+            processRunner.VerifyAll();
+            userInteraction.VerifyAll();
+            Assert.That(configuration.GitHubCliPath, Is.EqualTo(cliPath));
+            string updatedPath = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+            bool containsCliDirectory = updatedPath.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                .Any(segment => string.Equals(segment.Trim(), Path.GetDirectoryName(cliPath), StringComparison.OrdinalIgnoreCase));
+            Assert.That(containsCliDirectory, Is.True, "PATH should include the GitHub CLI installation directory.");
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("PATH", originalPath);
+            if (File.Exists(cliPath))
+            {
+                File.Delete(cliPath);
+            }
+
+            if (Directory.Exists(tempDirectory))
+            {
+                Directory.Delete(tempDirectory, recursive: true);
+            }
+        }
     }
 
     [Test]
@@ -76,6 +111,6 @@ public class InstallGitHubCliStepTests
 
     private InstallGitHubCliStep CreateStep()
     {
-        return new InstallGitHubCliStep(processRunner.Object, userInteraction.Object);
+        return new InstallGitHubCliStep(processRunner.Object, userInteraction.Object, configuration);
     }
 }

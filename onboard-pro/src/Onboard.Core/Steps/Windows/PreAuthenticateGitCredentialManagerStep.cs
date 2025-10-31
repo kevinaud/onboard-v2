@@ -1,6 +1,8 @@
 namespace Onboard.Core.Steps.Windows;
 
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -42,7 +44,11 @@ public class PreAuthenticateGitCredentialManagerStep : IOnboardingStep
     {
         userInteraction.WriteNormal("Launching GitHub authentication flow via Git Credential Manager...");
 
-        var result = await processRunner.RunAsync("gh", GithubLoginCommand, requestElevation: false, useShellExecute: true).ConfigureAwait(false);
+        string? cliExecutable = await ResolveGitHubCliPathAsync().ConfigureAwait(false);
+
+        ProcessResult result = string.IsNullOrWhiteSpace(cliExecutable)
+            ? await processRunner.RunAsync("gh", GithubLoginCommand, requestElevation: false, useShellExecute: true).ConfigureAwait(false)
+            : await processRunner.RunAsync(cliExecutable, GithubLoginCommand, requestElevation: false, useShellExecute: true).ConfigureAwait(false);
         if (!result.IsSuccess)
         {
             string message = string.IsNullOrWhiteSpace(result.StandardError)
@@ -78,5 +84,64 @@ public class PreAuthenticateGitCredentialManagerStep : IOnboardingStep
 
         return output.IndexOf("password=", StringComparison.OrdinalIgnoreCase) >= 0
             || output.IndexOf("secret=", StringComparison.OrdinalIgnoreCase) >= 0;
+    }
+
+    private static IEnumerable<string> EnumerateLines(string input)
+    {
+        int start = 0;
+        for (int i = 0; i < input.Length; i++)
+        {
+            char c = input[i];
+            if (c == '\r' || c == '\n')
+            {
+                if (i > start)
+                {
+                    yield return input[start..i];
+                }
+
+                if (c == '\r' && i + 1 < input.Length && input[i + 1] == '\n')
+                {
+                    i++;
+                }
+
+                start = i + 1;
+            }
+        }
+
+        if (start < input.Length)
+        {
+            yield return input[start..];
+        }
+    }
+
+    private async Task<string?> ResolveGitHubCliPathAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(configuration.GitHubCliPath) && File.Exists(configuration.GitHubCliPath))
+        {
+            return configuration.GitHubCliPath;
+        }
+
+        var result = await processRunner.RunAsync("where", "gh.exe").ConfigureAwait(false);
+        if (!result.IsSuccess || string.IsNullOrWhiteSpace(result.StandardOutput))
+        {
+            return null;
+        }
+
+        foreach (string line in EnumerateLines(result.StandardOutput))
+        {
+            if (string.IsNullOrWhiteSpace(line))
+            {
+                continue;
+            }
+
+            string candidate = line.Trim();
+            if (File.Exists(candidate))
+            {
+                configuration.GitHubCliPath = candidate;
+                return candidate;
+            }
+        }
+
+        return null;
     }
 }

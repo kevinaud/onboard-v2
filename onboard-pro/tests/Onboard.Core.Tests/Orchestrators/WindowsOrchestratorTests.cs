@@ -269,7 +269,7 @@ public class WindowsOrchestratorTests
     {
         var enableWslStep = new EnableWslFeaturesStep(processRunner, ui.Object, configuration);
         var installGitStep = new InstallGitForWindowsStep(processRunner, ui.Object);
-        var installGitHubCliStep = new InstallGitHubCliStep(processRunner, ui.Object);
+        var installGitHubCliStep = new InstallGitHubCliStep(processRunner, ui.Object, configuration);
         var installVsCodeStep = new InstallWindowsVsCodeStep(processRunner, ui.Object);
         var extensionStep = new EnsureVsCodeRemoteExtensionPackStep(processRunner, ui.Object);
         var dotfilesStep = new ConfigureVsCodeDotfilesStep(ui.Object, fileSystem, () => DotfilesSettingsPath);

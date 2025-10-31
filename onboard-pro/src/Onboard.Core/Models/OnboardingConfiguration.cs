@@ -21,6 +21,11 @@ public record OnboardingConfiguration
     public string GitCredentialManagerPath { get; init; } = @"C:\\Program Files\\Git\\mingw64\\bin\\git-credential-manager.exe";
 
     /// <summary>
+    /// Gets or sets the resolved GitHub CLI executable path on Windows, if available.
+    /// </summary>
+    public string? GitHubCliPath { get; set; }
+
+    /// <summary>
     /// Gets or sets the active WSL distribution name detected during onboarding.
     /// </summary>
     public string? ActiveWslDistroName { get; set; }
