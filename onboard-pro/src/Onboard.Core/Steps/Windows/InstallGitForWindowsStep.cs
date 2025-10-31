@@ -18,11 +18,13 @@ public class InstallGitForWindowsStep : IOnboardingStep
 
     private readonly IProcessRunner processRunner;
     private readonly IUserInteraction userInteraction;
+    private readonly IEnvironmentRefresher environmentRefresher;
 
-    public InstallGitForWindowsStep(IProcessRunner processRunner, IUserInteraction userInteraction)
+    public InstallGitForWindowsStep(IProcessRunner processRunner, IUserInteraction userInteraction, IEnvironmentRefresher environmentRefresher)
     {
         this.processRunner = processRunner;
         this.userInteraction = userInteraction;
+        this.environmentRefresher = environmentRefresher;
     }
 
     public string Description => "Install Git for Windows";
@@ -44,6 +46,7 @@ public class InstallGitForWindowsStep : IOnboardingStep
             throw new InvalidOperationException(message);
         }
 
+        await environmentRefresher.RefreshAsync().ConfigureAwait(false);
         userInteraction.WriteSuccess("Git for Windows installed via winget.");
     }
 }

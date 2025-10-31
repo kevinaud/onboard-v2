@@ -1,6 +1,7 @@
 namespace Onboard.Core.Tests.Steps.Windows;
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Moq;
@@ -16,12 +17,14 @@ public class InstallGitForWindowsStepTests
 {
     private Mock<IProcessRunner> processRunner = null!;
     private Mock<IUserInteraction> userInteraction = null!;
+    private Mock<IEnvironmentRefresher> environmentRefresher = null!;
 
     [SetUp]
     public void SetUp()
     {
         processRunner = new Mock<IProcessRunner>(MockBehavior.Strict);
         userInteraction = new Mock<IUserInteraction>(MockBehavior.Strict);
+        environmentRefresher = new Mock<IEnvironmentRefresher>(MockBehavior.Strict);
     }
 
     [Test]
@@ -58,6 +61,9 @@ public class InstallGitForWindowsStepTests
         processRunner
             .Setup(runner => runner.RunAsync("winget", "install --id Git.Git -e --source winget --accept-package-agreements --accept-source-agreements --disable-interactivity"))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
+        environmentRefresher
+            .Setup(refresher => refresher.RefreshAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
         userInteraction.Setup(ui => ui.WriteSuccess("Git for Windows installed via winget."));
 
         var step = CreateStep();
@@ -65,6 +71,7 @@ public class InstallGitForWindowsStepTests
 
         processRunner.VerifyAll();
         userInteraction.VerifyAll();
+        environmentRefresher.VerifyAll();
     }
 
     [Test]
@@ -81,6 +88,6 @@ public class InstallGitForWindowsStepTests
 
     private InstallGitForWindowsStep CreateStep()
     {
-        return new InstallGitForWindowsStep(processRunner.Object, userInteraction.Object);
+        return new InstallGitForWindowsStep(processRunner.Object, userInteraction.Object, environmentRefresher.Object);
     }
 }

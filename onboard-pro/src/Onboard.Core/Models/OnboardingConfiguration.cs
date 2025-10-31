@@ -14,4 +14,24 @@ public record OnboardingConfiguration
     /// Gets the default WSL distribution image to install when provisioning a distro.
     /// </summary>
     public string WslDistroImage { get; init; } = "Ubuntu-22.04";
+
+    /// <summary>
+    /// Gets the expected Git Credential Manager executable path on Windows.
+    /// </summary>
+    public string GitCredentialManagerPath { get; init; } = @"C:\\Program Files\\Git\\mingw64\\bin\\git-credential-manager.exe";
+
+    /// <summary>
+    /// Gets or sets the resolved GitHub CLI executable path on Windows, if available.
+    /// </summary>
+    public string? GitHubCliPath { get; set; }
+
+    /// <summary>
+    /// Gets or sets the resolved Visual Studio Code CLI path on Windows, if available.
+    /// </summary>
+    public string? VsCodeCliPath { get; set; }
+
+    /// <summary>
+    /// Gets or sets the active WSL distribution name detected during onboarding.
+    /// </summary>
+    public string? ActiveWslDistroName { get; set; }
 }

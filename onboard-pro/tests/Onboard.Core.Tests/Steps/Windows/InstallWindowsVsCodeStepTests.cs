@@ -1,6 +1,8 @@
 namespace Onboard.Core.Tests.Steps.Windows;
 
 using System;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Moq;
@@ -14,12 +16,16 @@ public class InstallWindowsVsCodeStepTests
 {
     private Mock<IProcessRunner> processRunner = null!;
     private Mock<IUserInteraction> userInteraction = null!;
+    private Mock<IEnvironmentRefresher> environmentRefresher = null!;
+    private OnboardingConfiguration configuration = null!;
 
     [SetUp]
     public void SetUp()
     {
         processRunner = new Mock<IProcessRunner>(MockBehavior.Strict);
         userInteraction = new Mock<IUserInteraction>(MockBehavior.Strict);
+        environmentRefresher = new Mock<IEnvironmentRefresher>(MockBehavior.Strict);
+        configuration = new OnboardingConfiguration();
     }
 
     [Test]
@@ -53,16 +59,45 @@ public class InstallWindowsVsCodeStepTests
     [Test]
     public async Task ExecuteAsync_WhenWingetSucceeds_WritesSuccess()
     {
+        string tempDirectory = Path.Combine(Path.GetTempPath(), $"code-cli-{Guid.NewGuid():N}");
+        string cliPath = Path.Combine(tempDirectory, "code.cmd");
+
+        Directory.CreateDirectory(tempDirectory);
+        await File.WriteAllTextAsync(cliPath, string.Empty).ConfigureAwait(false);
+
         processRunner
             .Setup(runner => runner.RunAsync("winget", "install --id Microsoft.VisualStudioCode -e --source winget"))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
+        environmentRefresher
+            .Setup(refresher => refresher.RefreshAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
         userInteraction.Setup(ui => ui.WriteSuccess("Visual Studio Code installed via winget."));
+        processRunner
+            .Setup(runner => runner.RunAsync("where", "code.cmd"))
+            .ReturnsAsync(new ProcessResult(0, cliPath, string.Empty));
 
-        var step = CreateStep();
-        await step.ExecuteAsync().ConfigureAwait(false);
+        try
+        {
+            var step = CreateStep();
+            await step.ExecuteAsync().ConfigureAwait(false);
 
-        processRunner.VerifyAll();
-        userInteraction.VerifyAll();
+            processRunner.VerifyAll();
+            userInteraction.VerifyAll();
+            environmentRefresher.VerifyAll();
+            Assert.That(configuration.VsCodeCliPath, Is.EqualTo(cliPath));
+        }
+        finally
+        {
+            if (File.Exists(cliPath))
+            {
+                File.Delete(cliPath);
+            }
+
+            if (Directory.Exists(tempDirectory))
+            {
+                Directory.Delete(tempDirectory, recursive: true);
+            }
+        }
     }
 
     [Test]
@@ -80,6 +115,6 @@ public class InstallWindowsVsCodeStepTests
 
     private InstallWindowsVsCodeStep CreateStep()
     {
-        return new InstallWindowsVsCodeStep(processRunner.Object, userInteraction.Object);
+        return new InstallWindowsVsCodeStep(processRunner.Object, userInteraction.Object, configuration, environmentRefresher.Object);
     }
 }

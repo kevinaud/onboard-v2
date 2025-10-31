@@ -22,4 +22,32 @@ public class FileSystem : IFileSystem
     {
         Directory.CreateDirectory(path);
     }
+
+    public bool FileExists(string path)
+    {
+        return File.Exists(path);
+    }
+
+    public string ReadAllText(string path)
+    {
+        return File.ReadAllText(path);
+    }
+
+    public void WriteAllText(string path, string contents)
+    {
+        File.WriteAllText(path, contents);
+    }
+
+    public void MoveFile(string sourcePath, string destinationPath, bool overwrite)
+    {
+        File.Move(sourcePath, destinationPath, overwrite);
+    }
+
+    public void DeleteFile(string path)
+    {
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+        }
+    }
 }

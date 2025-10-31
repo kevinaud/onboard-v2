@@ -67,6 +67,7 @@ public static class Program
                 services.AddSingleton<IUserInteraction, SpectreUserInteraction>();
                 services.AddSingleton<IPlatformDetector, PlatformDetector>();
                 services.AddSingleton<IFileSystem, FileSystem>();
+                services.AddSingleton<IEnvironmentRefresher, EnvironmentRefresher>();
                 services.AddSingleton(new OnboardingConfiguration());
                 services.AddSingleton(executionOptions);
 
@@ -93,7 +94,12 @@ public static class Program
                 // Windows-Specific
                 services.AddTransient<EnableWslFeaturesStep>();
                 services.AddTransient<InstallGitForWindowsStep>();
+                services.AddTransient<InstallGitHubCliStep>();
+                services.AddTransient<EnsureVsCodeRemoteExtensionPackStep>();
+                services.AddTransient<ConfigureVsCodeDotfilesStep>();
                 services.AddTransient<InstallDockerDesktopStep>();
+                services.AddTransient<ConfigureDockerDesktopWslIntegrationStep>();
+                services.AddTransient<PreAuthenticateGitCredentialManagerStep>();
 
                 // macOS
                 services.AddTransient<InstallHomebrewStep>();
