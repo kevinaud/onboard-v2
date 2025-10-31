@@ -1,0 +1,30 @@
+name: Validate C# Formatting
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  check-formatting:
+    name: Check C# Code Formatting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore local tools
+        run: dotnet tool restore
+        # This installs the version of CSharpier from .config/dotnet-tools.json
+
+      - name: Verify code formatting
+        run: dotnet csharpier check .
+        # The 'check' command fails with a non-zero exit code if any
+        # files need formatting, which automatically fails the CI build.

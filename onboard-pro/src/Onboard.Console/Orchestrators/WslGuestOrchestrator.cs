@@ -15,28 +15,28 @@ using Onboard.Core.Steps.WslGuest;
 /// </summary>
 public class WslGuestOrchestrator : SequentialOrchestrator
 {
-    public WslGuestOrchestrator(
-        IUserInteraction ui,
-        ExecutionOptions executionOptions,
-        AptUpdateStep aptUpdateStep,
-        InstallWslPrerequisitesStep installWslPrerequisitesStep,
-        InstallLinuxVsCodeStep installLinuxVsCodeStep,
-        ConfigureWslGitCredentialHelperStep configureWslGitCredentialHelperStep,
-        ConfigureGitUserStep configureGitUserStep,
-        CloneProjectRepoStep cloneProjectRepoStep)
-        : base(
-            ui,
-            executionOptions,
-            "WSL guest onboarding",
-            new IOnboardingStep[]
-            {
-                aptUpdateStep,
-                installWslPrerequisitesStep,
-                installLinuxVsCodeStep,
-                configureWslGitCredentialHelperStep,
-                configureGitUserStep,
-                cloneProjectRepoStep,
-            })
-    {
-    }
+  public WslGuestOrchestrator(
+    IUserInteraction ui,
+    ExecutionOptions executionOptions,
+    AptUpdateStep aptUpdateStep,
+    InstallWslPrerequisitesStep installWslPrerequisitesStep,
+    InstallLinuxVsCodeStep installLinuxVsCodeStep,
+    ConfigureWslGitCredentialHelperStep configureWslGitCredentialHelperStep,
+    ConfigureGitUserStep configureGitUserStep,
+    CloneProjectRepoStep cloneProjectRepoStep
+  )
+    : base(
+      ui,
+      executionOptions,
+      "WSL guest onboarding",
+      new IOnboardingStep[]
+      {
+        aptUpdateStep,
+        installWslPrerequisitesStep,
+        installLinuxVsCodeStep,
+        configureWslGitCredentialHelperStep,
+        configureGitUserStep,
+        cloneProjectRepoStep,
+      }
+    ) { }
 }

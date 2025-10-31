@@ -5,11 +5,9 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging.Abstractions;
-
 using Onboard.Console.Orchestrators;
 using Onboard.Console.Services;
 using Onboard.Core.Abstractions;
@@ -21,151 +19,156 @@ using Onboard.Core.Steps.Shared;
 using Onboard.Core.Steps.Ubuntu;
 using Onboard.Core.Steps.Windows;
 using Onboard.Core.Steps.WslGuest;
-
 using Serilog;
 using Serilog.Events;
-
 using Spectre.Console;
-
 using OS = Onboard.Core.Models.OperatingSystem;
 
 public static class Program
 {
-    public static async Task Main(string[] args)
+  public static async Task Main(string[] args)
+  {
+    // 1. Parse the supported command-line options
+    if (!CommandLineOptionsParser.TryParse(args, out var commandLineOptions, out string? parseError))
     {
-        // 1. Parse the supported command-line options
-        if (!CommandLineOptionsParser.TryParse(args, out var commandLineOptions, out string? parseError))
-        {
-            var fallbackUi = new SpectreUserInteraction(AnsiConsole.Console, NullLogger<SpectreUserInteraction>.Instance, new ExecutionOptions(IsDryRun: false, IsVerbose: false));
-            fallbackUi.WriteError(parseError ?? "Invalid command-line arguments.");
-            return;
-        }
-
-        var executionOptions = new ExecutionOptions(commandLineOptions.IsDryRun, commandLineOptions.IsVerbose);
-        string logFilePath = Path.Combine(Path.GetTempPath(), "onboard-pro.log");
-
-        using var host = Host.CreateDefaultBuilder(args)
-            .UseSerilog((context, services, configuration) =>
-            {
-                configuration
-                    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                    .MinimumLevel.Debug()
-                    .Enrich.FromLogContext()
-                    .WriteTo.File(
-                        path: logFilePath,
-                        restrictedToMinimumLevel: LogEventLevel.Debug,
-                        rollingInterval: RollingInterval.Infinite,
-                        retainedFileCountLimit: 1,
-                        shared: true,
-                        flushToDiskInterval: TimeSpan.FromSeconds(1));
-            })
-            .ConfigureServices((context, services) =>
-            {
-                // Register all singleton services
-                services.AddSingleton<IProcessRunner, ProcessRunner>();
-                services.AddSingleton<IAnsiConsole>(_ => AnsiConsole.Console);
-                services.AddSingleton<IUserInteraction, SpectreUserInteraction>();
-                services.AddSingleton<IPlatformDetector, PlatformDetector>();
-                services.AddSingleton<IFileSystem, FileSystem>();
-                services.AddSingleton<IEnvironmentRefresher, EnvironmentRefresher>();
-                services.AddSingleton(new OnboardingConfiguration());
-                services.AddSingleton(executionOptions);
-
-                // Register PlatformFacts by invoking the detector once at startup
-                services.AddSingleton(provider =>
-                    provider.GetRequiredService<IPlatformDetector>().Detect());
-
-                // Register all Orchestrators
-                services.AddTransient<WindowsOrchestrator>();
-                services.AddTransient<MacOsOrchestrator>();
-                services.AddTransient<UbuntuOrchestrator>();
-                services.AddTransient<WslGuestOrchestrator>();
-
-                // Register all Onboarding Steps
-                // Shared
-                services.AddTransient<ConfigureGitUserStep>();
-                services.AddTransient<CloneProjectRepoStep>();
-
-                // Platform-Aware
-                services.AddTransient<InstallWindowsVsCodeStep>();
-                services.AddTransient<InstallMacVsCodeStep>();
-                services.AddTransient<InstallLinuxVsCodeStep>();
-
-                // Windows-Specific
-                services.AddTransient<EnableWslFeaturesStep>();
-                services.AddTransient<InstallGitForWindowsStep>();
-                services.AddTransient<InstallGitHubCliStep>();
-                services.AddTransient<EnsureVsCodeRemoteExtensionPackStep>();
-                services.AddTransient<ConfigureVsCodeDotfilesStep>();
-                services.AddTransient<InstallDockerDesktopStep>();
-                services.AddTransient<ConfigureDockerDesktopWslIntegrationStep>();
-                services.AddTransient<PreAuthenticateGitCredentialManagerStep>();
-
-                // macOS
-                services.AddTransient<InstallHomebrewStep>();
-                services.AddTransient<InstallBrewPackagesStep>();
-
-                // Linux
-                services.AddTransient<AptUpdateStep>();
-                services.AddTransient<InstallAptPackagesStep>();
-
-                // WSL Guest
-                services.AddTransient<InstallWslPrerequisitesStep>();
-                services.AddTransient<ConfigureWslGitCredentialHelperStep>();
-            })
-            .Build();
-
-        // 2. Select the correct orchestrator based on platform AND mode
-        var platformFacts = host.Services.GetRequiredService<PlatformFacts>();
-        var ui = host.Services.GetRequiredService<IUserInteraction>();
-
-        ui.ShowWelcomeBanner(platformFacts);
-
-        IPlatformOrchestrator orchestrator;
-
-        try
-        {
-            if (platformFacts.OS == OS.Windows)
-            {
-                orchestrator = host.Services.GetRequiredService<WindowsOrchestrator>();
-            }
-            else if (platformFacts.OS == OS.Linux && platformFacts.IsWsl && commandLineOptions.IsWslGuestMode)
-            {
-                orchestrator = host.Services.GetRequiredService<WslGuestOrchestrator>();
-            }
-            else if (platformFacts.OS == OS.Linux && !platformFacts.IsWsl)
-            {
-                orchestrator = host.Services.GetRequiredService<UbuntuOrchestrator>();
-            }
-            else if (platformFacts.OS == OS.MacOs)
-            {
-                orchestrator = host.Services.GetRequiredService<MacOsOrchestrator>();
-            }
-            else
-            {
-                throw new NotSupportedException($"Unsupported platform: {platformFacts.OS}, WSL: {platformFacts.IsWsl}");
-            }
-        }
-        catch (Exception ex)
-        {
-            ui.WriteError($"Failed to initialize orchestrator: {ex.Message}");
-            return;
-        }
-
-        // 3. Execute the chosen orchestration
-        try
-        {
-            await orchestrator.ExecuteAsync().ConfigureAwait(false);
-        }
-        catch (OnboardingStepException ex)
-        {
-            ui.WriteError(ex.Message);
-            Environment.ExitCode = 1;
-        }
-        catch (Exception ex)
-        {
-            ui.WriteError($"Unexpected error: {ex.Message}");
-            Environment.ExitCode = 1;
-        }
+      var fallbackUi = new SpectreUserInteraction(
+        AnsiConsole.Console,
+        NullLogger<SpectreUserInteraction>.Instance,
+        new ExecutionOptions(IsDryRun: false, IsVerbose: false)
+      );
+      fallbackUi.WriteError(parseError ?? "Invalid command-line arguments.");
+      return;
     }
+
+    var executionOptions = new ExecutionOptions(commandLineOptions.IsDryRun, commandLineOptions.IsVerbose);
+    string logFilePath = Path.Combine(Path.GetTempPath(), "onboard-pro.log");
+
+    using var host = Host.CreateDefaultBuilder(args)
+      .UseSerilog(
+        (context, services, configuration) =>
+        {
+          configuration
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+            .MinimumLevel.Debug()
+            .Enrich.FromLogContext()
+            .WriteTo.File(
+              path: logFilePath,
+              restrictedToMinimumLevel: LogEventLevel.Debug,
+              rollingInterval: RollingInterval.Infinite,
+              retainedFileCountLimit: 1,
+              shared: true,
+              flushToDiskInterval: TimeSpan.FromSeconds(1)
+            );
+        }
+      )
+      .ConfigureServices(
+        (context, services) =>
+        {
+          // Register all singleton services
+          services.AddSingleton<IProcessRunner, ProcessRunner>();
+          services.AddSingleton<IAnsiConsole>(_ => AnsiConsole.Console);
+          services.AddSingleton<IUserInteraction, SpectreUserInteraction>();
+          services.AddSingleton<IPlatformDetector, PlatformDetector>();
+          services.AddSingleton<IFileSystem, FileSystem>();
+          services.AddSingleton<IEnvironmentRefresher, EnvironmentRefresher>();
+          services.AddSingleton(new OnboardingConfiguration());
+          services.AddSingleton(executionOptions);
+
+          // Register PlatformFacts by invoking the detector once at startup
+          services.AddSingleton(provider => provider.GetRequiredService<IPlatformDetector>().Detect());
+
+          // Register all Orchestrators
+          services.AddTransient<WindowsOrchestrator>();
+          services.AddTransient<MacOsOrchestrator>();
+          services.AddTransient<UbuntuOrchestrator>();
+          services.AddTransient<WslGuestOrchestrator>();
+
+          // Register all Onboarding Steps
+          // Shared
+          services.AddTransient<ConfigureGitUserStep>();
+          services.AddTransient<CloneProjectRepoStep>();
+
+          // Platform-Aware
+          services.AddTransient<InstallWindowsVsCodeStep>();
+          services.AddTransient<InstallMacVsCodeStep>();
+          services.AddTransient<InstallLinuxVsCodeStep>();
+
+          // Windows-Specific
+          services.AddTransient<EnableWslFeaturesStep>();
+          services.AddTransient<InstallGitForWindowsStep>();
+          services.AddTransient<InstallGitHubCliStep>();
+          services.AddTransient<EnsureVsCodeRemoteExtensionPackStep>();
+          services.AddTransient<ConfigureVsCodeDotfilesStep>();
+          services.AddTransient<InstallDockerDesktopStep>();
+          services.AddTransient<ConfigureDockerDesktopWslIntegrationStep>();
+          services.AddTransient<PreAuthenticateGitCredentialManagerStep>();
+
+          // macOS
+          services.AddTransient<InstallHomebrewStep>();
+          services.AddTransient<InstallBrewPackagesStep>();
+
+          // Linux
+          services.AddTransient<AptUpdateStep>();
+          services.AddTransient<InstallAptPackagesStep>();
+
+          // WSL Guest
+          services.AddTransient<InstallWslPrerequisitesStep>();
+          services.AddTransient<ConfigureWslGitCredentialHelperStep>();
+        }
+      )
+      .Build();
+
+    // 2. Select the correct orchestrator based on platform AND mode
+    var platformFacts = host.Services.GetRequiredService<PlatformFacts>();
+    var ui = host.Services.GetRequiredService<IUserInteraction>();
+
+    ui.ShowWelcomeBanner(platformFacts);
+
+    IPlatformOrchestrator orchestrator;
+
+    try
+    {
+      if (platformFacts.OS == OS.Windows)
+      {
+        orchestrator = host.Services.GetRequiredService<WindowsOrchestrator>();
+      }
+      else if (platformFacts.OS == OS.Linux && platformFacts.IsWsl && commandLineOptions.IsWslGuestMode)
+      {
+        orchestrator = host.Services.GetRequiredService<WslGuestOrchestrator>();
+      }
+      else if (platformFacts.OS == OS.Linux && !platformFacts.IsWsl)
+      {
+        orchestrator = host.Services.GetRequiredService<UbuntuOrchestrator>();
+      }
+      else if (platformFacts.OS == OS.MacOs)
+      {
+        orchestrator = host.Services.GetRequiredService<MacOsOrchestrator>();
+      }
+      else
+      {
+        throw new NotSupportedException($"Unsupported platform: {platformFacts.OS}, WSL: {platformFacts.IsWsl}");
+      }
+    }
+    catch (Exception ex)
+    {
+      ui.WriteError($"Failed to initialize orchestrator: {ex.Message}");
+      return;
+    }
+
+    // 3. Execute the chosen orchestration
+    try
+    {
+      await orchestrator.ExecuteAsync().ConfigureAwait(false);
+    }
+    catch (OnboardingStepException ex)
+    {
+      ui.WriteError(ex.Message);
+      Environment.ExitCode = 1;
+    }
+    catch (Exception ex)
+    {
+      ui.WriteError($"Unexpected error: {ex.Message}");
+      Environment.ExitCode = 1;
+    }
+  }
 }

@@ -16,26 +16,26 @@ using Onboard.Core.Steps.WslGuest;
 /// </summary>
 public class UbuntuOrchestrator : SequentialOrchestrator
 {
-    public UbuntuOrchestrator(
-        IUserInteraction ui,
-        ExecutionOptions executionOptions,
-        AptUpdateStep aptUpdateStep,
-        InstallAptPackagesStep installAptPackagesStep,
-        InstallLinuxVsCodeStep installLinuxVsCodeStep,
-        ConfigureGitUserStep configureGitUserStep,
-        CloneProjectRepoStep cloneProjectRepoStep)
-        : base(
-            ui,
-            executionOptions,
-            "Ubuntu onboarding",
-            new IOnboardingStep[]
-            {
-                aptUpdateStep,
-                installAptPackagesStep,
-                installLinuxVsCodeStep,
-                configureGitUserStep,
-                cloneProjectRepoStep,
-            })
-    {
-    }
+  public UbuntuOrchestrator(
+    IUserInteraction ui,
+    ExecutionOptions executionOptions,
+    AptUpdateStep aptUpdateStep,
+    InstallAptPackagesStep installAptPackagesStep,
+    InstallLinuxVsCodeStep installLinuxVsCodeStep,
+    ConfigureGitUserStep configureGitUserStep,
+    CloneProjectRepoStep cloneProjectRepoStep
+  )
+    : base(
+      ui,
+      executionOptions,
+      "Ubuntu onboarding",
+      new IOnboardingStep[]
+      {
+        aptUpdateStep,
+        installAptPackagesStep,
+        installLinuxVsCodeStep,
+        configureGitUserStep,
+        cloneProjectRepoStep,
+      }
+    ) { }
 }

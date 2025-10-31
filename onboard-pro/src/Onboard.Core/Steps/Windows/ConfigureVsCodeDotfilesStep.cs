@@ -5,7 +5,6 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
-
 using Onboard.Core.Abstractions;
 
 /// <summary>
@@ -13,71 +12,75 @@ using Onboard.Core.Abstractions;
 /// </summary>
 public class ConfigureVsCodeDotfilesStep : IInteractiveOnboardingStep
 {
-    private const string DefaultRepository = "kevinaud/dotfiles";
+  private const string DefaultRepository = "kevinaud/dotfiles";
 
-    private static string GetDefaultSettingsPath()
+  private static string GetDefaultSettingsPath()
+  {
+    string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+    return Path.Combine(appData, "Code", "User", "settings.json");
+  }
+
+  private static JsonObject ParseSettings(string contents)
+  {
+    if (string.IsNullOrWhiteSpace(contents))
     {
-        string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        return Path.Combine(appData, "Code", "User", "settings.json");
+      return new JsonObject();
     }
 
-    private static JsonObject ParseSettings(string contents)
+    try
     {
-        if (string.IsNullOrWhiteSpace(contents))
-        {
-            return new JsonObject();
-        }
+      return JsonNode.Parse(contents)?.AsObject() ?? new JsonObject();
+    }
+    catch (JsonException)
+    {
+      return new JsonObject();
+    }
+  }
 
-        try
-        {
-            return JsonNode.Parse(contents)?.AsObject() ?? new JsonObject();
-        }
-        catch (JsonException)
-        {
-            return new JsonObject();
-        }
+  private static bool TryGetRepository(JsonObject settings, out string? repository)
+  {
+    repository = null;
+    if (!settings.TryGetPropertyValue("dotfiles.repository", out JsonNode? value))
+    {
+      return false;
     }
 
-    private static bool TryGetRepository(JsonObject settings, out string? repository)
-    {
-        repository = null;
-        if (!settings.TryGetPropertyValue("dotfiles.repository", out JsonNode? value))
-        {
-            return false;
-        }
+    repository = value?.GetValue<string?>();
+    return !string.IsNullOrWhiteSpace(repository);
+  }
 
-        repository = value?.GetValue<string?>();
-        return !string.IsNullOrWhiteSpace(repository);
-    }
+  private readonly IUserInteraction userInteraction;
+  private readonly IFileSystem fileSystem;
+  private readonly Func<string> settingsPathProvider;
 
-    private readonly IUserInteraction userInteraction;
-    private readonly IFileSystem fileSystem;
-    private readonly Func<string> settingsPathProvider;
+  private SettingsSnapshot? cachedSettings;
 
-    private SettingsSnapshot? cachedSettings;
+  public ConfigureVsCodeDotfilesStep(
+    IUserInteraction userInteraction,
+    IFileSystem fileSystem,
+    Func<string>? settingsPathProvider = null
+  )
+  {
+    this.userInteraction = userInteraction;
+    this.fileSystem = fileSystem;
+    this.settingsPathProvider = settingsPathProvider ?? GetDefaultSettingsPath;
+  }
 
-    public ConfigureVsCodeDotfilesStep(IUserInteraction userInteraction, IFileSystem fileSystem, Func<string>? settingsPathProvider = null)
-    {
-        this.userInteraction = userInteraction;
-        this.fileSystem = fileSystem;
-        this.settingsPathProvider = settingsPathProvider ?? GetDefaultSettingsPath;
-    }
+  public string Description => "Configure VS Code dotfiles repository";
 
-    public string Description => "Configure VS Code dotfiles repository";
+  public Task<bool> ShouldExecuteAsync()
+  {
+    cachedSettings = LoadSettings();
+    return Task.FromResult(!cachedSettings.HasRepository);
+  }
 
-    public Task<bool> ShouldExecuteAsync()
-    {
-        cachedSettings = LoadSettings();
-        return Task.FromResult(!cachedSettings.HasRepository);
-    }
+  public Task ExecuteAsync()
+  {
+    cachedSettings ??= LoadSettings();
+    var settings = cachedSettings;
 
-    public Task ExecuteAsync()
-    {
-        cachedSettings ??= LoadSettings();
-        var settings = cachedSettings;
-
-        userInteraction.WriteNormal(string.Empty);
-        string markdown = $"""
+    userInteraction.WriteNormal(string.Empty);
+    string markdown = $"""
 **VS Code dotfiles configuration needs your input.**
 
 ### What this does
@@ -96,122 +99,127 @@ public class ConfigureVsCodeDotfilesStep : IInteractiveOnboardingStep
 - **DEFAULT**: Use the default repository above.
 - **SKIP**: Leave dotfiles unconfigured for now.
 """;
-        userInteraction.WriteMarkdown(markdown);
+    userInteraction.WriteMarkdown(markdown);
 
-        string option = PromptForOption();
-        if (string.Equals(option, "SKIP", StringComparison.OrdinalIgnoreCase))
-        {
-            userInteraction.WriteWarning("Skipping VS Code dotfiles configuration at user request.");
-            return Task.CompletedTask;
-        }
-
-        string repository;
-        string? targetPath = null;
-
-        if (string.Equals(option, "CUSTOM", StringComparison.OrdinalIgnoreCase))
-        {
-            repository = PromptForRepository();
-            targetPath = PromptForTargetPath();
-        }
-        else
-        {
-            repository = DefaultRepository;
-        }
-
-        UpdateSettings(settings!, repository, targetPath);
-        WriteSettings(settings!);
-
-        userInteraction.WriteSuccess("VS Code dotfiles configuration updated.");
-        return Task.CompletedTask;
-    }
-
-    private SettingsSnapshot LoadSettings()
+    string option = PromptForOption();
+    if (string.Equals(option, "SKIP", StringComparison.OrdinalIgnoreCase))
     {
-        string path = settingsPathProvider();
-        JsonObject settingsObject;
-        bool hasRepository = false;
-
-        if (fileSystem.FileExists(path))
-        {
-            string contents = fileSystem.ReadAllText(path);
-            settingsObject = ParseSettings(contents);
-            hasRepository = TryGetRepository(settingsObject, out _);
-        }
-        else
-        {
-            settingsObject = new JsonObject();
-        }
-
-        return new SettingsSnapshot(path, settingsObject, hasRepository);
+      userInteraction.WriteWarning("Skipping VS Code dotfiles configuration at user request.");
+      return Task.CompletedTask;
     }
 
-    private string PromptForOption()
+    string repository;
+    string? targetPath = null;
+
+    if (string.Equals(option, "CUSTOM", StringComparison.OrdinalIgnoreCase))
     {
-        while (true)
-        {
-            string response = userInteraction.Ask("Configure VS Code Dev Container dotfiles (CUSTOM/DEFAULT/SKIP):", "DEFAULT");
-            if (string.IsNullOrWhiteSpace(response))
-            {
-                return "DEFAULT";
-            }
-
-            response = response.Trim().ToUpperInvariant();
-            if (response is "CUSTOM" or "DEFAULT" or "SKIP")
-            {
-                return response;
-            }
-
-            userInteraction.WriteWarning($"Please enter CUSTOM to supply a repository, DEFAULT to use {DefaultRepository}, or SKIP to leave dotfiles unconfigured.");
-        }
+      repository = PromptForRepository();
+      targetPath = PromptForTargetPath();
     }
-
-    private string PromptForRepository()
+    else
     {
-        while (true)
-        {
-            string response = userInteraction.Ask("Enter the GitHub repository to clone (owner/repo):");
-            if (!string.IsNullOrWhiteSpace(response))
-            {
-                return response.Trim();
-            }
-
-            userInteraction.WriteWarning("Repository cannot be empty.");
-        }
+      repository = DefaultRepository;
     }
 
-    private string? PromptForTargetPath()
+    UpdateSettings(settings!, repository, targetPath);
+    WriteSettings(settings!);
+
+    userInteraction.WriteSuccess("VS Code dotfiles configuration updated.");
+    return Task.CompletedTask;
+  }
+
+  private SettingsSnapshot LoadSettings()
+  {
+    string path = settingsPathProvider();
+    JsonObject settingsObject;
+    bool hasRepository = false;
+
+    if (fileSystem.FileExists(path))
     {
-        string response = userInteraction.Ask("Optional: enter a target path for dotfiles (leave blank for default):", string.Empty);
-        return string.IsNullOrWhiteSpace(response) ? null : response.Trim();
+      string contents = fileSystem.ReadAllText(path);
+      settingsObject = ParseSettings(contents);
+      hasRepository = TryGetRepository(settingsObject, out _);
     }
-
-    private void UpdateSettings(SettingsSnapshot snapshot, string repository, string? targetPath)
+    else
     {
-        snapshot.Settings["dotfiles.repository"] = repository;
-
-        if (string.IsNullOrWhiteSpace(targetPath))
-        {
-            snapshot.Settings.Remove("dotfiles.targetPath");
-        }
-        else
-        {
-            snapshot.Settings["dotfiles.targetPath"] = targetPath;
-        }
+      settingsObject = new JsonObject();
     }
 
-    private void WriteSettings(SettingsSnapshot snapshot)
+    return new SettingsSnapshot(path, settingsObject, hasRepository);
+  }
+
+  private string PromptForOption()
+  {
+    while (true)
     {
-        string directory = Path.GetDirectoryName(snapshot.Path)!;
-        fileSystem.CreateDirectory(directory);
+      string response = userInteraction.Ask(
+        "Configure VS Code Dev Container dotfiles (CUSTOM/DEFAULT/SKIP):",
+        "DEFAULT"
+      );
+      if (string.IsNullOrWhiteSpace(response))
+      {
+        return "DEFAULT";
+      }
 
-        var options = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-        };
+      response = response.Trim().ToUpperInvariant();
+      if (response is "CUSTOM" or "DEFAULT" or "SKIP")
+      {
+        return response;
+      }
 
-        string payload = snapshot.Settings.ToJsonString(options);
-        fileSystem.WriteAllText(snapshot.Path, payload);
+      userInteraction.WriteWarning(
+        $"Please enter CUSTOM to supply a repository, DEFAULT to use {DefaultRepository}, or SKIP to leave dotfiles unconfigured."
+      );
     }
+  }
 
-    private sealed record SettingsSnapshot(string Path, JsonObject Settings, bool HasRepository);
+  private string PromptForRepository()
+  {
+    while (true)
+    {
+      string response = userInteraction.Ask("Enter the GitHub repository to clone (owner/repo):");
+      if (!string.IsNullOrWhiteSpace(response))
+      {
+        return response.Trim();
+      }
+
+      userInteraction.WriteWarning("Repository cannot be empty.");
+    }
+  }
+
+  private string? PromptForTargetPath()
+  {
+    string response = userInteraction.Ask(
+      "Optional: enter a target path for dotfiles (leave blank for default):",
+      string.Empty
+    );
+    return string.IsNullOrWhiteSpace(response) ? null : response.Trim();
+  }
+
+  private void UpdateSettings(SettingsSnapshot snapshot, string repository, string? targetPath)
+  {
+    snapshot.Settings["dotfiles.repository"] = repository;
+
+    if (string.IsNullOrWhiteSpace(targetPath))
+    {
+      snapshot.Settings.Remove("dotfiles.targetPath");
+    }
+    else
+    {
+      snapshot.Settings["dotfiles.targetPath"] = targetPath;
+    }
+  }
+
+  private void WriteSettings(SettingsSnapshot snapshot)
+  {
+    string directory = Path.GetDirectoryName(snapshot.Path)!;
+    fileSystem.CreateDirectory(directory);
+
+    var options = new JsonSerializerOptions { WriteIndented = true };
+
+    string payload = snapshot.Settings.ToJsonString(options);
+    fileSystem.WriteAllText(snapshot.Path, payload);
+  }
+
+  private sealed record SettingsSnapshot(string Path, JsonObject Settings, bool HasRepository);
 }

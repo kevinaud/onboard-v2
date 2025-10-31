@@ -5,7 +5,6 @@
 namespace Onboard.Core.Services;
 
 using System.IO;
-
 using Onboard.Core.Abstractions;
 
 /// <summary>
@@ -13,41 +12,41 @@ using Onboard.Core.Abstractions;
 /// </summary>
 public class FileSystem : IFileSystem
 {
-    public bool DirectoryExists(string path)
-    {
-        return Directory.Exists(path);
-    }
+  public bool DirectoryExists(string path)
+  {
+    return Directory.Exists(path);
+  }
 
-    public void CreateDirectory(string path)
-    {
-        Directory.CreateDirectory(path);
-    }
+  public void CreateDirectory(string path)
+  {
+    Directory.CreateDirectory(path);
+  }
 
-    public bool FileExists(string path)
-    {
-        return File.Exists(path);
-    }
+  public bool FileExists(string path)
+  {
+    return File.Exists(path);
+  }
 
-    public string ReadAllText(string path)
-    {
-        return File.ReadAllText(path);
-    }
+  public string ReadAllText(string path)
+  {
+    return File.ReadAllText(path);
+  }
 
-    public void WriteAllText(string path, string contents)
-    {
-        File.WriteAllText(path, contents);
-    }
+  public void WriteAllText(string path, string contents)
+  {
+    File.WriteAllText(path, contents);
+  }
 
-    public void MoveFile(string sourcePath, string destinationPath, bool overwrite)
-    {
-        File.Move(sourcePath, destinationPath, overwrite);
-    }
+  public void MoveFile(string sourcePath, string destinationPath, bool overwrite)
+  {
+    File.Move(sourcePath, destinationPath, overwrite);
+  }
 
-    public void DeleteFile(string path)
+  public void DeleteFile(string path)
+  {
+    if (File.Exists(path))
     {
-        if (File.Exists(path))
-        {
-            File.Delete(path);
-        }
+      File.Delete(path);
     }
+  }
 }

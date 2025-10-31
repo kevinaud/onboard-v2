@@ -1,14 +1,23 @@
 root = true
 
 [*.cs]
-charset = utf-8
-end_of_line = lf
-indent_style = space
-indent_size = 4
-insert_final_newline = true
-max_line_length = 120:error
+# CSharpier will read and respect the following properties.
+# Set the desired maximum line length. CSharpier uses this as its "printWidth".
+max_line_length = 120
 
-# Using directives
+# Configure indentation style and size.
+indent_style = space
+indent_size = 2
+
+# Configure end-of-line characters. Use 'lf' for consistency across platforms.
+end_of_line = lf
+
+# Standard .NET formatting options respected by CSharpier.
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Additional analyzer configuration retained from prior settings.
+charset = utf-8
 dotnet_separate_import_directive_groups = true
 dotnet_sort_system_directives_first = true
 
@@ -41,13 +50,17 @@ dotnet_naming_style.camel_underscore.required_prefix = _
 dotnet_diagnostic.SA0001.severity = none
 dotnet_diagnostic.SA1101.severity = none
 dotnet_diagnostic.SA1201.severity = none
+dotnet_diagnostic.SA1502.severity = none
 dotnet_diagnostic.SA1512.severity = none
+dotnet_diagnostic.SA1516.severity = none
 dotnet_diagnostic.SA1611.severity = none
 dotnet_diagnostic.SA1633.severity = none
 dotnet_diagnostic.SA1600.severity = none
 dotnet_diagnostic.SA1602.severity = none
 dotnet_diagnostic.SA1649.severity = none
 dotnet_diagnostic.SA1651.severity = none
+dotnet_diagnostic.SA1009.severity = none
+dotnet_diagnostic.SA1111.severity = none
 dotnet_diagnostic.MA0047.severity = none
 dotnet_diagnostic.MA0048.severity = none
 dotnet_diagnostic.MA0049.severity = none
