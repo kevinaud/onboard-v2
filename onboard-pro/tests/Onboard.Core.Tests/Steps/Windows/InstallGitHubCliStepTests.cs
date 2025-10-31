@@ -3,6 +3,7 @@ namespace Onboard.Core.Tests.Steps.Windows;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using global::Onboard.Core.Abstractions;
@@ -16,14 +17,16 @@ public class InstallGitHubCliStepTests
 {
     private Mock<IProcessRunner> processRunner = null!;
     private Mock<IUserInteraction> userInteraction = null!;
+    private Mock<IEnvironmentRefresher> environmentRefresher = null!;
     private OnboardingConfiguration configuration = null!;
 
     [SetUp]
     public void SetUp()
     {
-        processRunner = new Mock<IProcessRunner>(MockBehavior.Strict);
-        userInteraction = new Mock<IUserInteraction>(MockBehavior.Strict);
-        configuration = new OnboardingConfiguration();
+    processRunner = new Mock<IProcessRunner>(MockBehavior.Strict);
+    userInteraction = new Mock<IUserInteraction>(MockBehavior.Strict);
+    environmentRefresher = new Mock<IEnvironmentRefresher>(MockBehavior.Strict);
+    configuration = new OnboardingConfiguration();
     }
 
     [Test]
@@ -65,6 +68,9 @@ public class InstallGitHubCliStepTests
             processRunner
                 .Setup(runner => runner.RunAsync("winget", It.Is<string>(args => args.Contains("GitHub.cli", StringComparison.OrdinalIgnoreCase))))
                 .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
+            environmentRefresher
+                .Setup(refresher => refresher.RefreshAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
             processRunner
                 .Setup(runner => runner.RunAsync("where", "gh.exe"))
                 .ReturnsAsync(new ProcessResult(0, cliPath, string.Empty));
@@ -75,6 +81,7 @@ public class InstallGitHubCliStepTests
 
             processRunner.VerifyAll();
             userInteraction.VerifyAll();
+            environmentRefresher.VerifyAll();
             Assert.That(configuration.GitHubCliPath, Is.EqualTo(cliPath));
             string updatedPath = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
             bool containsCliDirectory = updatedPath.Split(';', StringSplitOptions.RemoveEmptyEntries)
@@ -111,6 +118,6 @@ public class InstallGitHubCliStepTests
 
     private InstallGitHubCliStep CreateStep()
     {
-        return new InstallGitHubCliStep(processRunner.Object, userInteraction.Object, configuration);
+        return new InstallGitHubCliStep(processRunner.Object, userInteraction.Object, configuration, environmentRefresher.Object);
     }
 }

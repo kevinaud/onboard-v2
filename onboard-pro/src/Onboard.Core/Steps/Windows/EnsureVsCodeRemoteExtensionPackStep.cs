@@ -2,6 +2,7 @@ namespace Onboard.Core.Steps.Windows;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 using Onboard.Core.Abstractions;
@@ -16,13 +17,15 @@ public class EnsureVsCodeRemoteExtensionPackStep : IOnboardingStep
 
     private readonly IProcessRunner processRunner;
     private readonly IUserInteraction userInteraction;
+    private readonly OnboardingConfiguration configuration;
     private string? codeCliPath;
     private bool codeCliPathResolved;
 
-    public EnsureVsCodeRemoteExtensionPackStep(IProcessRunner processRunner, IUserInteraction userInteraction)
+    public EnsureVsCodeRemoteExtensionPackStep(IProcessRunner processRunner, IUserInteraction userInteraction, OnboardingConfiguration configuration)
     {
         this.processRunner = processRunner;
         this.userInteraction = userInteraction;
+        this.configuration = configuration;
     }
 
     public string Description => "Install VS Code Remote Development extension pack";
@@ -116,6 +119,12 @@ public class EnsureVsCodeRemoteExtensionPackStep : IOnboardingStep
         }
 
         codeCliPathResolved = true;
+        if (!string.IsNullOrWhiteSpace(configuration.VsCodeCliPath) && File.Exists(configuration.VsCodeCliPath))
+        {
+            codeCliPath = configuration.VsCodeCliPath;
+            return codeCliPath;
+        }
+
         var result = await processRunner.RunAsync("where", "code.cmd").ConfigureAwait(false);
         if (!result.IsSuccess)
         {
@@ -126,7 +135,14 @@ public class EnsureVsCodeRemoteExtensionPackStep : IOnboardingStep
         {
             if (!string.IsNullOrWhiteSpace(line))
             {
-                codeCliPath = line.Trim();
+                string candidate = line.Trim();
+                if (!File.Exists(candidate))
+                {
+                    continue;
+                }
+
+                codeCliPath = candidate;
+                configuration.VsCodeCliPath = candidate;
                 break;
             }
         }

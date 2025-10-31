@@ -1,6 +1,7 @@
 namespace Onboard.Core.Tests.Steps.Windows;
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using global::Onboard.Core.Abstractions;
@@ -14,14 +15,16 @@ public class InstallDockerDesktopStepTests
 {
     private Mock<IProcessRunner> processRunner = null!;
     private Mock<IUserInteraction> userInteraction = null!;
+    private Mock<IEnvironmentRefresher> environmentRefresher = null!;
     private OnboardingConfiguration configuration = null!;
 
     [SetUp]
     public void SetUp()
     {
-        processRunner = new Mock<IProcessRunner>(MockBehavior.Strict);
-        userInteraction = new Mock<IUserInteraction>(MockBehavior.Strict);
-        configuration = new OnboardingConfiguration { WslDistroName = "Ubuntu-22.04" };
+    processRunner = new Mock<IProcessRunner>(MockBehavior.Strict);
+    userInteraction = new Mock<IUserInteraction>(MockBehavior.Strict);
+    environmentRefresher = new Mock<IEnvironmentRefresher>(MockBehavior.Strict);
+    configuration = new OnboardingConfiguration { WslDistroName = "Ubuntu-22.04" };
     }
 
     [Test]
@@ -75,6 +78,9 @@ public class InstallDockerDesktopStepTests
         processRunner
             .Setup(runner => runner.RunAsync("winget", It.Is<string>(args => args.Contains("Docker.DockerDesktop", StringComparison.Ordinal))))
             .ReturnsAsync(new ProcessResult(0, string.Empty, string.Empty));
+        environmentRefresher
+            .Setup(refresher => refresher.RefreshAsync(It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
 
         userInteraction.Setup(ui => ui.WriteSuccess("Docker Desktop installed via winget."));
         userInteraction.Setup(ui => ui.WriteNormal("Launch Docker Desktop and accept the terms of service if prompted."));
@@ -85,6 +91,7 @@ public class InstallDockerDesktopStepTests
 
         processRunner.VerifyAll();
         userInteraction.VerifyAll();
+        environmentRefresher.VerifyAll();
     }
 
     [Test]
@@ -100,5 +107,5 @@ public class InstallDockerDesktopStepTests
         processRunner.VerifyAll();
     }
 
-    private InstallDockerDesktopStep CreateStep() => new(processRunner.Object, userInteraction.Object, configuration);
+    private InstallDockerDesktopStep CreateStep() => new(processRunner.Object, userInteraction.Object, configuration, environmentRefresher.Object);
 }

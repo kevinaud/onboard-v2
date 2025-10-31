@@ -18,12 +18,14 @@ public class InstallGitHubCliStep : IOnboardingStep
     private readonly IProcessRunner processRunner;
     private readonly IUserInteraction userInteraction;
     private readonly OnboardingConfiguration configuration;
+    private readonly IEnvironmentRefresher environmentRefresher;
 
-    public InstallGitHubCliStep(IProcessRunner processRunner, IUserInteraction userInteraction, OnboardingConfiguration configuration)
+    public InstallGitHubCliStep(IProcessRunner processRunner, IUserInteraction userInteraction, OnboardingConfiguration configuration, IEnvironmentRefresher environmentRefresher)
     {
         this.processRunner = processRunner;
         this.userInteraction = userInteraction;
         this.configuration = configuration;
+        this.environmentRefresher = environmentRefresher;
     }
 
     public string Description => "Install GitHub CLI";
@@ -45,6 +47,7 @@ public class InstallGitHubCliStep : IOnboardingStep
             throw new InvalidOperationException(message);
         }
 
+        await environmentRefresher.RefreshAsync().ConfigureAwait(false);
         await CaptureGitHubCliPathAsync().ConfigureAwait(false);
 
         userInteraction.WriteSuccess("GitHub CLI installed via winget.");

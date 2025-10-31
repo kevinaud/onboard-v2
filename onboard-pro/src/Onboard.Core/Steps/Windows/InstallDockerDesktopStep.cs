@@ -17,15 +17,18 @@ public class InstallDockerDesktopStep : IOnboardingStep
     private readonly IProcessRunner processRunner;
     private readonly IUserInteraction userInteraction;
     private readonly OnboardingConfiguration configuration;
+    private readonly IEnvironmentRefresher environmentRefresher;
 
     public InstallDockerDesktopStep(
         IProcessRunner processRunner,
         IUserInteraction userInteraction,
-        OnboardingConfiguration configuration)
+        OnboardingConfiguration configuration,
+        IEnvironmentRefresher environmentRefresher)
     {
         this.processRunner = processRunner;
         this.userInteraction = userInteraction;
         this.configuration = configuration;
+        this.environmentRefresher = environmentRefresher;
     }
 
     public string Description => "Install Docker Desktop";
@@ -53,6 +56,7 @@ public class InstallDockerDesktopStep : IOnboardingStep
             throw new InvalidOperationException(message);
         }
 
+        await environmentRefresher.RefreshAsync().ConfigureAwait(false);
         this.userInteraction.WriteSuccess("Docker Desktop installed via winget.");
         this.userInteraction.WriteNormal("Launch Docker Desktop and accept the terms of service if prompted.");
         this.userInteraction.WriteNormal($"Run Docker Desktop once to finish setup, then verify WSL integration for {this.configuration.WslDistroName} before continuing.");

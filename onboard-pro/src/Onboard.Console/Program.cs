@@ -67,6 +67,7 @@ public static class Program
                 services.AddSingleton<IUserInteraction, SpectreUserInteraction>();
                 services.AddSingleton<IPlatformDetector, PlatformDetector>();
                 services.AddSingleton<IFileSystem, FileSystem>();
+                services.AddSingleton<IEnvironmentRefresher, EnvironmentRefresher>();
                 services.AddSingleton(new OnboardingConfiguration());
                 services.AddSingleton(executionOptions);
 

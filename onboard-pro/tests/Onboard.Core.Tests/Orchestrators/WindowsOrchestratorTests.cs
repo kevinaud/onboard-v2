@@ -2,6 +2,7 @@ namespace Onboard.Core.Tests.Orchestrators;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,58 +35,71 @@ public class WindowsOrchestratorTests
         });
 
         var configuration = new OnboardingConfiguration();
-        var processRunner = CreateProcessRunner(new Dictionary<(string FileName, string Arguments, bool RequestElevation, bool UseShellExecute), ProcessResult>
+        string gitPath = CreateTemporaryExecutable("git.exe", out Action disposeGit);
+        string ghPath = CreateTemporaryExecutable("gh.exe", out Action disposeGh);
+        string codePath = CreateTemporaryExecutable("code.cmd", out Action disposeCode);
+
+        try
         {
-            { (FileName: "dism.exe", Arguments: "/online /Get-FeatureInfo /FeatureName:Microsoft-Windows-Subsystem-Linux", RequestElevation: false, UseShellExecute: false), Success("State : Enabled") },
-            { (FileName: "dism.exe", Arguments: "/online /Get-FeatureInfo /FeatureName:VirtualMachinePlatform", RequestElevation: false, UseShellExecute: false), Success("State : Enabled") },
-            { (FileName: "wsl.exe", Arguments: "-l -q", RequestElevation: false, UseShellExecute: false), Success("Ubuntu-22.04\r\n") },
-            { (FileName: "wsl.exe", Arguments: "-d \"Ubuntu-22.04\" -- cat /etc/os-release", RequestElevation: false, UseShellExecute: true), Success(string.Empty) },
-            { (FileName: "where", Arguments: "git.exe", RequestElevation: false, UseShellExecute: false), Success("C\\Git\\git.exe") },
-            { (FileName: "where", Arguments: "gh.exe", RequestElevation: false, UseShellExecute: false), Success("C:\\GitHubCli\\gh.exe") },
-            { (FileName: "where", Arguments: "code.cmd", RequestElevation: false, UseShellExecute: false), Success("C:\\VSCode\\code.cmd") },
-            { (FileName: "powershell", Arguments: "-NoProfile -Command \"(Test-Path 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe') -or (Test-Path (Join-Path $env:LOCALAPPDATA 'Programs\\Docker\\Docker Desktop.exe'))\"", RequestElevation: false, UseShellExecute: false), Success("True") },
-            { (FileName: "cmd.exe", Arguments: "/c C:\\VSCode\\code.cmd --list-extensions", RequestElevation: false, UseShellExecute: false), Success("ms-vscode-remote.vscode-remote-extensionpack") },
-            { (FileName: "cmd.exe", Arguments: BuildCredentialProbeArguments(configuration), RequestElevation: false, UseShellExecute: false), Success("username=user\r\npassword=secret") },
-            { (FileName: "git", Arguments: "config --global user.name", RequestElevation: false, UseShellExecute: false), Success("Test User") },
-            { (FileName: "git", Arguments: "config --global user.email", RequestElevation: false, UseShellExecute: false), Success("test@example.com") },
-        });
+            var processRunner = CreateProcessRunner(new Dictionary<(string FileName, string Arguments, bool RequestElevation, bool UseShellExecute), ProcessResult>
+            {
+                { (FileName: "dism.exe", Arguments: "/online /Get-FeatureInfo /FeatureName:Microsoft-Windows-Subsystem-Linux", RequestElevation: false, UseShellExecute: false), Success("State : Enabled") },
+                { (FileName: "dism.exe", Arguments: "/online /Get-FeatureInfo /FeatureName:VirtualMachinePlatform", RequestElevation: false, UseShellExecute: false), Success("State : Enabled") },
+                { (FileName: "wsl.exe", Arguments: "-l -q", RequestElevation: false, UseShellExecute: false), Success("Ubuntu-22.04\r\n") },
+                { (FileName: "wsl.exe", Arguments: "-d \"Ubuntu-22.04\" -- cat /etc/os-release", RequestElevation: false, UseShellExecute: true), Success(string.Empty) },
+                { (FileName: "where", Arguments: "git.exe", RequestElevation: false, UseShellExecute: false), Success(gitPath) },
+                { (FileName: "where", Arguments: "gh.exe", RequestElevation: false, UseShellExecute: false), Success(ghPath) },
+                { (FileName: "where", Arguments: "code.cmd", RequestElevation: false, UseShellExecute: false), Success(codePath) },
+                { (FileName: "powershell", Arguments: "-NoProfile -Command \"(Test-Path 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe') -or (Test-Path (Join-Path $env:LOCALAPPDATA 'Programs\\Docker\\Docker Desktop.exe'))\"", RequestElevation: false, UseShellExecute: false), Success("True") },
+                { (FileName: "cmd.exe", Arguments: $"/c {codePath} --list-extensions", RequestElevation: false, UseShellExecute: false), Success("ms-vscode-remote.vscode-remote-extensionpack") },
+                { (FileName: "cmd.exe", Arguments: BuildCredentialProbeArguments(configuration), RequestElevation: false, UseShellExecute: false), Success("username=user\r\npassword=secret") },
+                { (FileName: "git", Arguments: "config --global user.name", RequestElevation: false, UseShellExecute: false), Success("Test User") },
+                { (FileName: "git", Arguments: "config --global user.email", RequestElevation: false, UseShellExecute: false), Success("test@example.com") },
+            });
 
-        var fileSystem = new FakeFileSystem(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            var fileSystem = new FakeFileSystem(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { DotfilesSettingsPath, "{\"dotfiles.repository\":\"someone/dots\"}" },
+                { DockerSettingsPath, "{\"IntegratedWslDistros\":[\"Ubuntu-22.04\"]}" },
+            });
+
+            var orchestrator = CreateOrchestrator(
+                ui,
+                processRunner,
+                fileSystem,
+                configuration,
+                new ExecutionOptions(IsDryRun: false, IsVerbose: false));
+
+            await orchestrator.ExecuteAsync().ConfigureAwait(false);
+
+            ui.Verify(x => x.WriteNormal("Starting Windows host onboarding..."), Times.Once);
+            ui.Verify(x => x.RunStatusAsync(It.IsAny<string>(), It.IsAny<Func<IStatusContext, Task>>(), It.IsAny<CancellationToken>()), Times.Exactly(10));
+            ui.Verify(x => x.ShowSummary(It.IsAny<IReadOnlyCollection<StepResult>>()), Times.Once);
+            ui.Verify(x => x.WriteSuccess("Windows host onboarding complete."), Times.Once);
+
+            Assert.That(capturedSummary, Has.Count.EqualTo(10));
+            Assert.That(capturedSummary.All(result => result.Status == StepStatus.Skipped));
+            Assert.That(capturedSummary.All(result => string.Equals(result.SkipReason, "Already configured", StringComparison.Ordinal)));
+            Assert.That(capturedSummary.Select(result => result.StepName).ToArray(), Is.EqualTo(new[]
+            {
+                "Verify Windows Subsystem for Linux prerequisites",
+                "Install Git for Windows",
+                "Install GitHub CLI",
+                "Install Visual Studio Code",
+                "Install VS Code Remote Development extension pack",
+                "Configure VS Code dotfiles repository",
+                "Install Docker Desktop",
+                "Configure Docker Desktop WSL integration",
+                "Authenticate Git Credential Manager with GitHub",
+                "Configure Git user identity",
+            }));
+        }
+        finally
         {
-            { DotfilesSettingsPath, "{\"dotfiles.repository\":\"someone/dots\"}" },
-            { DockerSettingsPath, "{\"IntegratedWslDistros\":[\"Ubuntu-22.04\"]}" },
-        });
-
-        var orchestrator = CreateOrchestrator(
-            ui,
-            processRunner,
-            fileSystem,
-            configuration,
-            new ExecutionOptions(IsDryRun: false, IsVerbose: false));
-
-        await orchestrator.ExecuteAsync().ConfigureAwait(false);
-
-        ui.Verify(x => x.WriteNormal("Starting Windows host onboarding..."), Times.Once);
-        ui.Verify(x => x.RunStatusAsync(It.IsAny<string>(), It.IsAny<Func<IStatusContext, Task>>(), It.IsAny<CancellationToken>()), Times.Exactly(10));
-        ui.Verify(x => x.ShowSummary(It.IsAny<IReadOnlyCollection<StepResult>>()), Times.Once);
-        ui.Verify(x => x.WriteSuccess("Windows host onboarding complete."), Times.Once);
-
-        Assert.That(capturedSummary, Has.Count.EqualTo(10));
-        Assert.That(capturedSummary.All(result => result.Status == StepStatus.Skipped));
-        Assert.That(capturedSummary.All(result => string.Equals(result.SkipReason, "Already configured", StringComparison.Ordinal)));
-        Assert.That(capturedSummary.Select(result => result.StepName).ToArray(), Is.EqualTo(new[]
-        {
-            "Verify Windows Subsystem for Linux prerequisites",
-            "Install Git for Windows",
-            "Install GitHub CLI",
-            "Install Visual Studio Code",
-            "Install VS Code Remote Development extension pack",
-            "Configure VS Code dotfiles repository",
-            "Install Docker Desktop",
-            "Configure Docker Desktop WSL integration",
-            "Authenticate Git Credential Manager with GitHub",
-            "Configure Git user identity",
-        }));
+            disposeGit();
+            disposeGh();
+            disposeCode();
+        }
     }
 
     [Test]
@@ -223,41 +237,54 @@ public class WindowsOrchestratorTests
             });
 
         var configuration = new OnboardingConfiguration();
-        var processRunner = CreateProcessRunner(new Dictionary<(string FileName, string Arguments, bool RequestElevation, bool UseShellExecute), ProcessResult>
+        string gitPath = CreateTemporaryExecutable("git.exe", out Action disposeGit);
+        string ghPath = CreateTemporaryExecutable("gh.exe", out Action disposeGh);
+        string codePath = CreateTemporaryExecutable("code.cmd", out Action disposeCode);
+
+        try
         {
-            { (FileName: "dism.exe", Arguments: "/online /Get-FeatureInfo /FeatureName:Microsoft-Windows-Subsystem-Linux", RequestElevation: false, UseShellExecute: false), Success("State : Enabled") },
-            { (FileName: "dism.exe", Arguments: "/online /Get-FeatureInfo /FeatureName:VirtualMachinePlatform", RequestElevation: false, UseShellExecute: false), Success("State : Enabled") },
-            { (FileName: "wsl.exe", Arguments: "-l -q", RequestElevation: false, UseShellExecute: false), Success("Ubuntu-22.04\r\n") },
-            { (FileName: "wsl.exe", Arguments: "-d \"Ubuntu-22.04\" -- cat /etc/os-release", RequestElevation: false, UseShellExecute: true), Success(string.Empty) },
-            { (FileName: "where", Arguments: "git.exe", RequestElevation: false, UseShellExecute: false), Success("C\\Git\\git.exe") },
-            { (FileName: "where", Arguments: "gh.exe", RequestElevation: false, UseShellExecute: false), Success("C:\\GitHubCli\\gh.exe") },
-            { (FileName: "where", Arguments: "code.cmd", RequestElevation: false, UseShellExecute: false), Success("C:\\VSCode\\code.cmd") },
-            { (FileName: "powershell", Arguments: "-NoProfile -Command \"(Test-Path 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe') -or (Test-Path (Join-Path $env:LOCALAPPDATA 'Programs\\Docker\\Docker Desktop.exe'))\"", RequestElevation: false, UseShellExecute: false), Success("True") },
-            { (FileName: "cmd.exe", Arguments: "/c C:\\VSCode\\code.cmd --list-extensions", RequestElevation: false, UseShellExecute: false), Success("ms-vscode-remote.vscode-remote-extensionpack") },
-            { (FileName: "cmd.exe", Arguments: BuildCredentialProbeArguments(configuration), RequestElevation: false, UseShellExecute: false), Success("username=user\r\npassword=secret") },
-            { (FileName: "git", Arguments: "config --global user.name", RequestElevation: false, UseShellExecute: false), new ProcessResult(1, string.Empty, string.Empty) },
-            { (FileName: "git", Arguments: "config --global user.email", RequestElevation: false, UseShellExecute: false), new ProcessResult(1, string.Empty, string.Empty) },
-            { (FileName: "git", Arguments: "config --global user.name \"Test User\"", RequestElevation: false, UseShellExecute: false), Success(string.Empty) },
-            { (FileName: "git", Arguments: "config --global user.email \"test@example.com\"", RequestElevation: false, UseShellExecute: false), Success(string.Empty) },
-        });
+            var processRunner = CreateProcessRunner(new Dictionary<(string FileName, string Arguments, bool RequestElevation, bool UseShellExecute), ProcessResult>
+            {
+                { (FileName: "dism.exe", Arguments: "/online /Get-FeatureInfo /FeatureName:Microsoft-Windows-Subsystem-Linux", RequestElevation: false, UseShellExecute: false), Success("State : Enabled") },
+                { (FileName: "dism.exe", Arguments: "/online /Get-FeatureInfo /FeatureName:VirtualMachinePlatform", RequestElevation: false, UseShellExecute: false), Success("State : Enabled") },
+                { (FileName: "wsl.exe", Arguments: "-l -q", RequestElevation: false, UseShellExecute: false), Success("Ubuntu-22.04\r\n") },
+                { (FileName: "wsl.exe", Arguments: "-d \"Ubuntu-22.04\" -- cat /etc/os-release", RequestElevation: false, UseShellExecute: true), Success(string.Empty) },
+                { (FileName: "where", Arguments: "git.exe", RequestElevation: false, UseShellExecute: false), Success(gitPath) },
+                { (FileName: "where", Arguments: "gh.exe", RequestElevation: false, UseShellExecute: false), Success(ghPath) },
+                { (FileName: "where", Arguments: "code.cmd", RequestElevation: false, UseShellExecute: false), Success(codePath) },
+                { (FileName: "powershell", Arguments: "-NoProfile -Command \"(Test-Path 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe') -or (Test-Path (Join-Path $env:LOCALAPPDATA 'Programs\\Docker\\Docker Desktop.exe'))\"", RequestElevation: false, UseShellExecute: false), Success("True") },
+                { (FileName: "cmd.exe", Arguments: $"/c {codePath} --list-extensions", RequestElevation: false, UseShellExecute: false), Success("ms-vscode-remote.vscode-remote-extensionpack") },
+                { (FileName: "cmd.exe", Arguments: BuildCredentialProbeArguments(configuration), RequestElevation: false, UseShellExecute: false), Success("username=user\r\npassword=secret") },
+                { (FileName: "git", Arguments: "config --global user.name", RequestElevation: false, UseShellExecute: false), new ProcessResult(1, string.Empty, string.Empty) },
+                { (FileName: "git", Arguments: "config --global user.email", RequestElevation: false, UseShellExecute: false), new ProcessResult(1, string.Empty, string.Empty) },
+                { (FileName: "git", Arguments: "config --global user.name \"Test User\"", RequestElevation: false, UseShellExecute: false), Success(string.Empty) },
+                { (FileName: "git", Arguments: "config --global user.email \"test@example.com\"", RequestElevation: false, UseShellExecute: false), Success(string.Empty) },
+            });
 
-        var fileSystem = new FakeFileSystem(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            var fileSystem = new FakeFileSystem(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { DotfilesSettingsPath, "{\"dotfiles.repository\":\"someone/dots\"}" },
+                { DockerSettingsPath, "{\"IntegratedWslDistros\":[\"Ubuntu-22.04\"]}" },
+            });
+
+            var orchestrator = CreateOrchestrator(
+                ui,
+                processRunner,
+                fileSystem,
+                configuration,
+                new ExecutionOptions(IsDryRun: false, IsVerbose: false));
+
+            await orchestrator.ExecuteAsync().ConfigureAwait(false);
+
+            Assert.That(capturedSummary.Last().StepName, Is.EqualTo("Configure Git user identity"));
+            Assert.That(capturedSummary.Last().Status, Is.EqualTo(StepStatus.Executed));
+        }
+        finally
         {
-            { DotfilesSettingsPath, "{\"dotfiles.repository\":\"someone/dots\"}" },
-            { DockerSettingsPath, "{\"IntegratedWslDistros\":[\"Ubuntu-22.04\"]}" },
-        });
-
-        var orchestrator = CreateOrchestrator(
-            ui,
-            processRunner,
-            fileSystem,
-            configuration,
-            new ExecutionOptions(IsDryRun: false, IsVerbose: false));
-
-        await orchestrator.ExecuteAsync().ConfigureAwait(false);
-
-        Assert.That(capturedSummary.Last().StepName, Is.EqualTo("Configure Git user identity"));
-        Assert.That(capturedSummary.Last().Status, Is.EqualTo(StepStatus.Executed));
+            disposeGit();
+            disposeGh();
+            disposeCode();
+        }
     }
 
     private static WindowsOrchestrator CreateOrchestrator(
@@ -268,12 +295,13 @@ public class WindowsOrchestratorTests
         ExecutionOptions executionOptions)
     {
         var enableWslStep = new EnableWslFeaturesStep(processRunner, ui.Object, configuration);
-        var installGitStep = new InstallGitForWindowsStep(processRunner, ui.Object);
-        var installGitHubCliStep = new InstallGitHubCliStep(processRunner, ui.Object, configuration);
-        var installVsCodeStep = new InstallWindowsVsCodeStep(processRunner, ui.Object);
-        var extensionStep = new EnsureVsCodeRemoteExtensionPackStep(processRunner, ui.Object);
+        var environmentRefresher = new NoOpEnvironmentRefresher();
+        var installGitStep = new InstallGitForWindowsStep(processRunner, ui.Object, environmentRefresher);
+        var installGitHubCliStep = new InstallGitHubCliStep(processRunner, ui.Object, configuration, environmentRefresher);
+        var installVsCodeStep = new InstallWindowsVsCodeStep(processRunner, ui.Object, configuration, environmentRefresher);
+        var extensionStep = new EnsureVsCodeRemoteExtensionPackStep(processRunner, ui.Object, configuration);
         var dotfilesStep = new ConfigureVsCodeDotfilesStep(ui.Object, fileSystem, () => DotfilesSettingsPath);
-        var installDockerStep = new InstallDockerDesktopStep(processRunner, ui.Object, configuration);
+        var installDockerStep = new InstallDockerDesktopStep(processRunner, ui.Object, configuration, environmentRefresher);
         var dockerIntegrationStep = new ConfigureDockerDesktopWslIntegrationStep(processRunner, ui.Object, fileSystem, configuration, () => DockerAppDataPath);
         var preAuthStep = new PreAuthenticateGitCredentialManagerStep(processRunner, ui.Object, configuration);
         var configureGitStep = new ConfigureGitUserStep(processRunner, ui.Object);
@@ -291,6 +319,29 @@ public class WindowsOrchestratorTests
             dockerIntegrationStep,
             preAuthStep,
             configureGitStep);
+    }
+
+    private static string CreateTemporaryExecutable(string fileName, out Action dispose)
+    {
+        string directory = Path.Combine(Path.GetTempPath(), $"orchestrator-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(directory);
+        string path = Path.Combine(directory, fileName);
+        File.WriteAllText(path, string.Empty);
+
+        dispose = () =>
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
+            if (Directory.Exists(directory))
+            {
+                Directory.Delete(directory, recursive: true);
+            }
+        };
+
+        return path;
     }
 
     private static Mock<IUserInteraction> CreateUserInteractionMock(Action<IReadOnlyCollection<StepResult>> summaryCallback)
@@ -319,6 +370,11 @@ public class WindowsOrchestratorTests
 
         string escapedPath = configuration.GitCredentialManagerPath.Replace("\"", "\\\"", StringComparison.Ordinal);
         return $"/c \"set GCM_INTERACTIVE=never && (echo protocol=https & echo host=github.com & echo.) | \"{escapedPath}\" get\"";
+    }
+
+    private sealed class NoOpEnvironmentRefresher : IEnvironmentRefresher
+    {
+        public Task RefreshAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
     }
 
     private sealed class TestStatusContext : IStatusContext
