@@ -93,6 +93,7 @@ public static class Program
                 // Windows-Specific
                 services.AddTransient<EnableWslFeaturesStep>();
                 services.AddTransient<InstallGitForWindowsStep>();
+                services.AddTransient<InstallGitHubCliStep>();
                 services.AddTransient<EnsureVsCodeRemoteExtensionPackStep>();
                 services.AddTransient<ConfigureVsCodeDotfilesStep>();
                 services.AddTransient<InstallDockerDesktopStep>();

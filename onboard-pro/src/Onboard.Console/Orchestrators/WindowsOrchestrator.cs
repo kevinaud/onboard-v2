@@ -19,6 +19,7 @@ public class WindowsOrchestrator : SequentialOrchestrator
         ExecutionOptions executionOptions,
         EnableWslFeaturesStep enableWslFeaturesStep,
         InstallGitForWindowsStep installGitForWindowsStep,
+        InstallGitHubCliStep installGitHubCliStep,
         InstallWindowsVsCodeStep installWindowsVsCodeStep,
         EnsureVsCodeRemoteExtensionPackStep ensureVsCodeRemoteExtensionPackStep,
         ConfigureVsCodeDotfilesStep configureVsCodeDotfilesStep,
@@ -34,6 +35,7 @@ public class WindowsOrchestrator : SequentialOrchestrator
             {
                 enableWslFeaturesStep,
                 installGitForWindowsStep,
+                installGitHubCliStep,
                 installWindowsVsCodeStep,
                 ensureVsCodeRemoteExtensionPackStep,
                 configureVsCodeDotfilesStep,

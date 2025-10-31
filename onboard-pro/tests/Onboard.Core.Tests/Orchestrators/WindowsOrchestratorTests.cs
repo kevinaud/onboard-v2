@@ -41,6 +41,7 @@ public class WindowsOrchestratorTests
             { (FileName: "wsl.exe", Arguments: "-l -q", RequestElevation: false, UseShellExecute: false), Success("Ubuntu-22.04\r\n") },
             { (FileName: "wsl.exe", Arguments: "-d \"Ubuntu-22.04\" -- cat /etc/os-release", RequestElevation: false, UseShellExecute: true), Success(string.Empty) },
             { (FileName: "where", Arguments: "git.exe", RequestElevation: false, UseShellExecute: false), Success("C\\Git\\git.exe") },
+            { (FileName: "where", Arguments: "gh.exe", RequestElevation: false, UseShellExecute: false), Success("C:\\GitHubCli\\gh.exe") },
             { (FileName: "where", Arguments: "code.cmd", RequestElevation: false, UseShellExecute: false), Success("C:\\VSCode\\code.cmd") },
             { (FileName: "powershell", Arguments: "-NoProfile -Command \"(Test-Path 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe') -or (Test-Path (Join-Path $env:LOCALAPPDATA 'Programs\\Docker\\Docker Desktop.exe'))\"", RequestElevation: false, UseShellExecute: false), Success("True") },
             { (FileName: "cmd.exe", Arguments: "/c C:\\VSCode\\code.cmd --list-extensions", RequestElevation: false, UseShellExecute: false), Success("ms-vscode-remote.vscode-remote-extensionpack") },
@@ -65,17 +66,18 @@ public class WindowsOrchestratorTests
         await orchestrator.ExecuteAsync().ConfigureAwait(false);
 
         ui.Verify(x => x.WriteNormal("Starting Windows host onboarding..."), Times.Once);
-        ui.Verify(x => x.RunStatusAsync(It.IsAny<string>(), It.IsAny<Func<IStatusContext, Task>>(), It.IsAny<CancellationToken>()), Times.Exactly(9));
+        ui.Verify(x => x.RunStatusAsync(It.IsAny<string>(), It.IsAny<Func<IStatusContext, Task>>(), It.IsAny<CancellationToken>()), Times.Exactly(10));
         ui.Verify(x => x.ShowSummary(It.IsAny<IReadOnlyCollection<StepResult>>()), Times.Once);
         ui.Verify(x => x.WriteSuccess("Windows host onboarding complete."), Times.Once);
 
-        Assert.That(capturedSummary, Has.Count.EqualTo(9));
+        Assert.That(capturedSummary, Has.Count.EqualTo(10));
         Assert.That(capturedSummary.All(result => result.Status == StepStatus.Skipped));
         Assert.That(capturedSummary.All(result => string.Equals(result.SkipReason, "Already configured", StringComparison.Ordinal)));
         Assert.That(capturedSummary.Select(result => result.StepName).ToArray(), Is.EqualTo(new[]
         {
             "Verify Windows Subsystem for Linux prerequisites",
             "Install Git for Windows",
+            "Install GitHub CLI",
             "Install Visual Studio Code",
             "Install VS Code Remote Development extension pack",
             "Configure VS Code dotfiles repository",
@@ -155,6 +157,7 @@ public class WindowsOrchestratorTests
             { (FileName: "wsl.exe", Arguments: "-l -q", RequestElevation: false, UseShellExecute: false), new ProcessResult(1, string.Empty, "WSL not installed") },
             { (FileName: "where", Arguments: "git.exe", RequestElevation: false, UseShellExecute: false), new ProcessResult(1, string.Empty, "git not found") },
             { (FileName: "where", Arguments: "code.cmd", RequestElevation: false, UseShellExecute: false), new ProcessResult(1, string.Empty, "code not found") },
+            { (FileName: "where", Arguments: "gh.exe", RequestElevation: false, UseShellExecute: false), new ProcessResult(1, string.Empty, "gh not found") },
             { (FileName: "powershell", Arguments: "-NoProfile -Command \"(Test-Path 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe') -or (Test-Path (Join-Path $env:LOCALAPPDATA 'Programs\\Docker\\Docker Desktop.exe'))\"", RequestElevation: false, UseShellExecute: false), new ProcessResult(1, string.Empty, "Docker not installed") },
             { (FileName: "cmd.exe", Arguments: "/c code --list-extensions", RequestElevation: false, UseShellExecute: false), new ProcessResult(0, string.Empty, string.Empty) },
             { (FileName: "cmd.exe", Arguments: BuildCredentialProbeArguments(configuration), RequestElevation: false, UseShellExecute: false), new ProcessResult(0, string.Empty, string.Empty) },
@@ -175,9 +178,9 @@ public class WindowsOrchestratorTests
 
         ui.Verify(x => x.WriteNormal("Starting Windows host onboarding..."), Times.Once);
         ui.Verify(x => x.WriteSuccess("Windows host onboarding dry run complete."), Times.Once);
-        ui.Verify(x => x.RunStatusAsync(It.IsAny<string>(), It.IsAny<Func<IStatusContext, Task>>(), It.IsAny<CancellationToken>()), Times.Exactly(9));
+        ui.Verify(x => x.RunStatusAsync(It.IsAny<string>(), It.IsAny<Func<IStatusContext, Task>>(), It.IsAny<CancellationToken>()), Times.Exactly(10));
 
-        Assert.That(capturedSummary, Has.Count.EqualTo(9));
+        Assert.That(capturedSummary, Has.Count.EqualTo(10));
         Assert.That(capturedSummary.All(result => result.Status == StepStatus.Skipped));
         Assert.That(capturedSummary.All(result => string.Equals(result.SkipReason, "Dry run", StringComparison.Ordinal)));
     }
@@ -227,6 +230,7 @@ public class WindowsOrchestratorTests
             { (FileName: "wsl.exe", Arguments: "-l -q", RequestElevation: false, UseShellExecute: false), Success("Ubuntu-22.04\r\n") },
             { (FileName: "wsl.exe", Arguments: "-d \"Ubuntu-22.04\" -- cat /etc/os-release", RequestElevation: false, UseShellExecute: true), Success(string.Empty) },
             { (FileName: "where", Arguments: "git.exe", RequestElevation: false, UseShellExecute: false), Success("C\\Git\\git.exe") },
+            { (FileName: "where", Arguments: "gh.exe", RequestElevation: false, UseShellExecute: false), Success("C:\\GitHubCli\\gh.exe") },
             { (FileName: "where", Arguments: "code.cmd", RequestElevation: false, UseShellExecute: false), Success("C:\\VSCode\\code.cmd") },
             { (FileName: "powershell", Arguments: "-NoProfile -Command \"(Test-Path 'C:\\Program Files\\Docker\\Docker\\Docker Desktop.exe') -or (Test-Path (Join-Path $env:LOCALAPPDATA 'Programs\\Docker\\Docker Desktop.exe'))\"", RequestElevation: false, UseShellExecute: false), Success("True") },
             { (FileName: "cmd.exe", Arguments: "/c C:\\VSCode\\code.cmd --list-extensions", RequestElevation: false, UseShellExecute: false), Success("ms-vscode-remote.vscode-remote-extensionpack") },
@@ -265,6 +269,7 @@ public class WindowsOrchestratorTests
     {
         var enableWslStep = new EnableWslFeaturesStep(processRunner, ui.Object, configuration);
         var installGitStep = new InstallGitForWindowsStep(processRunner, ui.Object);
+        var installGitHubCliStep = new InstallGitHubCliStep(processRunner, ui.Object);
         var installVsCodeStep = new InstallWindowsVsCodeStep(processRunner, ui.Object);
         var extensionStep = new EnsureVsCodeRemoteExtensionPackStep(processRunner, ui.Object);
         var dotfilesStep = new ConfigureVsCodeDotfilesStep(ui.Object, fileSystem, () => DotfilesSettingsPath);
@@ -278,6 +283,7 @@ public class WindowsOrchestratorTests
             executionOptions,
             enableWslStep,
             installGitStep,
+            installGitHubCliStep,
             installVsCodeStep,
             extensionStep,
             dotfilesStep,

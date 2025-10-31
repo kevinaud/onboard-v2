@@ -83,7 +83,7 @@ public class ConfigureVsCodeDotfilesStepTests
     [Test]
     public async Task ExecuteAsync_WhenUserAcceptsDefaultRepository_WritesSettings()
     {
-        var responses = new Queue<string>(new[] { "DEFAULT", string.Empty });
+        var responses = new Queue<string>(new[] { "DEFAULT" });
 
         fileSystem.Setup(fs => fs.FileExists(SettingsPath)).Returns(true);
         fileSystem.Setup(fs => fs.ReadAllText(SettingsPath)).Returns("{\"editor.fontSize\": 14}");

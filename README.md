@@ -72,6 +72,8 @@ Pass additional onboarding flags after `-PrNumber` using the stop-parsing token:
 
 When the onboarding binary launches it renders a Spectre.Console welcome banner, walks through each step with spinner-driven status updates, and concludes with a completion summary table that highlights executed, skipped, and failed steps (including skip reasons).
 
+On Windows, the workflow automatically installs Git for Windows, the GitHub CLI, Visual Studio Code plus the Remote Development extension pack, and ensures Docker Desktop and dotfiles settings are prepared for Dev Container work.
+
 ## Command-line modes
 
 The compiled onboarding binary auto-detects the host platform. When running inside a WSL distribution you must explicitly select the guest workflow:

@@ -77,7 +77,10 @@ public class ConfigureVsCodeDotfilesStep : IInteractiveOnboardingStep
         var settings = cachedSettings;
 
         userInteraction.WriteNormal(string.Empty);
-        userInteraction.WriteNormal("VS Code can automatically clone a dotfiles repository on startup.");
+        userInteraction.WriteNormal("VS Code Dev Containers can automatically clone a dotfiles repository whenever a container starts.");
+        userInteraction.WriteNormal("This setting only applies inside Dev Container environments.");
+        userInteraction.WriteNormal("Learn more: https://code.visualstudio.com/docs/devcontainers/containers#_personalizing-with-dotfile-repositories");
+        userInteraction.WriteNormal($"Default repository: {DefaultRepository}");
 
         string option = PromptForOption();
         if (string.Equals(option, "SKIP", StringComparison.OrdinalIgnoreCase))
@@ -86,14 +89,18 @@ public class ConfigureVsCodeDotfilesStep : IInteractiveOnboardingStep
             return Task.CompletedTask;
         }
 
-        string repository = option switch
-        {
-            "DEFAULT" => DefaultRepository,
-            "CUSTOM" => PromptForRepository(),
-            _ => DefaultRepository,
-        };
+        string repository;
+        string? targetPath = null;
 
-        string? targetPath = PromptForTargetPath();
+        if (string.Equals(option, "CUSTOM", StringComparison.OrdinalIgnoreCase))
+        {
+            repository = PromptForRepository();
+            targetPath = PromptForTargetPath();
+        }
+        else
+        {
+            repository = DefaultRepository;
+        }
 
         UpdateSettings(settings!, repository, targetPath);
         WriteSettings(settings!);
@@ -126,7 +133,7 @@ public class ConfigureVsCodeDotfilesStep : IInteractiveOnboardingStep
     {
         while (true)
         {
-            string response = userInteraction.Ask("Configure VS Code dotfiles (CUSTOM/DEFAULT/SKIP):", "DEFAULT");
+            string response = userInteraction.Ask("Configure VS Code Dev Container dotfiles (CUSTOM/DEFAULT/SKIP):", "DEFAULT");
             if (string.IsNullOrWhiteSpace(response))
             {
                 return "DEFAULT";
@@ -138,7 +145,7 @@ public class ConfigureVsCodeDotfilesStep : IInteractiveOnboardingStep
                 return response;
             }
 
-            userInteraction.WriteWarning("Please enter CUSTOM to supply a repository, DEFAULT to use kevinaud/dotfiles, or SKIP to leave dotfiles unconfigured.");
+            userInteraction.WriteWarning($"Please enter CUSTOM to supply a repository, DEFAULT to use {DefaultRepository}, or SKIP to leave dotfiles unconfigured.");
         }
     }
 
