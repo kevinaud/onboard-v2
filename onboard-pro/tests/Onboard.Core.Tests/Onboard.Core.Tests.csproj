@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <LangVersion>latest</LangVersion>
@@ -7,7 +6,6 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="coverlet.collector" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
@@ -20,14 +18,11 @@
     <PackageReference Include="Roslynator.Analyzers" PrivateAssets="All" />
     <PackageReference Include="Meziantou.Analyzer" PrivateAssets="All" />
   </ItemGroup>
-
   <ItemGroup>
     <Using Include="NUnit.Framework" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\Onboard.Core\Onboard.Core.csproj" />
     <ProjectReference Include="..\..\src\Onboard.Console\Onboard.Console.csproj" />
   </ItemGroup>
-
 </Project>

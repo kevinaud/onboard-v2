@@ -9,8 +9,8 @@ namespace Onboard.Core.Models;
 /// </summary>
 public record ProcessResult(int ExitCode, string StandardOutput, string StandardError)
 {
-    /// <summary>
-    /// Gets a value indicating whether returns true if the process completed successfully (exit code 0).
-    /// </summary>
-    public bool IsSuccess => this.ExitCode == 0;
+  /// <summary>
+  /// Gets a value indicating whether returns true if the process completed successfully (exit code 0).
+  /// </summary>
+  public bool IsSuccess => this.ExitCode == 0;
 }

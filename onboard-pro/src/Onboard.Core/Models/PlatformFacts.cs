@@ -9,10 +9,10 @@ namespace Onboard.Core.Models;
 /// </summary>
 public enum OperatingSystem
 {
-    Windows,
-    MacOs,
-    Linux,
-    Unknown,
+  Windows,
+  MacOs,
+  Linux,
+  Unknown,
 }
 
 /// <summary>
@@ -20,17 +20,13 @@ public enum OperatingSystem
 /// </summary>
 public enum Architecture
 {
-    X64,
-    Arm64,
-    Unknown,
+  X64,
+  Arm64,
+  Unknown,
 }
 
 /// <summary>
 /// An immutable record holding all facts about the current environment.
 /// This will be registered as a singleton in the DI container.
 /// </summary>
-public record PlatformFacts(
-    OperatingSystem OS,
-    Architecture Arch,
-    bool IsWsl,
-    string HomeDirectory);
+public record PlatformFacts(OperatingSystem OS, Architecture Arch, bool IsWsl, string HomeDirectory);

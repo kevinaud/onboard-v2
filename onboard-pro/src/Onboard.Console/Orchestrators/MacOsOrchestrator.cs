@@ -14,26 +14,26 @@ using Onboard.Core.Steps.Shared;
 /// </summary>
 public class MacOsOrchestrator : SequentialOrchestrator
 {
-    public MacOsOrchestrator(
-        IUserInteraction ui,
-        ExecutionOptions executionOptions,
-        InstallHomebrewStep installHomebrewStep,
-        InstallBrewPackagesStep installBrewPackagesStep,
-        InstallMacVsCodeStep installMacVsCodeStep,
-        ConfigureGitUserStep configureGitUserStep,
-        CloneProjectRepoStep cloneProjectRepoStep)
-        : base(
-            ui,
-            executionOptions,
-            "macOS onboarding",
-            new IOnboardingStep[]
-            {
-                installHomebrewStep,
-                installBrewPackagesStep,
-                installMacVsCodeStep,
-                configureGitUserStep,
-                cloneProjectRepoStep,
-            })
-    {
-    }
+  public MacOsOrchestrator(
+    IUserInteraction ui,
+    ExecutionOptions executionOptions,
+    InstallHomebrewStep installHomebrewStep,
+    InstallBrewPackagesStep installBrewPackagesStep,
+    InstallMacVsCodeStep installMacVsCodeStep,
+    ConfigureGitUserStep configureGitUserStep,
+    CloneProjectRepoStep cloneProjectRepoStep
+  )
+    : base(
+      ui,
+      executionOptions,
+      "macOS onboarding",
+      new IOnboardingStep[]
+      {
+        installHomebrewStep,
+        installBrewPackagesStep,
+        installMacVsCodeStep,
+        configureGitUserStep,
+        cloneProjectRepoStep,
+      }
+    ) { }
 }

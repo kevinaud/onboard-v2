@@ -11,9 +11,9 @@ using Onboard.Core.Models;
 /// </summary>
 public interface IPlatformDetector
 {
-    /// <summary>
-    /// Detects and returns the current platform facts.
-    /// </summary>
-    /// <returns>An immutable PlatformFacts record containing OS, architecture, and environment details.</returns>
-    PlatformFacts Detect();
+  /// <summary>
+  /// Detects and returns the current platform facts.
+  /// </summary>
+  /// <returns>An immutable PlatformFacts record containing OS, architecture, and environment details.</returns>
+  PlatformFacts Detect();
 }

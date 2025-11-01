@@ -16,8 +16,10 @@ jobs:
           dotnet-version: '9.0.x'
       - name: Restore
         run: dotnet restore
-      - name: Format (verify)
-        run: dotnet format --verify-no-changes
+      - name: Restore local tools
+        run: dotnet tool restore
+      - name: Verify formatting
+        run: dotnet csharpier check .
       - name: Build (fail on warnings)
         run: dotnet build --configuration Release -warnaserror
       - name: Test
